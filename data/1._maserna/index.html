@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masérna</title>
+    <link rel="stylesheet" href="../../assets/css/tailwind.css">
+    
+    <link rel="stylesheet" href="../../assets/css/fonts.css">
+    <link rel="stylesheet" href="../../assets/css/core.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+    <a href="../../index.html" class="back-to-dashboard-link" aria-label="Zpět na Palpatius ">← Zpět na Palpatius</a>
+
+    <div class="container">
+        <h1>Masérna</h1>
+        
+        <div id="backupReminder" class="hidden"></div>
+
+        <div class="flex items-center justify-between mb-6">
+            <div class="tooltip">
+                <button id="exportAllBtn" class="btn-export">Exportovat vše (JSON)</button>
+                <span class="tooltiptext">
+                    Ukládejte svá data pravidelně do souboru pro případ havárie prohlížeče nebo počítače.
+                </span>
+            </div>
+            <label class="ml-4 btn-import">
+                Importovat vše (JSON):
+                <input type="file" id="importAllInput" accept=".json" aria-label="Vybrat soubor pro import všech dat Masérny"/>
+            </label>
+            <button id="helpBtn" class="btn-help">Nápověda a návod</button>
+        </div>
+
+        <div class="flex flex-wrap justify-center mb-6">
+            <button id="toggleClientFormBtn" class="btn-toggle-form" aria-controls="clientFormSection" aria-expanded="false">Přidat klienta</button>
+            <button id="toggleMassageFormBtn" class="btn-toggle-form" aria-controls="massageFormSection" aria-expanded="false">Přidat masáž</button>
+            <button id="toggleVoucherFormBtn" class="btn-toggle-form" aria-controls="voucherPurchaseFormSection" aria-expanded="false">Přidat nákup poukazů</button>
+            <button id="togglePriceListFormBtn" class="btn-toggle-form" aria-controls="priceListFormSection" aria-expanded="false">Přidat položku ceníku</button>
+            <button id="toggleNoteFormBtn" class="btn-toggle-form" aria-controls="clientNoteFormSection" aria-expanded="false">Přidat poznámku ke klientovi</button>
+        </div>
+
+        <div id="clientFormSection" class="form-section hidden">
+            <h2>Přidat klienta</h2>
+            <label for="clientId">ID klienta:</label>
+            <input type="text" id="clientId" placeholder="Např. JS001" aria-label="ID klienta" />
+            <label for="clientName">Příjmení a jméno:</label>
+<input type="text" id="clientName" placeholder="Např. Novák Jan" aria-label="Příjmení a jméno klienta" required />
+            <label for="clientPhone">Telefon:</label>
+            <input type="tel" id="clientPhone" placeholder="Např. +420123456789" aria-label="Telefon klienta" pattern="^(\+420)? ?[1-9][0-9]{2} ?[0-9]{3} ?[0-9]{3}$" />
+            <label for="clientDiag">Diagnóza:</label>
+            <input type="text" id="clientDiag" placeholder="Např. Bolesti zad, migrény" aria-label="Diagnóza klienta" />
+            <button id="addClientBtn" class="btn-primary">Přidat klienta</button>
+        </div>
+
+        <div id="massageFormSection" class="form-section hidden">
+            <h2>Přidat masáž</h2>
+            <label for="massageClientName">Jméno klienta:</label>
+            <div class="autocomplete-container">
+                <input type="text" id="massageClientName" placeholder="Začni psát jméno klienta..." aria-label="Jméno klienta pro přidání masáže" required>
+                <ul id="massageClientName-list" class="autocomplete-list hidden" role="listbox"></ul>
+            </div>
+            <label for="massageDate">Datum (DD.MM.RRRR):</label>
+            <input type="date" id="massageDate" aria-label="Datum masáže" required />
+            <label for="massageTime">Čas (např. 08:00 - 09:00):</label>
+            <input type="text" id="massageTime" placeholder="Např. 08:00 - 09:00" aria-label="Čas masáže" required pattern="\d{2}:\d{2} - \d{2}:\d{2}" />
+            <label for="massageMethod">Metoda:</label>
+            <input type="text" id="massageMethod" placeholder="Např. K1, Reflexní, Lávové kameny" aria-label="Metoda masáže" required />
+<label for="massagePayment">Platba:</label>
+<select id="massagePayment" aria-label="Typ platby masáže">
+    <option value="H">Hotovost</option>
+    <option value="K">Karta</option>
+    <option value="V">Voucher</option>
+</select>
+            <label for="massagePrice">Cena (Kč):</label>
+            <input type="number" id="massagePrice" placeholder="Např. 690" min="0" aria-label="Cena masáže" required />
+            <button id="addMassageBtn" class="btn-primary">Přidat masáž</button>
+        </div>
+
+        <div id="voucherPurchaseFormSection" class="form-section hidden">
+            <h2>Přidat nákup poukazů</h2>
+            <label for="purchaseId">ID nákupu:</label>
+            <input type="text" id="purchaseId" placeholder="Např. PUK001" aria-label="ID nákupu poukazů" />
+            <label for="purchasingClientName">Jméno kupujícího klienta:</label>
+            <div class="autocomplete-container">
+                <input type="text" id="purchasingClientName" placeholder="Začni psát jméno klienta..." aria-label="Jméno kupujícího klienta" required>
+                <ul id="purchasingClientName-list" class="autocomplete-list hidden" role="listbox"></ul>
+            </div>
+<label for="overallPaymentType">Typ platby:</label>
+<select id="overallPaymentType" aria-label="Typ platby za nákup">
+    <option value="H">Hotovost</option>
+    <option value="K">Karta</option>
+</select>
+            <button id="addVoucherPurchaseBtn" class="btn-primary">Přidat nákup</button>
+        </div>
+
+        <div id="priceListFormSection" class="form-section hidden">
+            <h2>Přidat položku ceníku</h2>
+            <label for="itemYear">Rok:</label>
+            <input type="number" id="itemYear" placeholder="Např. 2025" min="1900" max="2100" aria-label="Rok ceníkové položky" required />
+            <label for="itemType">Typ:</label>
+            <input type="text" id="itemType" placeholder="Např. K1" aria-label="Typ ceníkové položky" required />
+            <label for="priceListName">Název masáže:</label>
+            <input type="text" id="priceListName" placeholder="Např. Klasická masáž" aria-label="Název masáže v ceníku" required />
+            <label for="itemLength">Délka:</label>
+            <input type="text" id="itemLength" placeholder="Např. 30 minut" aria-label="Délka masáže v ceníku" required />
+            <label for="itemPrice">Cena (Kč):</label>
+            <input type="number" id="itemPrice" placeholder="Např. 500" min="0" aria-label="Cena masáže v ceníku" required />
+            <button id="addPriceListItemBtn" class="btn-primary">Přidat položku</button>
+        </div>
+
+        <div id="clientNoteFormSection" class="form-section hidden">
+            <h2>Přidat poznámku ke klientovi</h2>
+            <label for="clientNoteClientName">Příjmení a jméno klienta:</label>
+            <div class="autocomplete-container">
+                <input type="text" id="clientNoteClientName" placeholder="Začni psát jméno klienta..." aria-label="Jméno klienta pro poznámku" required>
+                <ul id="clientNoteClientName-list" class="autocomplete-list hidden" role="listbox"></ul>
+            </div>
+            <label for="clientNoteText">Poznámka:</label>
+            <textarea id="clientNoteText" placeholder="Sem napište poznámku ke klientovi..." aria-label="Text poznámky ke klientovi" required></textarea>
+            <button id="addClientNoteBtn" class="btn-primary">Přidat poznámku</button>
+        </div>
+
+        <div class="filter-section">
+            <label for="globalFilterInput" class="sr-only">Filtruj záznamy:</label>
+            <input type="text" id="globalFilterInput" placeholder="Filtruj klienty, masáže, ceník, poukazy..." aria-label="Globální filtr" />
+            <button id="clearFilterBtn" class="btn-filter">Zrušit filtr</button>
+        </div>
+
+        <section aria-labelledby="clients-heading">
+            <h2 id="clients-heading">Správa klientů <button id="toggleClientsBtn" aria-controls="clientTableContainer" aria-expanded="false">Zobrazit</button></h2>
+            <div id="clientTableContainer" class="table-responsive hidden">
+                <table id="clientTable">
+                    <caption>Seznam všech klientů a jejich stav</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col" data-sort="id">ID</th>
+                            <th scope="col" data-sort="name">Klient</th>
+                            <th scope="col" data-sort="phone">Telefon</th>
+                            <th scope="col" data-sort="diag">Diagnóza</th>
+                            <th scope="col" data-sort="status">Stav</th>
+                            <th scope="col" data-sort="count">Počet masáží</th>
+                            <th scope="col" data-sort="total">Celkem zaplaceno</th>
+                            <th scope="col">Použité metody</th>
+                            <th scope="col">Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section aria-labelledby="pricelist-heading">
+            <h2 id="pricelist-heading">Ceník masáží <button id="togglePricelistBtn" aria-controls="priceListTableContainer" aria-expanded="false">Zobrazit</button></h2>
+            <div id="priceListTableContainer" class="table-responsive hidden">
+                <table id="priceListTable">
+                    <caption>Ceník nabízených masáží a služeb</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col" data-sort="year">Rok</th>
+                            <th scope="col" data-sort="type">Typ</th>
+                            <th scope="col" data-sort="name">Masáž</th>
+                            <th scope="col" data-sort="length">Délka</th>
+                            <th scope="col" data-sort="price">Cena</th>
+                            <th scope="col" data-sort="count">Počet</th>
+                            <th scope="col" data-sort="total">Celkem</th>
+                            <th scope="col">Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section aria-labelledby="massage-history-heading">
+            <h2 id="massage-history-heading">Historie masáží <button id="toggleGlobalMassageHistoryBtn" aria-controls="globalMassageHistoryTableContainer" aria-expanded="false">Zobrazit</button></h2>
+            <div id="globalMassageHistoryTableContainer" class="table-responsive hidden">
+                <table id="globalMassageHistoryTable">
+                    <caption>Kompletní historie všech provedených masáží</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col" data-sort="date">Datum</th>
+                            <th scope="col" data-sort="time">Čas</th>
+                            <th scope="col" data-sort="clientId">ID Klienta</th>
+                            <th scope="col" data-sort="clientName">Jméno Klienta</th>
+                            <th scope="col" data-sort="method">Metoda</th>
+                            <th scope="col" data-sort="payment">Platba</th>
+                            <th scope="col" data-sort="amount">Částka</th>
+                            <th scope="col">Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section aria-labelledby="vouchers-heading">
+            <h2 id="vouchers-heading">Správa dárkových poukazů <button id="toggleVouchersBtn" aria-controls="voucherTableContainer" aria-expanded="false">Zobrazit</button></h2>
+            <div id="voucherTableContainer" class="table-responsive hidden">
+                <table id="voucherTable">
+                    <caption>Přehled nákupů dárkových poukazů</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col" data-sort="purchaseId">ID Nákupu</th>
+                            <th scope="col" data-sort="purchasingClientName">Klient (Kupující)</th>
+                            <th scope="col" data-sort="totalVouchersBought">Počet Poukazů</th>
+                            <th scope="col" data-sort="totalAmountPaid">Celková Hodnota</th>
+                            <th scope="col" data-sort="overallPaymentType">Typ Platby</th>
+                            <th scope="col">Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+<div id="customMessageModal" class="modal" style="display: none;" 
+     role="dialog" 
+     aria-modal="true" 
+     aria-labelledby="modalMessageTitle" 
+     aria-describedby="modalMessage">
+
+    <div class="modal-content">
+        <h3 id="modalMessageTitle" class="text-xl font-bold text-yellow-300 mb-4">Zpráva</h3>
+        <p id="modalMessage" class="text-gray-300 mb-4"></p>
+        <div class="modal-buttons">
+            <button id="modalOkButton" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">OK</button>
+            <button id="modalCancelButton" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md ml-2 hidden">Zrušit</button>
+        </div>
+    </div>
+</div>
+
+<div id="editIndividualVoucherModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="editIndividualVoucherModalTitle" tabindex="-1">
+    <div class="modal-content">
+        <h3 id="editIndividualVoucherModalTitle">Upravit poukaz</h3>
+        <div>
+            <label for="editVoucherType">Typ poukazu:</label>
+            <input type="text" id="editVoucherType" placeholder="Typ poukazu" />
+        </div>
+        <div>
+            <label for="editVoucherIssueDate">Datum vystavení:</label>
+            <input type="date" id="editVoucherIssueDate" />
+        </div>
+        <div>
+            <label for="editRedeemedBy">Kdo poukaz využil:</label>
+            <input type="text" id="editRedeemedBy" placeholder="Kdo poukaz využil" />
+        </div>
+        <div>
+            <label for="editRedemptionDates">Datumy využití (DD.MM.RRRR, ...):</label>
+            <input type="text" id="editRedemptionDates" placeholder="Datumy využití" />
+        </div>
+        <div>
+            <label for="editVoucherValue">Hodnota poukazu:</label>
+            <input type="number" id="editVoucherValue" min="0" />
+        </div>
+        <div class="modal-buttons">
+            <button id="submitEditIndividualVoucher" class="btn-primary">Uložit</button>
+            <button class="btn-back" data-close-modal="editIndividualVoucherModal">Zrušit</button>
+        </div>
+    </div>
+</div>
+
+<div id="editClientMassageModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="editClientMassageModalTitle" tabindex="-1">
+    <div class="modal-content">
+        <h3 id="editClientMassageModalTitle">Upravit masáž</h3>
+        <div>
+            <label for="editClientMassageDate">Datum:</label>
+            <input type="date" id="editClientMassageDate" />
+        </div>
+        <div>
+            <label for="editClientMassageTime">Čas:</label>
+            <input type="text" id="editClientMassageTime" placeholder="Čas" />
+        </div>
+        <div>
+            <label for="editClientMassageMethod">Metoda:</label>
+            <input type="text" id="editClientMassageMethod" placeholder="Metoda" />
+        </div>
+        <div>
+            <label for="editClientMassagePayment">Platba:</label>
+            <select id="editClientMassagePayment">
+                <option value="H">Hotovost</option>
+                <option value="K">Karta</option>
+                <option value="V">Voucher</option>
+            </select>
+        </div>
+        <div>
+            <label for="editClientMassagePrice">Cena:</label>
+            <input type="number" id="editClientMassagePrice" min="0" />
+        </div>
+        <div class="modal-buttons">
+            <button id="submitEditClientMassage" class="btn-primary">Uložit</button>
+            <button class="btn-back" data-close-modal="editClientMassageModal">Zrušit</button>
+        </div>
+    </div>
+</div>
+        
+        <div id="editClientStatusModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="editClientStatusModalTitle" tabindex="-1">
+            <div class="modal-content">
+                <h3 id="editClientStatusModalTitle">Změnit stav klienta</h3>
+                <label for="editClientStatusSelect">Vyberte stav:</label>
+                <select id="editClientStatusSelect">
+                    <option value="active">Aktivní</option>
+                    <option value="inactive">Neaktivní</option>
+                    <option value="very_active">Velmi aktivní</option>
+                </select><br>
+                <div class="modal-buttons">
+                    <button id="submitEditClientStatus" class="btn-primary">Uložit</button>
+                    <button class="btn-back" data-close-modal="editClientStatusModal">Zrušit</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="editClientNoteModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="editClientNoteModalTitle" tabindex="-1">
+            <div class="modal-content">
+                <h3 id="editClientNoteModalTitle">Upravit poznámku</h3>
+                <label for="editClientNoteText">Text poznámky:</label>
+                <textarea id="editClientNoteText" placeholder="Text poznámky"></textarea><br>
+                <div class="modal-buttons">
+                    <button id="submitEditClientNote" class="btn-primary">Uložit</button>
+                    <button class="btn-back" data-close-modal="editClientNoteModal">Zrušit</button>
+                </div>
+            </div>
+        </div>
+        <div id="addCountToPriceListItemModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="addCountModalTitle" tabindex="-1">
+            <div class="modal-content">
+                <h3 id="addCountModalTitle">Zadat počet pro položku ceníku</h3>
+                <p id="addCountModalItemName" class="text-gray-300 mb-4"></p>
+                <label for="editItemCount">Aktuální počet:</label>
+                <input type="number" id="editItemCount" value="0" min="0" aria-label="Zadejte počet pro položku ceníku" /><br>
+                <div class="modal-buttons">
+                    <button id="submitCountToPriceListItemBtn" class="btn-primary">Uložit</button>
+                    <button class="btn-back" data-close-modal="addCountToPriceListItemModal">Zrušit</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="helpModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle" tabindex="-1">
+            <div class="modal-content" style="max-width: 800px; text-align: left;">
+                <h3 id="helpModalTitle">Nápověda a návod k modulu Masérna</h3>
+                
+                <div id="helpContent" style="max-height: 60vh; overflow-y: auto; padding-right: 15px;">
+                    <h4>Základní ovládání</h4>
+                    <p>Aplikace ukládá veškerá data přímo ve tvém prohlížeči do databáze <strong>IndexedDB</strong>. Data jsou trvalá, dokud nevymažeš data prohlížeče.</p>
+                    <p><strong>DŮLEŽITÉ:</strong> Pravidelně svá data zálohuj pomocí tlačítka <strong>"Exportovat vše (JSON)"</strong>. O data můžeš přijít při poruše počítače nebo přeinstalaci systému.</p>
+
+                    <h4>Přidávání záznamů</h4>
+                    <p>V horní části najdeš pět tlačítek pro přidávání nových záznamů:</p>
+                    <ul>
+                        <li><strong>Přidat klienta:</strong> Vytvoří novou kartu klienta. ID se vygeneruje automaticky, pokud ho necháš prázdné.</li>
+                        <li><strong>Přidat masáž:</strong> Přiřadí masáž k existujícímu klientovi. Začni psát jméno a systém ti klienta nabídne.</li>
+                        <li><strong>Přidat nákup poukazů:</strong> Vytvoří "obal" pro nákup poukazů. Jednotlivé poukazy pak přidáš v tabulce "Správa dárkových poukazů".</li>
+                        <li><strong>Přidat položku ceníku:</strong> Vytvoří novou službu/masáž v ceníku.</li>
+                        <li><strong>Přidat poznámku ke klientovi:</strong> Přidá textovou poznámku ke konkrétnímu klientovi.</li>
+                    </ul>
+
+                    <h4>Práce s tabulkami</h4>
+                    <ul>
+                        <li><strong>Zobrazení/Sbalení:</strong> Každou tabulku můžeš skrýt nebo zobrazit kliknutím na tlačítko "Zobrazit/Sbalit" v jejím nadpisu.</li>
+                        <li><strong>Řazení:</strong> Kliknutím na název sloupce (např. "Klient", "Datum") se tabulka seřadí vzestupně. Dalším kliknutím se seřadí sestupně.</li>
+                        <li><strong>Filtrování:</strong> Do pole "Filtruj..." můžeš napsat cokoliv (jméno, telefon, metodu masáže) a všechny tabulky se okamžitě vyfiltrují. Filtr zrušíš tlačítkem "Zrušit filtr".</li>
+                        <li><strong>Detail klienta:</strong> Kliknutím na jméno klienta v tabulce se rozbalí detail se všemi jeho masážemi, poukazy a poznámkami.</li>
+                    </ul>
+                    
+                    <h4>Věrnostní program</h4>
+                    <p>V tabulce klientů můžeš každému klientovi přidávat a odebírat věrnostní body.</p>
+                    <ul>
+                        <li><strong>+1 bod:</strong> Přidá bod. Po dosažení 9 bodů se body vynulují a klient získá 1 bonus (masáž zdarma).</li>
+                        <li><strong>Bonusy:</strong> Každý 3. získaný bonus navíc přidá 1 "extra bonus" (např. dárkový poukaz).</li>
+                    </ul>
+                </div>
+
+                <div class="modal-buttons">
+                    <button id="closeHelpBtn" class="btn-back">Zavřít</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="../../assets/js/utils.js"></script>
+<script src="../../assets/js/ui.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

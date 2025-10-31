@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palpatius - Systém pro maséry</title>
+     <link rel="stylesheet" href="../../assets/css/tailwind.css">
+    
+    <link rel="stylesheet" href="../../assets/css/fonts.css">
+    <link rel="stylesheet" href="../../assets/css/core.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body class="antialiased">
+    <div class="container">
+        <h1 class="text-5xl font-extrabold text-center text-yellow-300 mb-6 mt-8">Vítejte v Palpatiu</h1>
+        
+        <p id="current-time" class="text-lg text-gray-400 text-center mb-12"></p>
+
+        <p class="text-lg text-gray-300 text-center mb-12 leading-relaxed">
+            Jednoduchý, bezpečný a offline systém pro maséry, který běží přímo ve vašem prohlížeči. Všechna data máte plně pod kontrolou.
+        </p>
+
+        <div id="modules">
+            <h2>Spustit moduly</h2>
+            <a href="data/1._maserna/index.html" class="app-link" aria-label="Spustit modul Masérna">🚀 Masérna</a>
+            <a href="data/2._financni_spravce/index.html" class="app-link" aria-label="Spustit modul Finanční správce">💰 Finanční správce</a>
+            <a href="data/3._zaznamnik/index.html" class="app-link" aria-label="Spustit modul Centrální záznamník">🧠 Centrální záznamník</a>
+    <a href="data/4._bonus/index.html" class="app-link" aria-label="Bonusová sekce pro odpočinek">🕹️ Bonus</a>
+        </div>
+
+<details>
+    <summary aria-label="Rozbalovací pole: Jak začít a bezpečně pracovat se soubory?">🔑 Jak začít a bezpečně pracovat se soubory?</summary>
+    
+    <p><strong>Důležitá poznámka:</strong> Podrobný návod a nápovědu najdete přímo v každém modulu. Stačí kliknout na modré tlačítko "Nápověda" a otevře se vám okno se vším, co potřebujete vědět. Návody jsou záměrně umístěny tam, kde jsou potřeba, aby tato hlavní stránka zůstala stručná a přehledná.</p>
+    
+    <h3>Spuštění Palpatia krok za krokem</h3>
+    <p>Spuštění je velmi jednoduché: Ve složce Palpatius, najděte soubor s názvem <code>index.html</code> (přesně tuto stránku) a dvojklikem ho otevřete ve svém oblíbeném webovém prohlížeči. Tím je vše hotovo, nemusíte nic instalovat.</p>
+    
+    <h3>Proč a jak zálohovat? Vaše data jsou to nejdůležitější!</h3>
+    <p>Palpatius ukládá všechna data přímo do databáze ve vašem prohlížeči (IndexedDB). Je to bezpečné a rychlé, ale má to jeden háček: data jsou vázána na konkrétní prohlížeč a jeho profil. V případě poruchy počítače nebo přeinstalace systému byste o ně mohli přijít.</p>
+    <p>Proto důrazně doporučujeme pravidelně **exportovat data do souboru** (tato možnost je v každém modulu). Berte to jako svou pojistku. Modul Masérna vás po 7 dnech bez zálohy sám upozorní.</p>
+
+    <h3>Jak udržet systém spolehlivý?</h3>
+    <p>Palpatius je navržen jako ucelený balíček souborů. Pro jeho bezchybný chod je nejlepší do těchto souborů a složek nijak nezasahovat. Stačí, když budete aplikaci vždy spouštět přes soubor <code>index.html</code>.</p>
+</details>
+
+        <details>
+            <summary aria-label="Rozbalovací pole: Proč si Palpatius zamilujete">📖 Proč si Palpatius zamilujete?</summary>            
+            <h3>Proč si Palpatius zamilujete?</h3>
+            <p>Je to jednoduchý, 100% offline a bezpečný nástroj, který řeší reálné problémy masérů – od správy klientů přes finance až po záznamník nápadů. Všechna vaše data zůstávají pouze u vás v počítači.</p>
+            
+            <p>Palpatius je offline webová aplikace, která funguje ve všech moderních prohlížečích (Chrome, Firefox, Edge) na operačních systémech **Windows, macOS** a **Linux**. Je primárně navržen pro počítače a notebooky.</p>
+
+            <h3>Pomozte mi ho vylepšit</h3>
+            <p>Palpatius je funkční, ale určitě ne bezchybný. Pokud narazíte na chybu nebo máte nápad na vylepšení, dejte mi prosím vědět. Vaše zpětná vazba je pro mě nesmírně cenná.</p>
+        </details>
+        
+        <details>
+            <summary aria-label="Rozbalovací pole: Technické informace a licence">🗂 Technické informace a licence</summary>
+            <p>Celý projekt je **open-source** a je k dispozici na GitHubu pod licencí **Apache 2.0**. Můžete si ho stáhnout, používat, nebo dokonce upravit a vylepšit podle svých potřeb.</p>
+            <p>Oficiální repozitář: <a href="https://github.com/simekjan1/Palpatius" class="text-blue-400 hover:text-blue-200 underline">https://github.com/simekjan1/Palpatius</a></p>
+        </details>
+  
+
+<script src="../../assets/js/utils.js"></script>
+<script src="../../assets/js/ui.js"></script>
+<script src="script.js"></script><
+/body>
+</html>

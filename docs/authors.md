@@ -1,0 +1,3 @@
+Zdravím. Mé jméno je Jan Šimek,. Jsem autor projektu Palpatius.
+Od roku 2012 se živím jako masér a od narození žiji se zbytky zraku. Dlouho jsem marně hledal systém pro správu masérny, který by byl jednoduchý a hlavně plně přístupný pro nevidomé. Vyzkoušel jsem desítky aplikací, ale žádná nevyhovovala. Nakonec jsem se rozhodl, že si takový systém vytvořím sám.
+Protože programování není moje silná stránka, spojil jsem síly s AI asistentem Maxem. Já jsem měl na starosti vizi, logiku a testování, zatímco Max se staral o technickou stránku. Po večerech jsme společně ladili kód a po půl roce intenzivní práce se zrodil Palpatius – systém, který mi dnes a denně šetří čas a nervy.

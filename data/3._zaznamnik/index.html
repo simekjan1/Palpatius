@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centrální záznamník</title>
+    <link rel="stylesheet" href="../../assets/css/tailwind.css">
+    
+    <link rel="stylesheet" href="../../assets/css/fonts.css">
+    <link rel="stylesheet" href="../../assets/css/core.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+    <div class="container">
+        <a href="../../index.html" class="back-to-dashboard-link" aria-label="Zpět na Palpatius">← Zpět na Palpatius</a>
+
+        <h1 id="mainTitle">Centrální záznamník</h1>
+
+        <div class="flex items-center justify-between mb-6" id="globalControls">
+            <button class="btn-export" onclick="exportAllData()">Exportovat vše (JSON)</button>
+            <label class="ml-4 btn-import">
+                Importovat vše (JSON):
+                <input type="file" onchange="importAllData(event)" accept=".json" aria-label="Vybrat soubor pro import dat"/>
+            </label>
+            <button class="btn-help" onclick="openHelpModal()">Nápověda a návod</button>
+        </div>
+
+        <div class="flex flex-wrap justify-center mb-6" id="addButtonsSection">
+            <button class="btn-toggle-form" onclick="toggleForm('noteFormSection')" aria-controls="noteFormSection" aria-expanded="false">Přidat poznámku</button>
+            <button class="btn-toggle-form" onclick="toggleForm('todoListFormSection')" aria-controls="todoListFormSection" aria-expanded="false">Přidat To-Do List</button>
+            <button class="btn-toggle-form" onclick="toggleForm('eventFormSection')" aria-controls="eventFormSection" aria-expanded="false">Přidat událost</button>
+            <button class="btn-toggle-form" onclick="toggleForm('ideaFormSection')" aria-controls="ideaFormSection" aria-expanded="false">Přidat nápad</button>
+        </div>
+
+        <div id="noteFormSection" class="form-section hidden">
+            <h2>Přidat poznámku</h2>
+            <label for="noteTitle">Název poznámky:</label>
+            <input type="text" id="noteTitle" placeholder="Např. Důležité poznámky ze školení" aria-label="Název poznámky" required />
+            <label for="noteClientSelect" class="mt-4">Přidat ke klientovi (nepovinné):</label>
+            <select id="noteClientSelect" class="w-full"><option value="">-- Vyberte klienta --</option></select>
+            <label for="noteText">Text poznámky:</label>
+            <textarea id="noteText" placeholder="Sem napište text poznámky..." aria-label="Text poznámky" required></textarea>
+            <button class="btn-primary" onclick="addNote()">Přidat poznámku</button>
+        </div>
+        <div id="todoListFormSection" class="form-section hidden">
+            <h2>Přidat nový To-Do List</h2>
+            <label for="newListName">Název listu:</label>
+            <input type="text" id="newListName" placeholder="Např. Práce, Osobní, Nákup" aria-label="Název To-Do listu" required />
+            <button class="btn-primary" onclick="addTodoList()">Vytvořit list</button>
+        </div>
+        <div id="todoFormSection" class="form-section hidden">
+            <h2>Přidat úkol do listu</h2>
+            <label for="taskClientSelect" class="mt-4">Přidat ke klientovi (nepovinné):</label>
+            <select id="taskClientSelect" class="w-full"><option value="">-- Vyberte klienta --</option></select>
+            <label for="taskText">Popis úkolu:</label>
+            <input type="text" id="taskText" placeholder="Např. Zavolat dodavateli ohledně oleje" aria-label="Popis úkolu" required />
+            <label for="taskDueDate">Termín (datum):</label>
+            <input type="date" id="taskDueDate" aria-label="Termín úkolu" />
+            <label for="taskPriority">Priorita:</label>
+            <select id="taskPriority" aria-label="Priorita úkolu">
+                <option value="nízká">Nízká</option>
+                <option value="střední">Střední</option>
+                <option value="vysoká">Vysoká</option>
+            </select>
+            <button class="btn-primary" onclick="addTask()">Přidat úkol</button>
+        </div>
+        <div id="eventFormSection" class="form-section hidden">
+            <h2>Přidat událost</h2>
+            <label for="eventClientSelect" class="mt-4">Přidat ke klientovi (nepovinné):</label>
+            <select id="eventClientSelect" class="w-full"><option value="">-- Vyberte klienta --</option></select>
+            <label for="eventDate">Datum události:</label>
+            <input type="date" id="eventDate" aria-label="Datum události" required />
+            <label for="eventTime">Čas události:</label>
+            <input type="time" id="eventTime" aria-label="Čas události" required />
+            <label for="eventTitle">Název události:</label>
+            <input type="text" id="eventTitle" placeholder="Např. Endokrinologie kontrola" aria-label="Název události" required />
+            <label for="eventDescription">Popis události / Poznámky:</label>
+            <textarea id="eventDescription" placeholder="Detailní popis události..." aria-label="Popis události"></textarea>
+            <button class="btn-primary" onclick="addEvent()">Přidat událost</button>
+        </div>
+        <div id="ideaFormSection" class="form-section hidden">
+            <h2>Přidat nápad</h2>
+            <label for="ideaTitle">Název nápadu:</label>
+            <input type="text" id="ideaTitle" placeholder="Např. Nová služba pro klienty" aria-label="Název nápadu" required />
+            <label for="ideaClientSelect" class="mt-4">Přidat ke klientovi (nepovinné):</label>
+            <select id="ideaClientSelect" class="w-full"><option value="">-- Vyberte klienta --</option></select>
+            <label for="ideaDescription">Popis nápadu / detailní poznámky:</label>
+            <textarea id="ideaDescription" placeholder="Rozveďte svůj nápad..." aria-label="Popis nápadu" required></textarea>
+            <label for="ideaCategory">Kategorie nápadu:</label>
+            <select id="ideaCategory" aria-label="Kategorie nápadu">
+                <option value="Obecné">Obecné</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Služby">Nové služby</option>
+                <option value="Studio">Vylepšení studia</option>
+                <option value="AI">AI a technologie</option>
+                <option value="Ostatní">Ostatní</option>
+            </select>
+            <button class="btn-primary" onclick="addIdea()">Přidat nápad</button>
+        </div>
+        
+        <div class="filter-section">
+            <label for="globalFilterInput" class="sr-only">Filtruj záznamy:</label>
+            <input type="text" id="globalFilterInput" placeholder="Filtruj záznamy (název, popis, termín, kategorie...)" oninput="updateTable()" aria-label="Filtrovat záznamy" />
+            <button class="btn-filter" onclick="clearFilter()">Zrušit filtr</button>
+        </div>
+        <div class="flex flex-wrap justify-center my-4 gap-2">
+            <button class="btn-toggle-filter" data-filter="all">Všechny</button>
+            <button class="btn-toggle-filter" data-filter="note">Poznámky</button>
+            <button class="btn-toggle-filter" data-filter="todo_list">Úkoly</button>
+            <button class="btn-toggle-filter" data-filter="event">Události</button>
+            <button class="btn-toggle-filter" data-filter="idea">Nápady</button>
+        </div>
+        <table id="mainDataTable">
+            <thead>
+                <tr>
+                    <th scope="col" data-sort="type">Typ</th>
+                    <th scope="col" data-sort="clientName">Klient</th>
+                    <th scope="col" data-sort="title">Název/Popis</th>
+                    <th scope="col">Detail/Termín</th>
+                    <th scope="col" data-sort="category">Kategorie/Priorita</th>
+                    <th scope="col">Akce</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+<div id="customMessageModal" class="modal" style="display: none;" 
+     role="dialog" 
+     aria-modal="true" 
+     aria-labelledby="modalMessageTitle" 
+     aria-describedby="modalMessage">
+
+    <div class="modal-content">
+        <h3 id="modalMessageTitle" class="text-xl font-bold text-yellow-300 mb-4">Zpráva</h3>
+        <p id="modalMessage" class="text-gray-300 mb-4"></p>
+        <div class="modal-buttons">
+            <button id="modalOkButton" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">OK</button>
+            <button id="modalCancelButton" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md ml-2 hidden">Zrušit</button>
+        </div>
+    </div>
+</div>
+        <div id="ideaActionsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="ideaActionsTitle" tabindex="-1">
+            <div class="modal-content">
+                <h3 id="ideaActionsTitle" class="text-xl font-bold text-yellow-300 mb-4">Nápad byl přidán. Co dál?</h3>
+                <p id="ideaActionsText" class="text-gray-300 mb-4">Máte nové možnosti pro tento nápad:</p>
+                <div class="modal-buttons flex justify-center gap-4 mt-6">
+                    <button id="addIdeaToPricelistBtn" class="btn-primary">Přidat do ceníku v Masérně</button>
+                    <button id="addIdeaToTodoBtn" class="btn-secondary">Přidat jako úkol</button>
+                    <button id="closeIdeaActionsModalBtn" class="btn-back">Hotovo</button>
+                </div>
+            </div>
+        </div>
+        <div id="todoListDetailSection" class="hidden container-fluid bg-gray-900 p-8 rounded-lg shadow-lg text-left text-gray-200 mb-12">
+            <a href="#" onclick="goBackToMainView()" class="back-to-dashboard-link mb-6">← Zpět na hlavní přehled</a>
+            <h2 id="currentTodoListName"></h2>
+            <div id="todoListTasksTableContainer">
+                <table id="todoListTasksTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Splněno</th>
+                            <th scope="col">Klient</th>
+                            <th scope="col" data-sort="text">Popis úkolu</th>
+                            <th scope="col" data-sort="dueDate">Termín</th>
+                            <th scope="col" data-sort="priority">Priorita</th>
+                            <th scope="col">Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="text-center mt-6">
+                <button class="btn-primary" onclick="showAddTodoTaskForm()">Přidat nový úkol do listu</button>
+            </div>
+        </div>
+        <div id="helpModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle" tabindex="-1">
+            <div class="modal-content" style="max-width: 800px; text-align: left;">
+                <h3 id="helpModalTitle" style="color: #facc15; font-size: 1.5rem; text-align: left;">Nápověda k Záznamníku</h3>
+                <div id="helpContent" style="max-height: 60vh; overflow-y: auto; padding-right: 15px;">
+                    <h4>🧠 Mozek celé operace</h4>
+                    <p>Tento modul je centrální místo pro všechny tvé myšlenky, úkoly a plány. Je propojený s modulem <strong>Masérna</strong>, takže můžeš záznamy přiřazovat přímo ke klientům.</p>
+                    <p><strong>DŮLEŽITÉ:</strong> I zde platí, že je dobré pravidelně zálohovat data pomocí tlačítka <strong>"Exportovat vše (JSON)"</strong>.</p>
+                    <h4>➕ Přidávání záznamů</h4>
+                    <p>Můžeš vytvářet 4 typy záznamů:</p>
+                    <ul>
+                        <li><strong>📝 Poznámka:</strong> Pro jakýkoliv delší text, postřehy ze školení nebo myšlenky.</li>
+                        <li><strong>✅ To-Do List:</strong> Nejdříve vytvoříš "seznam" (např. Nákup, Práce) a do něj pak přidáváš jednotlivé úkoly.</li>
+                        <li><strong>🗓️ Událost:</strong> Pro schůzky, kontroly u lékaře nebo cokoliv, co má přesné datum a čas.</li>
+                        <li><strong>💡 Nápad:</strong> Zlatý důl! Každý nápad můžeš později přeměnit na něco dalšího.</li>
+                    </ul>
+                    <h4>🚀 Speciální funkce</h4>
+                    <ul>
+                        <li><strong>Propojení s klienty:</strong> Při tvorbě poznámky, úkolu, události nebo nápadu si můžeš z roletky vybrat existujícího klienta z modulu Masérna.</li>
+                        <li><strong>Akce u nápadů:</strong> Když přidáš nový nápad, systém ti nabídne dvě akce:
+                            <ul>
+                                <li><strong>Přidat do ceníku:</strong> Nápad se automaticky pošle do modulu Masérna jako nová položka v ceníku. Pak už jen stačí doplnit cenu a délku.</li>
+                                <li><strong>Přidat jako úkol:</strong> Nápad se automaticky přidá jako nový úkol do tvého prvního To-Do listu.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h4>📋 Práce s tabulkami</h4>
+                    <ul>
+                        <li><strong>Filtrování podle typu:</strong> Pomocí tlačítek (Všechny, Poznámky, Úkoly...) si můžeš zobrazit jen ten typ záznamu, který tě zajímá.</li>
+                        <li><strong>Detail To-Do listu:</strong> Když v hlavní tabulce klikneš na název To-Do listu, přepneš se do detailního zobrazení, kde vidíš a spravuješ jen úkoly v daném seznamu.</li>
+                    </ul>
+                </div>
+                <div class="modal-buttons" style="margin-top: 1rem;">
+                    <button class="btn-back" onclick="closeHelpModal()">Zavřít</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="../../assets/js/utils.js"></script>
+<script src="../../assets/js/ui.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanční správce</title>
+    <link rel="stylesheet" href="../../assets/css/tailwind.css">
+    
+    <link rel="stylesheet" href="../../assets/css/fonts.css">
+    <link rel="stylesheet" href="../../assets/css/core.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    
+    <link rel="stylesheet" href="style.css"> 
+ /head>
+<body class="antialiased">
+    <div class="container">
+        <a href="../../index.html" class="back-to-dashboard-link" aria-label="Zpět na Palpatius">← Zpět na Palpatius</a>
+
+        <h1>Finanční správce</h1>
+
+        <div class="flex items-center justify-between mb-6" id="globalControls">
+            <button id="exportAllBtn" class="btn-export">Exportovat vše (JSON)</button>
+            <label class="ml-4 btn-import">
+                Importovat vše (JSON):
+                <input type="file" id="importAllInput" accept=".json" aria-label="Vybrat soubor pro import dat"/>
+            </label>
+            <button id="helpBtn" class="btn-help">Nápověda a návod</button>
+        </div>
+
+        <div class="flex flex-wrap justify-center mb-6" id="addButtonsSection">
+            <button id="toggleTransactionFormBtn" class="btn-toggle-form" aria-controls="transactionFormSection" aria-expanded="false">Přidat transakci</button>
+            <button id="toggleStockItemFormBtn" class="btn-toggle-form" aria-controls="stockItemFormSection" aria-expanded="false">Přidat položku skladu</button>
+        </div>
+
+        <div id="transactionFormSection" class="form-section hidden">
+            <h2>Přidat transakci</h2>
+            <label for="transactionDate">Datum:</label>
+            <input type="date" id="transactionDate" aria-label="Datum transakce" required />
+            <label for="transactionType">Typ transakce:</label>
+            <select id="transactionType" aria-label="Typ transakce">
+                <option value="income">Příjem</option>
+                <option value="expense">Výdaj</option>
+            </select>
+            <label for="transactionAmount">Částka (Kč):</label>
+            <input type="number" id="transactionAmount" placeholder="Částka (Kč)" min="0" aria-label="Částka transakce" required />
+            <label for="transactionDescription">Popis transakce:</label>
+            <input type="text" id="transactionDescription" placeholder="Popis transakce" aria-label="Popis transakce" required />
+            <button id="addTransactionBtn" class="btn-primary">Přidat transakci</button>
+        </div>
+
+        <div id="stockItemFormSection" class="form-section hidden">
+            <h2>Přidat položku do skladu</h2>
+            <label for="itemName">Název položky:</label>
+            <input type="text" id="itemName" placeholder="Název položky (např. Masážní olej)" aria-label="Název položky skladu" required />
+            <label for="itemUnit">Jednotka:</label>
+            <input type="text" id="itemUnit" placeholder="Jednotka (např. ml, ks, balení)" aria-label="Jednotka položky skladu" required />
+            <label for="itemQuantity">Množství na skladě:</label>
+            <input type="number" id="itemQuantity" placeholder="Množství na skladě" min="0" aria-label="Množství na skladě" required />
+            <label for="itemMinQuantity">Minimální množství:</label>
+            <input type="number" id="itemMinQuantity" placeholder="Minimální množství" min="0" aria-label="Minimální množství pro upozornění" required />
+            <button id="addStockItemBtn" class="btn-primary">Přidat položku</button>
+        </div>
+
+        <div class="filter-section">
+            <label for="globalFilterInput" class="sr-only">Filtruj záznamy:</label>
+            <input type="text" id="globalFilterInput" placeholder="Filtruj záznamy (popis, částka, název položky...)" aria-label="Filtrovat transakce nebo položky skladu" />
+            <button id="clearFilterBtn" class="btn-filter">Zrušit filtr</button>
+        </div>
+
+        <section aria-labelledby="transactions-heading">
+            <h2 id="transactions-heading">Přehled transakcí <button id="toggleTransactionsBtn" aria-controls="transactionTableContainer" aria-expanded="false">Zobrazit</button></h2>
+            <div id="transactionTableContainer" class="table-responsive hidden">
+                <table id="transactionTable">
+                    <caption>Přehled všech finančních transakcí</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col" data-sort="date">Datum</th>
+                            <th scope="col" data-sort="type">Typ</th>
+                            <th scope="col" data-sort="description">Popis</th>
+                            <th scope="col" data-sort="amount">Částka</th>
+                            <th scope="col">Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section aria-labelledby="monthly-summary-heading">
+            <h2 id="monthly-summary-heading">Měsíční přehledy <button id="toggleMonthlySummaryBtn" aria-controls="monthlySummaryTableContainer" aria-expanded="false">Zobrazit</button></h2>
+            <div id="monthlySummaryTableContainer" class="table-responsive hidden">
+                <table class="summary-table" id="monthlySummaryTable">
+                    <caption>Měsíční souhrn příjmů, výdajů a tržeb</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col" data-sort="ym">Měsíc/Rok</th>
+                            <th scope="col" data-sort="income">Příjem</th>
+                            <th scope="col" data-sort="expenses">Výdaj</th>
+                            <th scope="col" data-sort="profit">Tržba</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section aria-labelledby="annual-summary-heading">
+            <h2 id="annual-summary-heading">Roční přehledy <button id="toggleAnnualSummaryBtn" aria-controls="annualSummaryTableContainer" aria-expanded="false">Zobrazit</button></h2>
+            <div id="annualSummaryTableContainer" class="table-responsive hidden">
+                <table class="summary-table" id="annualSummaryTable">
+                    <caption>Roční souhrn příjmů, výdajů, tržeb a počtu masáží</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col" data-sort="year">Rok</th>
+                            <th scope="col" data-sort="income">Příjem</th>
+                            <th scope="col" data-sort="expenses">Výdaj</th>
+                            <th scope="col" data-sort="profit">Tržba</th>
+                            <th scope="col">Počet masáží</th>
+                            <th scope="col">Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section aria-labelledby="stock-heading">
+            <h2 id="stock-heading">Přehled skladu <button id="toggleStockBtn" aria-controls="stockTableContainer" aria-expanded="false">Zobrazit</button></h2>
+            <div id="stockTableContainer" class="table-responsive hidden">
+                <table id="stockTable">
+                    <caption>Přehled stavu skladu</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col" data-sort="name">Položka</th>
+                            <th scope="col" data-sort="unit">Jednotka</th>
+                            <th scope="col" data-sort="quantity">Na skladě</th>
+                            <th scope="col" data-sort="minQuantity">Minimum</th>
+                            <th scope="col" data-sort="status">Stav</th>
+                            <th scope="col">Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+<div id="customMessageModal" class="modal" style="display: none;" 
+     role="dialog" 
+     aria-modal="true" 
+     aria-labelledby="modalMessageTitle" 
+     aria-describedby="modalMessage">
+
+    <div class="modal-content">
+        <h3 id="modalMessageTitle" class="text-xl font-bold text-yellow-300 mb-4">Zpráva</h3>
+        <p id="modalMessage" class="text-gray-300 mb-4"></p>
+        <div class="modal-buttons">
+            <button id="modalOkButton" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">OK</button>
+            <button id="modalCancelButton" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md ml-2 hidden">Zrušit</button>
+        </div>
+    </div>
+</div>
+
+<div id="adjustStockQuantityModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="adjustStockModalTitle" tabindex="-1">
+    <div class="modal-content">
+        <h3 id="adjustStockModalTitle">Upravit množství</h3>
+        <p id="adjustStockModalItemName" class="text-gray-300 mb-4"></p>
+        <p id="adjustStockCurrentQuantity" class="text-gray-300 mb-4"></p>
+
+        <div>
+            <label for="adjustAmountInput">Změna množství:</label>
+            <input type="number" id="adjustAmountInput" placeholder="Kladné pro přidání, záporné pro odebrání" />
+        </div>
+
+        <div class="modal-buttons">
+            <button id="submitAdjustQuantityBtn" class="btn-primary">Uložit</button>
+            <button class="btn-back" data-close-modal="adjustStockQuantityModal">Zrušit</button>
+        </div>
+    </div>
+</div>        
+        
+        <div id="helpModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle" tabindex="-1">
+            <div class="modal-content" style="max-width: 800px; text-align: left;">
+                <h3 id="helpModalTitle">Nápověda a návod k modulu Finanční správce</h3>
+                
+                <div id="helpContent" style="max-height: 60vh; overflow-y: auto; padding-right: 15px;">
+                    <h4>Základní ovládání</h4>
+                    <p>Tento modul slouží k evidenci příjmů, výdajů a stavu skladu. Všechna data se ukládají přímo ve tvém prohlížeči.</p>
+                    <p><strong>DŮLEŽITÉ:</strong> Pravidelně svá data zálohuj pomocí tlačítka <strong>"Exportovat vše (JSON)"</strong>.</p>
+
+                    <h4>Přidávání záznamů</h4>
+                    <p>V horní části najdeš dvě tlačítka pro přidávání nových záznamů:</p>
+                    <ul>
+                        <li><strong>Přidat transakci:</strong> Zde zadáváš veškeré příjmy (např. platby od klientů) a výdaje (např. nájem, nákup materiálu).</li>
+                        <li><strong>Přidat položku skladu:</strong> Vytvoříš novou položku, u které chceš sledovat množství, např. "Masážní olej" nebo "Prostěradla".</li>
+                    </ul>
+
+                    <h4>Práce s tabulkami</h4>
+                    <ul>
+                        <li><strong>Přehled transakcí:</strong> Zobrazuje všechny zadané příjmy a výdaje. Můžeš je zde upravovat a mazat.</li>
+                        <li><strong>Měsíční a Roční přehledy:</strong> Tyto tabulky se generují <strong>automaticky</strong> ze zadaných transakcí. Ukazují celkové příjmy, výdaje a výslednou tržbu za dané období.</li>
+                        <li><strong>Přehled skladu:</strong> Zobrazuje stav tvého skladu.
+                            <ul>
+                                <li><strong>Upravit množství:</strong> Rychle přidáš nebo odebereš množství bez nutnosti editovat celou položku. Zadej kladné číslo pro přidání (naskladnění) a záporné pro odebrání (spotřebu).</li>
+                                <li><strong>Nízký stav:</strong> Pokud množství klesne na nastavené minimum (nebo pod něj), celý řádek se zvýrazní, abys věděl, že je třeba dokoupit zásoby.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Řazení a filtrování:</strong> Funguje stejně jako v modulu Masérna. Klikni na název sloupce pro seřazení a použij filtr pro vyhledávání.</li>
+                    </ul>
+                </div>
+
+                <div class="modal-buttons">
+                    <button id="closeHelpBtn" class="btn-back">Zavřít</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+<script src="../../assets/js/utils.js"></script>
+<script src="../../assets/js/ui.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
