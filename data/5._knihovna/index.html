@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knihovna - Správa a evidence dokumentů, článků a textů</title>
+    <link rel="stylesheet" href="../../assets/css/tailwind.css">
+    
+    <link rel="stylesheet" href="../../assets/css/fonts.css">
+    <link rel="stylesheet" href="../../assets/css/core.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+    <div class="container">
+        <a href="../../index.html" class="back-to-dashboard-link" aria-label="Zpět na Palpatius">← Zpět na Palpatius</a>
+
+        <h1 id="mainTitle">Knihovna - Správa a evidence dokumentů, článků a textů</h1>
+
+        <div class="flex items-center justify-between mb-6" id="globalControls">
+            <button class="btn-export" onclick="exportAllData()">Exportovat vše (JSON)</button>
+            <label class="ml-4 btn-import">
+                Importovat vše (JSON):
+                <input type="file" onchange="importAllData(event)" accept=".json" aria-label="Vybrat soubor pro import dat"/>
+            </label>
+            <button class="btn-help" onclick="openHelpModal()">Nápověda a návod</button>
+        </div>
+
+        <div class="flex flex-wrap justify-center mb-6" id="addButtonsSection">
+            <button class="btn-toggle-form" onclick="showArticleForm(null)" aria-controls="articleFormSection" aria-expanded="false">Přidat text</button>
+        </div>
+
+        <div id="articleFormSection" class="form-section hidden">
+            <h2 id="formTitle">Přidat nový text</h2>
+            <form onsubmit="event.preventDefault(); handleSubmitArticle();">
+                <div>
+                    <label for="articleTitle">Název textu:</label>
+                    <input type="text" id="articleTitle" placeholder="Např. Článek o bolestech zad" aria-label="Název textu" required />
+                </div>
+                <div>
+                    <label for="articleCategory">Kategorie:</label>
+                    <select id="articleCategory" aria-label="Kategorie textu" required>
+                        <option value="Články">Články</option>
+                        <option value="Dokumenty">Dokumenty</option>
+                        <option value="Texty">Texty</option>
+                        <option value="Ostatní">Ostatní</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="articleContent">Obsah textu:</label>
+                    <textarea id="articleContent" placeholder="Sem vložte čistý text..." aria-label="Obsah textu" required></textarea>
+                    <p class="text-sm text-gray-400 mt-2"><strong>Pozor:</strong> Vkládejte pouze čistý text. Formátování (např. z Wordu) nebo obrázky nebudou uloženy a mohou způsobit chybu.</p>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn-primary" id="formSubmitButton">Uložit text</button>
+                    <button type="button" class="btn-back" onclick="toggleForm('articleFormSection')">Zrušit</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="filter-section">
+            <label for="globalFilterInput" class="sr-only">Filtruj záznamy:</label>
+            <input type="text" id="globalFilterInput" placeholder="Filtruj texty (název, obsah, kategorie...)" oninput="updateTable()" aria-label="Filtrovat záznamy" />
+            <button class="btn-filter" onclick="clearFilter()">Zrušit filtr</button>
+        </div>
+
+        <div id="categoryFilterButtons" class="flex flex-wrap justify-center my-4 gap-2">
+            </div>
+
+        <table id="mainDataTable">
+            <thead>
+                <tr>
+                    <th scope="col" data-sort="title">Název</th>
+                    <th scope="col" data-sort="category">Kategorie</th>
+                    <th scope="col">Akce</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+
+        <div id="customMessageModal" class="modal" style="display: none;" 
+             role="dialog" 
+             aria-modal="true" 
+             aria-labelledby="modalMessageTitle" 
+             aria-describedby="modalMessage">
+            <div class="modal-content">
+                <h3 id="modalMessageTitle" class="text-xl font-bold text-yellow-300 mb-4">Zpráva</h3>
+                <div id="modalMessage" class="text-gray-300 mb-4"></div> <div class="modal-buttons">
+                    <button id="modalOkButton" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">OK</button>
+                    <button id="modalCancelButton" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md ml-2 hidden">Zrušit</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="helpModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle" tabindex="-1">
+            <div class="modal-content" style="max-width: 800px; text-align: left;">
+                <h3 id="helpModalTitle" style="color: #facc15; font-size: 1.5rem; text-align: left;">Nápověda ke Knihovně textů</h3>
+                <div id="helpContent" style="max-height: 60vh; overflow-y: auto; padding-right: 15px;">
+                    <h4>Proč tento modul?</h4>
+                    <p>Tato knihovna slouží jako centrální offline úložiště pro všechny vaše texty, články a dokumenty, které chcete mít rychle po ruce.</p>
+                    <p>Můžete si sem ukládat šablony e-mailů, popisy procedur, články na blog nebo jakékoliv textové poznámky.</p>
+                    <p><strong>DŮLEŽITÉ:</strong> Modul je navržen pouze pro <strong>čistý text</strong>. Pokud sem zkopírujete text např. z Wordu, veškeré formátování (barvy, tučné písmo, obrázky) se ztratí. Je to záměr, aby byla databáze malá, rychlá a stabilní.</p>
+                    
+                    <h4>Jak to používat?</h4>
+                    <ul>
+                        <li><strong>Přidat text:</strong> Klikněte na tlačítko "Přidat text". Zadejte název, vyberte jednu ze čtyř kategorií a vložte obsah.</li>
+                        <li><strong>Filtrování:</strong> Můžete vyhledávat fulltextově (do pole "Filtruj texty...") nebo kliknutím na tlačítka kategorií (Články, Dokumenty atd.).</li>
+                        <li><strong>Zobrazení:</strong> Kliknutím na název textu v tabulce se vám zobrazí celý obsah v modálním okně.</li>
+                        <li><strong>Export (TXT):</strong> Každý text můžete samostatně exportovat jako soubor `.txt` do svého počítače.</li>
+                    </ul>
+
+                    <h4>Zálohování (Export/Import)</h4>
+                    <p>Celou knihovnu (všechny texty) můžete zálohovat pomocí tlačítka <strong>"Exportovat vše (JSON)"</strong>. Doporučujeme to dělat pravidelně.</p>
+                    <p>Pomocí tlačítka <strong>"Importovat vše (JSON)"</strong> můžete tuto zálohu kdykoliv nahrát zpět (např. v jiném prohlížeči nebo po přeinstalaci).</p>
+                </div>
+                <div class="modal-buttons" style="margin-top: 1rem;">
+                    <button class="btn-back" onclick="closeHelpModal()">Zavřít</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<script src="../../assets/js/utils.js"></script>
+<script src="../../assets/js/ui.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
