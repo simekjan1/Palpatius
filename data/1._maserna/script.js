@@ -74,7 +74,11 @@ async function loadDataFromDB() {
                     if (typeof client.extra === 'undefined') client.extra = 0;
                     if (typeof client.totalMassages === 'undefined') client.totalMassages = client.massages.length; // Odhad
                 });
-                showCustomModal('Data byla úspěšně načtena z lokálního úložiště.', 'Načtení dat');
+                showCustomModal(
+'Data byla úspěšně načtena z lokálního úložiště.', 
+    'V horní části stránky je k dispozici panel automatických záloh Palpatius. ' +
+    'Zavřete toto okno tlačítkem OK nebo klávesou Escape a poté se pomocí tabulátoru můžete přesunout na panel záloh.',
+'Načtení dat');
             }
             resolve();
         };
@@ -1862,11 +1866,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupAutocomplete('clientNoteClientName', 'clientNoteClientName-list');
 
     updateAllTables();
-    checkBackupStatus(); // Spustí kontrolu zálohování po načtení stránky
-    
-    // Okamžité zavření modalu po načtení, pokud je otevřen
-    const modal = document.getElementById('customMessageModal');
-    if (modal.style.display === 'flex') {
-        closeCustomModal();
-    }
+    checkBackupStatus(); // Spustí kontrolu zálohování po načtení stránky    
+ }
 });

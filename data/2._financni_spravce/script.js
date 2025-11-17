@@ -12,7 +12,7 @@ let financialData = {
 
 // --- Začátek kódu pro práci s IndexDB ---
 const DB_NAME = 'palpatiusFinancialDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 let db;
 
 /**
@@ -638,39 +638,97 @@ function exportAllData() {
 function importAllData(event) {
     const file = event.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
-    reader.onload = async e => {
+
+    reader.onload = e => {
         try {
-            const importedData = JSON.parse(e.target.result);
-             if (
-                importedData && typeof importedData === 'object' &&
-                'transactions' in importedData && Array.isArray(importedData.transactions) &&
-                'annualMassages' in importedData && typeof importedData.annualMassages === 'object' &&
-                'stockItems' in importedData && Array.isArray(importedData.stockItems)
+            let importedData = JSON.parse(e.target.result);
+
+            // 🔁 MIGRACE: pokud je to ve tvaru { data: {...} }, vezmeme vnitřek
+            if (importedData && typeof importedData === 'object' && importedData.data && typeof importedData.data === 'object') {
+                importedData = importedData.data;
+            }
+
+            // 🔁 ZAJISTÍME ZÁKLADNÍ STRUKTURU
+            if (!Array.isArray(importedData.transactions)) {
+                importedData.transactions = [];
+            }
+            if (!importedData.annualMassages || typeof importedData.annualMassages !== 'object') {
+                importedData.annualMassages = {};
+            }
+            if (!Array.isArray(importedData.stockItems)) {
+                importedData.stockItems = [];
+            }
+
+            // ✅ VALIDACE
+            if (
+                Array.isArray(importedData.transactions) &&
+                typeof importedData.annualMassages === 'object' &&
+                Array.isArray(importedData.stockItems)
             ) {
+                const txCount = importedData.transactions.length;
+                const stockCount = importedData.stockItems.length;
+
                 showCustomModal(
-                    'Opravdu chcete přepsat všechna stávající data?',
+                    `
+                    Opravdu chcete přepsat všechna stávající finanční data?
+                    <br><br>
+                    <strong>V importovaném souboru je:</strong><br>
+                    • ${txCount} transakcí<br>
+                    • ${stockCount} skladových položek
+                    `,
                     'Potvrdit import',
                     async () => {
-                        importedData.transactions.forEach(item => item.id = item.id ? String(item.id) : Date.now().toString());
-                        importedData.stockItems.forEach(item => item.id = item.id ? String(item.id) : Date.now().toString());
-                        financialData = importedData;
+                        // 💾 DOPLNÍME ID, ABY BYLY VŽDY STRING
+                        importedData.transactions.forEach(item => {
+                            item.id = item.id ? String(item.id) : Date.now().toString();
+                        });
+                        importedData.stockItems.forEach(item => {
+                            item.id = item.id ? String(item.id) : Date.now().toString();
+                        });
+
+                        // 💾 PŘEPÍŠEME OBSAH financialData (ne referenci celé proměnné)
+                        financialData.transactions = importedData.transactions;
+                        financialData.annualMassages = importedData.annualMassages;
+                        financialData.stockItems = importedData.stockItems;
+
+                        // Uložit do IndexedDB
                         await saveDataToDB();
+
+                        // Vyčistit globální filtr, aby „neschoval“ nová data
+                        const filterInput = document.getElementById('globalFilterInput');
+                        if (filterInput) filterInput.value = '';
+
+                        // Obnovit zobrazení
                         updateTables();
-                        showCustomModal('Finanční data byla úspěšně importována!');
+
+                        showCustomModal(
+                            `
+                            Finanční data byla úspěšně importována.
+                            <br><br>
+                            Importováno ${txCount} transakcí a ${stockCount} skladových položek.
+                            `,
+                            'Import dokončen'
+                        );
                     },
-                    true
+                    true // zobrazit tlačítko Zrušit
                 );
             } else {
-                showCustomModal('Chyba: Importovaný soubor nemá očekávaný formát.', 'Chyba importu');
+                showCustomModal(
+                    'Chyba: Importovaný soubor nemá očekávaný formát pro modul Finanční správce.',
+                    'Chyba importu'
+                );
             }
         } catch (e) {
-            console.error("Chyba při importu JSON souboru:", e);
+            console.error('Chyba při importu JSON souboru:', e);
             showCustomModal('Chyba při čtení JSON souboru: ' + e.message, 'Chyba importu');
         } finally {
+            // Vymazat input, aby šel znovu vybrat stejný soubor
             event.target.value = '';
         }
     };
+
     reader.readAsText(file);
 }
 

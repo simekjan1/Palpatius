@@ -57,6 +57,41 @@ function backup_downloadJSON(text, filename) {
     }
 }
 
+/* ================================================================= */
+/* 🔧 ÚPRAVA č. 1 – PŘIDANÁ FUNKCE backup_isAnyModalOpen() */
+/* ================================================================= */
+
+function backup_isAnyModalOpen() {
+    try {
+        const modals = document.querySelectorAll(
+            '.modal, .custom-modal, .modal-overlay, #customMessageModal, .modal-backdrop'
+        );
+
+        for (const modal of modals) {
+            if (!modal) continue;
+
+            const style = window.getComputedStyle(modal);
+
+            if (
+                style.display !== 'none' &&
+                style.visibility !== 'hidden' &&
+                style.opacity !== '0'
+            ) {
+                const ariaHidden = modal.getAttribute('aria-hidden');
+                if (!ariaHidden || ariaHidden === "false") {
+                    return true;
+                }
+            }
+        }
+    } catch (e) {
+        console.warn('[backup] Chyba v backup_isAnyModalOpen:', e);
+    }
+
+    return false;
+}
+
+/* ================================================================= */
+
 /* ========== Snímání databází ========== */
 
 /**
@@ -67,7 +102,6 @@ async function backup_getDatabaseNames() {
     try {
         if (indexedDB && typeof indexedDB.databases === 'function') {
             const dbs = await indexedDB.databases();
-            // dbs může být pole objektů s { name, version }
             const names = dbs.map(x => x.name).filter(Boolean);
             if (names.length) {
                 backup_log('Nalezené DB (indexedDB.databases):', names);
@@ -75,16 +109,13 @@ async function backup_getDatabaseNames() {
             }
         }
     } catch (err) {
-        // Některé prohlížeče vyhazují bezpečnostní chybu — to je OK, použij default
         backup_log('indexedDB.databases() nereagovalo, použiju default seznam.');
     }
-    // fallback
     return backup_defaultDBNames.slice();
 }
 
 /**
- * Export jedné DB: otevře, projde object storey a načte všechna data.
- * Výstup: { dbName, version, objectStores: { storeName: [records...] } }
+ * Export jedné DB...
  */
 function backup_exportDatabase(dbName) {
     return new Promise((resolve) => {
@@ -115,7 +146,6 @@ function backup_exportDatabase(dbName) {
                                 }
                             };
                             getAllReq.onerror = () => {
-                                // pokud selže jeden store, logneme a vrátíme prázdné pole
                                 out.objectStores[storeName] = [];
                                 pending--;
                                 if (pending === 0) {
@@ -141,9 +171,6 @@ function backup_exportDatabase(dbName) {
                 backup_log('Nelze otevřít DB (onerror):', dbName);
                 resolve({ dbName, version: null, objectStores: {} });
             };
-            req.onupgradeneeded = () => {
-                // Nic neděláme — nechceme měnit schéma DB
-            };
         } catch (err) {
             backup_log('Chyba při pokusu o export DB:', dbName, err);
             resolve({ dbName, version: null, objectStores: {} });
@@ -151,9 +178,8 @@ function backup_exportDatabase(dbName) {
     });
 }
 
-/**
- * Export všech DB v seznamu
- */
+/* ========== Export všech DB ========== */
+
 async function backup_exportAllDatabases() {
     const names = await backup_getDatabaseNames();
     const results = [];
@@ -171,7 +197,6 @@ async function backup_exportAllDatabases() {
 
 /* ========== Ukládání zálohy ========== */
 
-/** Uloží JSON do vybrané složky (FS Access) */
 async function backup_writeToDirectory(text, filename) {
     try {
         if (!backup_dirHandle) throw new Error('Žádná složka není vybrána');
@@ -187,27 +212,21 @@ async function backup_writeToDirectory(text, filename) {
     }
 }
 
-/** Hlavní funkce: export + uložení (FS Access nebo download) */
 async function backup_performExport() {
     try {
         const all = await backup_exportAllDatabases();
         const meta = {
             exportedAt: new Date().toISOString(),
-            palpatiusVersion: 'unknown' // můžeš doplnit verzi, pokud ji máš
+            palpatiusVersion: 'unknown'
         };
         const payload = { meta, data: all };
         const text = JSON.stringify(payload, null, 2);
         const filename = `${backup_filenamePrefix}${backup_timeStamp()}.json`;
 
-        // Pokus se uložit do vybrané složky
         if (backup_dirHandle) {
             const ok = await backup_writeToDirectory(text, filename);
-            if (!ok) {
-                // pokud selže, nabídneme fallback download
-                backup_downloadJSON(text, filename);
-            }
+            if (!ok) backup_downloadJSON(text, filename);
         } else {
-            // fallback: nabídni download
             backup_downloadJSON(text, filename);
         }
 
@@ -219,7 +238,8 @@ async function backup_performExport() {
     }
 }
 
-/* ========== Schedulování záloh (debounce) ========== */
+/* ========== Debounce ========== */
+
 function backup_scheduleExport() {
     if (backup_scheduled) return;
     backup_scheduled = true;
@@ -229,12 +249,8 @@ function backup_scheduleExport() {
     }, backup_debounceMs);
 }
 
-/* ========== Interception IDB změn ========== */
+/* ========== Wrap IDB metody ========== */
 
-/**
- * Obalí IDBObjectStore.prototype.add/put/delete tak, aby po úspěchu spustil zálohu.
- * Nezasahujeme do logiky návratových hodnot, pouze přidáme onsuccess handler.
- */
 function backup_wrapIDBMethods() {
     try {
         const proto = IDBObjectStore && IDBObjectStore.prototype;
@@ -246,12 +262,9 @@ function backup_wrapIDBMethods() {
             proto[methodName] = function(...args) {
                 try {
                     const req = orig.apply(this, args);
-                    // pokud vrací IDBRequest, přidáme onsuccess listener
                     if (req && typeof req.addEventListener === 'function') {
                         req.addEventListener('success', () => {
-                            try {
-                                backup_scheduleExport();
-                            } catch (e) { /* ignore */ }
+                            try { backup_scheduleExport(); } catch (e) {}
                         });
                     } else if (req && typeof req.onsuccess !== 'undefined') {
                         const prev = req.onsuccess;
@@ -260,29 +273,28 @@ function backup_wrapIDBMethods() {
                             try { backup_scheduleExport(); } catch(e){}
                         };
                     } else {
-                        // pokud nelze zjistit, prostě naplánuj zálohu
                         backup_scheduleExport();
                     }
                     return req;
                 } catch (err) {
-                    // pokud se něco pokazí, nebráníme původní chybě
                     backup_log('Chyba v obalení IDB metody', methodName, err);
                     return orig.apply(this, args);
                 }
             };
         });
+
         backup_log('IDB metody byly obaleny pro automatické zálohování.');
     } catch (err) {
         backup_log('Nelze obalit IDB metody:', err);
     }
 }
 
-/* ========== UI: drobné ovládání pro uživatele = */
+/* ========== UI Panel ========== */
 
-/** Vloží ovládací panel do stránky (nenápadně, přístupně) */
 function backup_injectUI() {
     try {
         if (document.getElementById('backup_panel')) return;
+
         const container = document.createElement('div');
         container.id = 'backup_panel';
         container.style.position = 'fixed';
@@ -307,7 +319,6 @@ function backup_injectUI() {
         chooseBtn.type = 'button';
         chooseBtn.id = 'backup_choose_folder';
         chooseBtn.textContent = 'Vybrat složku pro zálohy';
-        // ZMĚNA 1: Lepší ARIA Label
         chooseBtn.setAttribute('aria-label', 'Nastavit automatické zálohování: Vyber složku na disku pro ukládání záloh');
         chooseBtn.tabIndex = 0;
         chooseBtn.style.display = 'block';
@@ -348,23 +359,31 @@ function backup_injectUI() {
         status.style.marginTop = '4px';
         container.appendChild(status);
 
-        // ZMĚNA 2: Přidání ARIA role a Focus Management pro upozornění čtečky
         container.setAttribute('role', 'region');
         container.setAttribute('aria-label', 'Panel automatických záloh Palpatius. Obsahuje volby pro nastavení zálohování dat.');
-        
+
         document.body.appendChild(container);
 
-        // MAX: Po vložení prvku zajistíme krátký focus pro upozornění čtečky obrazovky
+        /* ================================================================= */
+        /* 🔧 ÚPRAVA č. 2 – PŘEPSANÝ setTimeout S KONTROLOU MODÁLŮ */
+        /* ================================================================= */
+
         setTimeout(() => {
             try {
+
+                if (backup_isAnyModalOpen()) {
+                    console.log('[backup] Fokus nepřesunut – detekován otevřený modál.');
+                    return;
+                }
+
                 container.setAttribute('tabindex', '-1'); 
                 container.focus();
-                // Focus necháme na panelu. Uživatel buď začne tabulovat tlačítka, nebo se přesune jinam.
+
             } catch(e) {
                 /* ignore */
             }
-        }, 500); // Půl sekundy na ustálení DOM
-        
+        }, 500);
+
     } catch (err) {
         backup_log('Nelze vložit UI panel:', err);
     }
@@ -375,28 +394,25 @@ function backup_updateStatus(text) {
         const s = document.getElementById('backup_status');
         if (s) s.textContent = text;
         backup_log(text);
-    } catch (e) { /* ignore */ }
+    } catch (e) {}
 }
 
-/* ========== Inicializace modulu ========== */
+/* ========== Inicializace ========== */
+
 function backup_init() {
     try {
-        // 1) obalíme IDB metody tak, abychom věděli o změnách
         if (typeof IDBObjectStore !== 'undefined') {
             backup_wrapIDBMethods();
         }
 
-        // 2) injektujeme UI, aby uživatel mohl vybrat složku nebo spustit ručně
         if (document.readyState === 'complete' || document.readyState === 'interactive') {
             backup_injectUI();
         } else {
             window.addEventListener('DOMContentLoaded', backup_injectUI);
         }
 
-        // 3) při zavření okna uděláme poslední zálohu (pokud dojde k události)
         window.addEventListener('beforeunload', () => {
-            // synchronní blokování není možné — jen naplánujeme rychlou zálohu
-            try { backup_performExport(); } catch (e) { /* ignore */ }
+            try { backup_performExport(); } catch (e) {}
         });
 
         backup_log('Backup modul inicializován.');
@@ -405,5 +421,4 @@ function backup_init() {
     }
 }
 
-// Start
 backup_init();
