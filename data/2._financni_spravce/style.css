@@ -223,3 +223,50 @@ max-width: 1024px; /* Větší kontejner pro více obsahu */
     white-space: nowrap;
     border-width: 0;
 }
+/* ================================
+   Navigační lišta modulů Palpatius
+   ================================ */
+
+.module-nav {
+    background-color: #111;
+    border-bottom: 1px solid #333;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.module-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.module-nav a {
+    color: #e5e5e5;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.4rem 0.25rem;
+    transition: color 0.15s ease;
+}
+
+.module-nav a:hover {
+    color: #facc15;
+}
+
+.module-nav a.active {
+    color: #facc15; /* Žlutá = aktivní modul */
+    border-bottom: 2px solid #facc15;
+    padding-bottom: 0.25rem;
+    cursor: default;
+}
+
+@media (max-width: 640px) {
+    .module-nav ul {
+        gap: 1rem;
+    }
+    .module-nav a {
+        font-size: 0.95rem;
+    }
+}

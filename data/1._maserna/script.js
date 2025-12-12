@@ -18,7 +18,7 @@ const DB_VERSION = 1;
 let db;
 
 const FINANCIAL_DB_NAME = 'palpatiusFinancialDB';
-const FINANCIAL_DB_VERSION = 1;
+const FINANCIAL_DB_VERSION = 2;
 
 const ZAZNAMNIK_DB_NAME = 'palpatiusZaznamnikDB';
 const ZAZNAMNIK_DB_VERSION = 1;
@@ -123,6 +123,52 @@ function saveDataToDB() {
 function autoSave() {
     saveDataToDB();
     console.log('Data byla automaticky uložena.');
+}
+
+// ------------------------------------------------------------
+// NOVÁ FUNKCE – posílá vstupní data do Finančního správce
+// ------------------------------------------------------------
+function sendFinanceEntry(entry) {
+
+    // Základní validace dat (proti prázdným hodnotám)
+    if (!entry || typeof entry !== 'object') return;
+    if (!entry.amount || !entry.date || !entry.method) return;
+
+    const request = indexedDB.open(FINANCIAL_DB_NAME, FINANCIAL_DB_VERSION);
+
+    request.onsuccess = (event) => {
+        const db = event.target.result;
+
+        // Později vytvoříme nový object store "rawTransactions"
+        const tx = db.transaction(['financialData'], 'readwrite');
+        const store = tx.objectStore('financialData');
+
+        const getReq = store.get('currentData');
+
+        getReq.onsuccess = () => {
+            const financialData = getReq.result ? getReq.result.data : { transactions: [], rawTransactions: [] };
+
+            // Uložení nové struktury (pro budoucí workflow)
+            financialData.rawTransactions = financialData.rawTransactions || [];
+            financialData.rawTransactions.push(entry);
+
+            // ZÁROVEŇ zachováme starý záznam,
+            // aby Finanční správce nepřišel o data
+            financialData.transactions.push({
+                id: Date.now().toString(),
+                date: entry.date,
+                type: 'income',
+                amount: entry.amount,
+                description: 'Automatický záznam – nový formát'
+            });
+
+            // Uložit zpět
+            store.put({
+                id: 'currentData',
+                data: financialData
+            });
+        };
+    };
 }
 
 /**
@@ -541,6 +587,14 @@ const payment = document.getElementById('massagePayment').value;
     });
 
     sendFinancialTransaction(newMassage.date, newMassage.price, 'Platba za masáž');
+    // NOVÝ ZÁPIS
+    sendFinanceEntry({
+        amount: newMassage.price,
+        method: newMassage.payment,    // H/T/O/Q/V
+        date: newMassage.date,
+        serviceCode: newMassage.method,  // můžeš změnit dle svého systému označení
+        clientId: client.id
+    });
 
     document.getElementById('massageClientName').value = ''; document.getElementById('massageDate').value = '';
     document.getElementById('massageTime').value = ''; document.getElementById('massageMethod').value = '';
@@ -838,6 +892,14 @@ function addIndividualVoucher(purchaseId) {
     purchase.totalAmountPaid += voucherValue;
 
     sendFinancialTransaction(newVoucher.issueDate, newVoucher.voucherValue, 'Nákup poukazu');
+    // NOVÝ ZÁPIS
+    sendFinanceEntry({
+        amount: newVoucher.voucherValue,
+        method: purchase.overallPaymentType, // H/T/O/Q
+        date: newVoucher.issueDate,
+        serviceCode: voucherType,
+        clientId: purchase.purchasingClientName
+    });
 
     closeModal('addIndividualVoucherModal');
     updateAllTables();
@@ -1867,5 +1929,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     updateAllTables();
     checkBackupStatus(); // Spustí kontrolu zálohování po načtení stránky    
- }
 });
+
+// ============================
+// Aktivní zvýraznění lišty
+// ============================
+(function() {
+    const moduleMap = {
+        "1._maserna": "maserna",
+        "2._financni_spravce": "finance",
+        "3._zaznamnik": "zaznamnik",
+        "4._knihovna": "knihovna"
+    };
+
+    const path = window.location.pathname;
+    const matched = Object.keys(moduleMap).find(key => path.includes(key));
+
+    if (matched) {
+        const activeModule = moduleMap[matched];
+        const activeLink = document.querySelector(`.module-nav a[data-module="${activeModule}"]`);
+        if (activeLink) {
+            activeLink.classList.add("active");
+            activeLink.setAttribute("aria-current", "page");
+        }
+    }
+})();

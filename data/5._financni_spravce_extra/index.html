@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finanční správce Extra</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+<nav class="module-nav" aria-label="Hlavní navigace">
+    <ul>
+        <li><a href="../../data/1._maserna/index.html" data-module="maserna">Masérna</a></li>
+        <li><a href="../../data/2._financni_spravce/index.html" data-module="finance">Finance</a></li>
+        <li><a href="../../data/3._zaznamnik/index.html" data-module="zaznamnik">Záznamník</a></li>
+        <li><a href="../../data/4._knihovna/index.html" data-module="knihovna">Knihovna</a></li>
+    </ul>
+</nav>
+
+<div class="main-wrapper">
+  <div class="main-card">
+
+    <main>
+
+      <h1>Finanční správce Extra</h1>
+
+      <p class="intro-text">
+        Modul pro analýzu transakcí z Finančního správce. Umožňuje definovat platební kanály,
+        přiřazovat je transakcím a počítat čisté částky po odečtení poplatků.
+      </p>
+
+
+      <!-- ==================================== -->
+      <!--  EXPORT / IMPORT  (necollapsible)    -->
+      <!-- ==================================== -->
+
+      <section class="section-block">
+        <h2>Export / Import</h2>
+
+        <div class="button-row">
+          <button id="export-json" class="btn-primary">Exportovat JSON</button>
+          <button id="export-db" class="btn-secondary">Exportovat databázi</button>
+          <button id="import-json" class="btn-outline">Importovat JSON</button>
+        </div>
+      </section>
+
+
+
+      <!-- ==================================== -->
+      <!--  PLATEBNÍ KANÁLY — COLLAPSIBLE       -->
+      <!-- ==================================== -->
+
+      <section class="section-block collapsible">
+        <div class="section-header">
+          <h2>Platební kanály</h2>
+          <button class="collapse-toggle btn-small">Rozbalit</button>
+        </div>
+
+        <div class="section-content">
+
+          <button id="add-channel" class="btn-primary mb-10">Přidat kanál</button>
+
+          <table class="table mb-10">
+            <thead>
+              <tr>
+                <th>Název</th>
+                <th>Procento</th>
+                <th>Fixní poplatek</th>
+                <th>Poznámka</th>
+                <th>Akce</th>
+              </tr>
+            </thead>
+            <tbody id="channels-table-body"></tbody>
+          </table>
+
+          <div id="channel-form" class="hidden card p-4">
+            <h3 class="text-lg font-semibold mb-2">Nový platební kanál</h3>
+
+            <form id="channel-form-element">
+
+              <label class="form-label">
+                Název:
+                <input id="channel-name" type="text" class="input" required />
+              </label>
+
+              <label class="form-label">
+                Procento poplatku:
+                <input id="channel-percent" type="number" class="input" step="0.1" min="0" />
+              </label>
+
+              <label class="form-label">
+                Fixní poplatek (Kč):
+                <input id="channel-fixed" type="number" class="input" step="0.1" min="0" />
+              </label>
+
+              <label class="form-label">
+                Poznámka:
+                <input id="channel-note" type="text" class="input" />
+              </label>
+
+              <div class="button-row">
+                <button type="submit" class="btn-primary">Uložit</button>
+                <button type="button" id="cancel-channel" class="btn-outline">Zrušit</button>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </section>
+
+
+
+      <!-- ==================================== -->
+      <!--  TRANSAKCE — COLLAPSIBLE            -->
+      <!-- ==================================== -->
+
+      <section class="section-block collapsible">
+        <div class="section-header">
+          <h2>Transakce</h2>
+          <button class="collapse-toggle btn-small">Rozbalit</button>
+        </div>
+
+        <div class="section-content">
+
+          <div class="button-row mb-10">
+            <button id="load-transactions" class="btn-primary">Načíst transakce</button>
+
+            <select id="filter-status" class="input small-input">
+              <option value="all">Vše</option>
+              <option value="pending">Nedokončeno</option>
+              <option value="done">Zpracováno</option>
+            </select>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Datum</th>
+                <th>Popis</th>
+                <th>Brutto</th>
+                <th>Kanál</th>
+                <th>Čisté</th>
+                <th>Akce</th>
+              </tr>
+            </thead>
+            <tbody id="transactions-table-body"></tbody>
+          </table>
+
+        </div>
+      </section>
+
+
+
+      <!-- ==================================== -->
+      <!--  SOUHRNY — COLLAPSIBLE              -->
+      <!-- ==================================== -->
+
+      <section class="section-block collapsible">
+        <div class="section-header">
+          <h2>Souhrny</h2>
+          <button class="collapse-toggle btn-small">Rozbalit</button>
+        </div>
+
+        <div class="section-content">
+
+          <div class="filters-row">
+
+            <input type="date" id="summary-from" class="input small-input" />
+            <input type="date" id="summary-to" class="input small-input" />
+
+            <select id="summary-channel" class="input small-input">
+              <option value="all">Všechny kanály</option>
+            </select>
+
+            <button id="summary-refresh" class="btn-secondary">Aktualizovat</button>
+          </div>
+
+          <div class="card summary-box">
+            <p><strong>Celkem brutto:</strong> <span id="sum-brutto">0 Kč</span></p>
+            <p><strong>Celkem poplatky:</strong> <span id="sum-fees">0 Kč</span></p>
+            <p><strong>Čisté:</strong> <span id="sum-netto">0 Kč</span></p>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Kanál</th>
+                <th>Počet</th>
+                <th>Brutto</th>
+                <th>Poplatky</th>
+                <th>Čisté</th>
+              </tr>
+            </thead>
+            <tbody id="summary-table-body"></tbody>
+          </table>
+
+        </div>
+      </section>
+
+
+
+      <!-- =============================== -->
+      <!--  MODÁL – přiřazení kanálu       -->
+      <!-- =============================== -->
+
+      <div id="assign-channel-panel" class="modal hidden">
+        <div id="assign-channel-list" class="modal-box"></div>
+      </div>
+
+    </main>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

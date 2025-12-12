@@ -1,0 +1,200 @@
+/* --------------------------------------------
+   Palpatius – Master Dark Theme (Varianta B)
+--------------------------------------------- */
+
+body {
+  background: #000;
+  color: #f8f9fa;
+  font-family: "Inter", sans-serif;
+  margin: 0;
+}
+
+.main-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.main-card {
+  width: 90%;
+  max-width: 900px;
+  background: #1a1a1d;
+  padding: 30px;
+  border-radius: 14px;
+  border: 1px solid #333;
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+h1 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #ffc43d;
+}
+
+h2 {
+  color: #ffc43d;
+  margin-top: 40px;
+  margin-bottom: 15px;
+}
+
+.intro-text {
+  margin-bottom: 30px;
+  opacity: 0.9;
+}
+
+.section-block {
+  margin-bottom: 40px;
+}
+
+.button-row,
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.input {
+  padding: 7px 10px;
+  background: #222;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.small-input {
+  width: 150px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background: #333;
+  border: 1px solid #444;
+  padding: 6px;
+  font-weight: 600;
+}
+
+.table td {
+  background: #222;
+  border: 1px solid #333;
+  padding: 6px;
+}
+
+.btn-primary {
+  background: #ffb300;
+  padding: 7px 14px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  color: black;
+}
+
+.btn-secondary {
+  background: #4a5568;
+  padding: 7px 14px;
+  border-radius: 6px;
+  color: white;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid #666;
+  padding: 7px 14px;
+  border-radius: 6px;
+  color: #f1f1f1;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-outline:hover {
+  opacity: 0.8;
+}
+
+/* Cards */
+.card {
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #333;
+}
+
+.summary-box p {
+  margin: 6px 0;
+}
+
+/* Modál */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-box {
+  width: 320px;
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #444;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.hidden {
+  display: none !important;
+}
+/* ================================
+   Navigační lišta modulů Palpatius
+   ================================ */
+
+.module-nav {
+    background-color: #111;
+    border-bottom: 1px solid #333;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.module-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.module-nav a {
+    color: #e5e5e5;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.4rem 0.25rem;
+    transition: color 0.15s ease;
+}
+
+.module-nav a:hover {
+    color: #facc15;
+}
+
+.module-nav a.active {
+    color: #facc15; /* Žlutá = aktivní modul */
+    border-bottom: 2px solid #facc15;
+    padding-bottom: 0.25rem;
+    cursor: default;
+}
+
+@media (max-width: 640px) {
+    .module-nav ul {
+        gap: 1rem;
+    }
+    .module-nav a {
+        font-size: 0.95rem;
+    }
+}
