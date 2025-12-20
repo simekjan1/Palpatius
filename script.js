@@ -1,14 +1,26 @@
-// Funkce pro zobrazení aktuálního času na hlavní stránce
-function updateTime() {
-    const timeElement = document.getElementById('current-time');
-    if (timeElement) {
-        const now = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-        timeElement.textContent = now.toLocaleDateString('cs-CZ', options);
-    }
+// Funkce pro formátování data na český styl
+function formatCzechDateTime(date) {
+    const options = {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    };
+    
+    const formattedDate = date.toLocaleDateString('cs-CZ', options);
+    const formattedTime = date.toLocaleTimeString('cs-CZ', { hour12: false });
+
+    return `${formattedDate} – ${formattedTime}`;
 }
 
-// Spustíme funkci hned po načtení stránky
+// Aktualizace času na stránce
+function updateTime() {
+    const timeElement = document.getElementById('current-time');
+    if (!timeElement) return;
+
+    const now = new Date();
+    timeElement.textContent = formatCzechDateTime(now);
+}
+
+// Aktualizace ihned po načtení + každou sekundu
 updateTime();
-// A pak ji budeme opakovat každou sekundu, aby byl čas stále aktuální
 setInterval(updateTime, 1000);
