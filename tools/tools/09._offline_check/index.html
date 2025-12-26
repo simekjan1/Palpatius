@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Palpatius Offline Check</title>
+  <meta name="description" content="Palpatius Offline Check – kontrola offline režimu, IndexedDB, LocalStorage a exportu souboru. Offline nástroj." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <a href="#main" class="skip-link">Přeskočit na hlavní obsah</a>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <h1 class="app-title">Palpatius Offline Check</h1>
+      <p class="app-subtitle" id="appHint">
+        Tento nástroj ověří základní věci, které Palpatius potřebuje pro stabilní offline fungování.
+        Kontrola je pouze informativní – nic trvale neukládá a nic neupravuje.
+      </p>
+    </div>
+  </header>
+
+  <main id="main" class="app-main" tabindex="-1">
+    <section class="card" aria-labelledby="controlsTitle">
+      <h2 id="controlsTitle" class="card-title">Ovládání</h2>
+
+      <div class="actions" role="group" aria-label="Akce">
+        <button type="button" id="runBtn" class="btn">
+          Spustit kontrolu
+        </button>
+
+        <button type="button" id="resetBtn" class="btn btn-secondary">
+          Reset
+        </button>
+      </div>
+
+      <p id="formStatus" class="status" role="status" aria-live="polite" aria-atomic="true">
+        Připraveno.
+      </p>
+    </section>
+
+    <section class="card" aria-labelledby="resultsTitle">
+      <h2 id="resultsTitle" class="card-title">Výsledky</h2>
+
+      <p class="help" id="resultsHint">
+        Výsledky jsou seřazené po jednotlivých testech. Pokud něco selže, zobrazí se důvod.
+      </p>
+
+      <ul id="resultsList" class="results" aria-describedby="resultsHint">
+        <li class="result-item result-empty" id="resultsEmpty">
+          Zatím nic k zobrazení. Klikni na „Spustit kontrolu“.
+        </li>
+      </ul>
+
+      <div class="summary" aria-live="polite" aria-atomic="true">
+        <p><strong>Souhrn:</strong> <span id="summaryText">—</span></p>
+      </div>
+
+      <details class="details" id="detailsBox">
+        <summary>Zobrazit technické informace</summary>
+        <div class="details-body">
+          <p class="help">
+            Tato část je pro kontrolu / ladění. Není nutné ji používat.
+          </p>
+
+          <dl class="meta">
+            <div class="meta-row">
+              <dt>Online stav prohlížeče</dt>
+              <dd id="metaOnline">—</dd>
+            </div>
+            <div class="meta-row">
+              <dt>Uživatelský agent</dt>
+              <dd id="metaUA">—</dd>
+            </div>
+            <div class="meta-row">
+              <dt>Čas kontroly</dt>
+              <dd id="metaTime">—</dd>
+            </div>
+          </dl>
+
+          <label for="logOutput" class="sr-only">Technický log</label>
+          <textarea id="logOutput" class="log" rows="10" readonly aria-label="Technický log"></textarea>
+        </div>
+      </details>
+    </section>
+
+    <section class="card" aria-labelledby="notesTitle">
+      <h2 id="notesTitle" class="card-title">Poznámky</h2>
+
+      <ul class="info-list">
+        <li><strong>Offline stav</strong> vychází z prohlížeče – může být nepřesný, ale je užitečný orientačně.</li>
+        <li><strong>IndexedDB</strong> je klíčové úložiště Palpatia (data modulů).</li>
+        <li><strong>LocalStorage</strong> může být využit doplňkově (nastavení apod.).</li>
+        <li><strong>Export souboru</strong> ověřuje, že prohlížeč umožní stáhnout soubor do zařízení.</li>
+      </ul>
+
+      <p class="help">
+        Pokud některý test opakovaně selhává, zkus jiný prohlížeč nebo zkontroluj oprávnění (např. blokování úložišť).
+      </p>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>Palpatius Tools · Offline Check · Offline nástroj</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

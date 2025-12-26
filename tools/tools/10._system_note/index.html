@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <title>System note | Palpatius Tools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<main>
+  <header class="header">
+    <h1>System note</h1>
+    <p class="description">
+      Trvalé systémové poznámky k této instalaci Palpatius.
+      Slouží pro vlastní instrukce, technické poznámky a osobní informace.
+      Obsah se neukládá automaticky – použij export.
+    </p>
+  </header>
+
+  <section class="note-section">
+    <label for="systemNote" class="visually-hidden">System note</label>
+    <textarea
+      id="systemNote"
+      placeholder="Zde si můžeš psát systémové poznámky…
+Např.:
+- Jak používám Palpatius
+- Specifická nastavení
+- Důležité poznámky k této instalaci
+"
+    ></textarea>
+  </section>
+
+  <section class="controls">
+    <button id="exportBtn">Export do TXT</button>
+    <button id="clearBtn" class="danger">Vymazat obsah</button>
+  </section>
+
+  <div class="status" id="status">Připraveno.</div>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

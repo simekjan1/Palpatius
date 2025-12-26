@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Palpatius Kalendář – offline</title>
+
+  <meta name="description" content="Jednoduchý, velký a přístupný offline kalendář ve stylu Palpatius." />
+
+  <!-- Lokální CSS (tools ostrov, bez napojení na Palpatius core) -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <a class="skip-link" href="#calendar">Přeskočit na kalendář</a>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <h1 class="app-title">Kalendář</h1>
+
+      <p class="app-subtitle" id="appHint">
+        Jednoduchý offline kalendář. Přepínání měsíců je pouze tlačítky. Šipky budou sloužit jen pro pohyb mezi dny.
+      </p>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <section class="calendar-card" aria-labelledby="calendarTitle">
+      <div class="calendar-top">
+        <h2 class="calendar-title" id="calendarTitle">Měsíční přehled</h2>
+
+        <!-- Ovládání měsíců = TLAČÍTKA (tab-focus) -->
+        <nav class="calendar-controls" aria-label="Ovládání kalendáře">
+          <button
+            type="button"
+            id="prevMonthBtn"
+            class="btn"
+            aria-label="Přejít na předchozí měsíc"
+          >
+            Předchozí měsíc
+          </button>
+
+          <button
+            type="button"
+            id="todayBtn"
+            class="btn btn-secondary"
+            aria-label="Přejít na dnešní datum"
+          >
+            Dnes
+          </button>
+
+          <button
+            type="button"
+            id="nextMonthBtn"
+            class="btn"
+            aria-label="Přejít na další měsíc"
+          >
+            Další měsíc
+          </button>
+        </nav>
+      </div>
+
+      <!-- Aktuální měsíc a rok (aria-live kvůli čtečkám – po přepnutí měsíce se to oznámí) -->
+      <div class="month-banner" aria-live="polite" aria-atomic="true">
+        <p class="month-label" id="monthLabel">
+          <!-- JS sem doplní např. „prosinec 2025“ -->
+          načítám…
+        </p>
+
+        <!-- Volitelné doplňky (např. týdenní čísla) – zatím necháváme prázdné -->
+        <p class="month-meta" id="monthMeta" aria-hidden="true"></p>
+      </div>
+
+      <!-- Samotný kalendář -->
+      <div
+        id="calendar"
+        class="calendar"
+        role="region"
+        aria-label="Kalendář – mřížka dnů"
+        aria-describedby="appHint"
+      >
+        <!-- Hlavička dnů v týdnu: Po–Ne -->
+        <div class="weekdays" role="row" aria-label="Dny v týdnu">
+          <div class="weekday" role="columnheader" aria-label="Pondělí">Po</div>
+          <div class="weekday" role="columnheader" aria-label="Úterý">Út</div>
+          <div class="weekday" role="columnheader" aria-label="Středa">St</div>
+          <div class="weekday" role="columnheader" aria-label="Čtvrtek">Čt</div>
+          <div class="weekday" role="columnheader" aria-label="Pátek">Pá</div>
+          <div class="weekday" role="columnheader" aria-label="Sobota">So</div>
+          <div class="weekday" role="columnheader" aria-label="Neděle">Ne</div>
+        </div>
+
+        <!--
+          Mřížka 6×7 = 42 buněk (nejrobustnější varianta)
+          JS bude:
+          - doplňovat text dne
+          - nastavovat aria-label s plným datem
+          - značit „dnes“, „mimo měsíc“, „víkend“
+          - udržovat focus/roving tabindex pro šipky (ať šipky nemění měsíce)
+        -->
+        <div
+          id="calendarGrid"
+          class="grid"
+          role="grid"
+          aria-label="Dny v měsíci"
+        >
+          <!-- 42 tlačítek = denní buňky -->
+          <!-- Pozn.: data-index je pozice v mřížce (0–41), JS si podle toho vše přepočítá -->
+          <button type="button" class="day" data-index="0"  aria-label="Den" tabindex="0"></button>
+          <button type="button" class="day" data-index="1"  aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="2"  aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="3"  aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="4"  aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="5"  aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="6"  aria-label="Den" tabindex="-1"></button>
+
+          <button type="button" class="day" data-index="7"  aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="8"  aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="9"  aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="10" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="11" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="12" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="13" aria-label="Den" tabindex="-1"></button>
+
+          <button type="button" class="day" data-index="14" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="15" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="16" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="17" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="18" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="19" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="20" aria-label="Den" tabindex="-1"></button>
+
+          <button type="button" class="day" data-index="21" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="22" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="23" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="24" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="25" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="26" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="27" aria-label="Den" tabindex="-1"></button>
+
+          <button type="button" class="day" data-index="28" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="29" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="30" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="31" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="32" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="33" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="34" aria-label="Den" tabindex="-1"></button>
+
+          <button type="button" class="day" data-index="35" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="36" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="37" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="38" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="39" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="40" aria-label="Den" tabindex="-1"></button>
+          <button type="button" class="day" data-index="41" aria-label="Den" tabindex="-1"></button>
+        </div>
+
+        <!-- Stavová hláška pro čtečky (např. „Vybráno: 21. prosince 2025“) -->
+        <p id="srStatus" class="sr-only" aria-live="polite" aria-atomic="true"></p>
+
+        <noscript>
+          <p class="noscript">
+            Kalendář potřebuje JavaScript pro zobrazení aktuálního měsíce.
+          </p>
+        </noscript>
+      </div>
+
+      <!-- Detail dne (jen výpis, žádné ukládání) -->
+      <section class="day-detail" aria-labelledby="dayDetailTitle">
+        <h3 id="dayDetailTitle" class="day-detail-title">Vybraný den</h3>
+        <p id="selectedDateText" class="day-detail-text">
+          <!-- JS doplní plné datum -->
+          Nevybráno.
+        </p>
+      </section>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p class="footer-text">
+      Offline nástroj (tools). Neukládá žádná data.
+    </p>
+  </footer>
+
+  <!-- Lokální JS -->
+  <script src="script.js"></script>
+</body>
+</html>

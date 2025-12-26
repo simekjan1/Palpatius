@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TXT / MD Helper</title>
+  <meta name="description" content="TXT / MD Helper – rychlý pomocník pro psaní a export textů do TXT a Markdown. Offline nástroj." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <a href="#main" class="skip-link">Přeskočit na hlavní obsah</a>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <h1 class="app-title">TXT / MD Helper</h1>
+      <p class="app-subtitle" id="appHint">
+        Rychlý pomocník pro tvorbu textu a export do <strong>.txt</strong> nebo <strong>.md</strong>.
+        Vkládá šablony na pozici kurzoru. Nic neukládá a nic neodesílá.
+      </p>
+    </div>
+  </header>
+
+  <main id="main" class="app-main" tabindex="-1">
+    <section class="card" aria-labelledby="editorTitle">
+      <h2 id="editorTitle" class="card-title">Editor</h2>
+
+      <div class="grid">
+        <div class="field">
+          <label for="fileName"><strong>Název souboru</strong> (nepovinné)</label>
+          <input id="fileName" type="text" inputmode="text" autocomplete="off"
+                 aria-describedby="fileNameHelp" placeholder="např. poznamka_leden_2026" />
+          <p class="help" id="fileNameHelp">
+            Pokud necháš prázdné, použije se výchozí název souboru.
+          </p>
+        </div>
+
+        <div class="field">
+          <label for="exportType"><strong>Formát exportu</strong></label>
+          <select id="exportType" aria-describedby="exportTypeHelp">
+            <option value="md" selected>Markdown (.md)</option>
+            <option value="txt">Text (.txt)</option>
+          </select>
+          <p class="help" id="exportTypeHelp">
+            Tlačítko „Export“ použije zvolený formát. Samostatná tlačítka exportují vždy konkrétní typ.
+          </p>
+        </div>
+      </div>
+
+      <div class="toolbar" role="group" aria-label="Rychlé vložení šablon">
+        <button type="button" class="btn btn-outline" data-insert="md_h1">Nadpis H1</button>
+        <button type="button" class="btn btn-outline" data-insert="md_h2">Nadpis H2</button>
+        <button type="button" class="btn btn-outline" data-insert="md_hr">Oddělovač (---)</button>
+        <button type="button" class="btn btn-outline" data-insert="md_list">Seznam (-)</button>
+        <button type="button" class="btn btn-outline" data-insert="md_code">Kódový blok</button>
+        <span class="toolbar-sep" aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline" data-insert="txt_line">Linka (=)</button>
+        <button type="button" class="btn btn-outline" data-insert="txt_box">Textový blok</button>
+        <button type="button" class="btn btn-outline" data-insert="date">Datum</button>
+        <button type="button" class="btn btn-outline" data-insert="time">Čas</button>
+      </div>
+
+      <div class="field">
+        <label for="editor"><strong>Text</strong></label>
+        <textarea id="editor" rows="16" spellcheck="false"
+                  aria-describedby="editorHelp"
+                  placeholder="Sem piš nebo vlož text…"></textarea>
+        <p class="help" id="editorHelp">
+          Tip: Pro rychlou práci používej Tab na tlačítka a Enter pro vložení šablony.
+        </p>
+      </div>
+
+      <div class="actions" role="group" aria-label="Akce">
+        <button type="button" id="exportBtn" class="btn">
+          Export (podle formátu)
+        </button>
+
+        <button type="button" id="exportMdBtn" class="btn btn-secondary">
+          Export MD
+        </button>
+
+        <button type="button" id="exportTxtBtn" class="btn btn-secondary">
+          Export TXT
+        </button>
+
+        <button type="button" id="clearBtn" class="btn btn-danger">
+          Vymazat obsah
+        </button>
+      </div>
+
+      <p id="formStatus" class="status" role="status" aria-live="polite" aria-atomic="true">
+        Připraveno.
+      </p>
+    </section>
+
+    <section class="card" aria-labelledby="previewTitle">
+      <h2 id="previewTitle" class="card-title">Náhled</h2>
+
+      <p class="help">
+        Náhled je textový (bez renderu Markdownu). Slouží jen pro rychlou kontrolu obsahu před exportem.
+      </p>
+
+      <label for="preview" class="sr-only">Náhled</label>
+      <textarea id="preview" class="preview" rows="10" readonly aria-label="Náhled obsahu"></textarea>
+    </section>
+
+    <section class="card" aria-labelledby="tipsTitle">
+      <h2 id="tipsTitle" class="card-title">Tipy</h2>
+      <ul class="info-list">
+        <li>„Nadpisy“ a „seznam“ vkládají šablonu na pozici kurzoru.</li>
+        <li>„Datum“ a „Čas“ vloží aktuální hodnotu v českém formátu.</li>
+        <li>Helper nic neukládá – pokud nechceš o text přijít, exportuj ho.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>Palpatius Tools · TXT / MD Helper · Offline nástroj</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

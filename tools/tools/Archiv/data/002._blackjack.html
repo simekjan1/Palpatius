@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <style>
+        /* Vlastní styly pro karty a herní plochu */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* Tmavé pozadí pro lepší kontrast */
+            color: #e2e8f0; /* Světlý text */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+        .game-container {
+            background-color: #2d3748; /* Tmavší pozadí kontejneru */
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .hand-section {
+            background-color: #4a5568;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .cards-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            min-height: 80px; /* Zajistí prostor i pro prázdné ruce */
+            align-items: center;
+        }
+        .card {
+            background-color: #fff;
+            color: #2d3748;
+            border: 1px solid #cbd5e0;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            font-weight: bold;
+            font-size: 1.25rem;
+            min-width: 60px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .card.hidden {
+            background-color: #a0aec0; /* Barva pro skrytou kartu dealera */
+            color: #4a5568;
+            font-size: 1rem;
+        }
+        .controls button, .game-actions button {
+            background-color: #4299e1; /* Modré tlačítko */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: bold;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            outline: none;
+        }
+        .controls button:hover, .game-actions button:hover {
+            background-color: #3182ce;
+            transform: translateY(-1px);
+        }
+        .controls button:active, .game-actions button:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        .controls button:disabled, .game-actions button:disabled {
+            background-color: #a0aec0;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        .message-box {
+            background-color: #2b6cb0; /* Modrá pro zprávy */
+            color: white;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 1rem;
+            min-height: 50px; /* Zajistí, že se box nezmenší */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .score-display {
+            background-color: #63b3ed;
+            color: #2d3748;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 1rem;
+            width: fit-content;
+        }
+        /* Styl pro tlačítko Zpět na Dashboard */
+        .back-to-dashboard-link {
+            display: block; /* Aby zabíralo celou šířku a bylo na samostatném řádku */
+            width: fit-content; /* Aby se šířka přizpůsobila obsahu */
+            background-color: #4a4a4a;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 1.5rem; /* Mezera pod tlačítkem */
+            transition: background-color 0.2s ease;
+            position: absolute; /* Umožní umístění mimo tok dokumentu */
+            top: 1rem; /* Odsazení odshora */
+            left: 1rem; /* Odsazení zleva */
+            z-index: 100; /* Zajistí, že bude nad ostatními prvky */
+        }
+        .back-to-dashboard-link:hover {
+            background-color: #6a6a6a;
+        }
+        .back-to-dashboard-link:focus {
+            outline: 2px solid #facc15;
+            outline-offset: 2px;
+        }
+
+        /* Responzivní úpravy */
+        @media (min-width: 640px) {
+            .game-container {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            .hand-section {
+                flex: 1;
+                min-width: 45%;
+            }
+            .controls, .game-actions {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+        }
+        
+        /* Modální okno pro nápovědu */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #4a5568;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.4),0 6px 20px 0 rgba(0,0,0,0.3);
+        }
+        .modal-content h3 {
+            color: #facc15;
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .modal-content p, .modal-content ul {
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+        .modal-content ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        .modal-buttons {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .modal-buttons button {
+            background-color: #4299e1;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-to-Palpatius games-link" aria-label="Zpět na Palpatius games">← Zpět na Palpatius games</a>
+
+    <div class="game-container" role="application" aria-label="Blackjack hra">
+        <h1 class="text-3xl font-bold text-center w-full mb-4">Blackjack</h1>
+
+        <div class="hand-section" aria-labelledby="dealer-heading">
+            <h2 id="dealer-heading" class="text-xl font-semibold mb-2">Karty dealera: <span id="dealer-score" aria-live="polite" aria-atomic="true">0</span></h2>
+            <div id="dealer-cards" class="cards-display" role="group" aria-label="Karty dealera">
+                </div>
+        </div>
+
+        <div class="hand-section" aria-labelledby="player-heading">
+            <h2 id="player-heading" class="text-xl font-semibold mb-2">Tvoje karty: <span id="player-score" aria-live="polite" aria-atomic="true">0</span></h2>
+            <div id="player-cards" class="cards-display" role="group" aria-label="Tvoje karty">
+                </div>
+        </div>
+
+        <div id="game-message" class="message-box w-full" role="status" aria-live="assertive" aria-atomic="true">
+            </div>
+
+        <div class="flex justify-center w-full gap-4 mt-4">
+            <div class="score-display">Výhry: <span id="wins-score" aria-live="polite" aria-atomic="true">0</span></div>
+            <div class="score-display">Prohry: <span id="losses-score" aria-live="polite" aria-atomic="true">0</span></div>
+        </div>
+
+        <div class="game-actions w-full flex justify-center gap-4 mt-4">
+            <button id="hit-btn" aria-label="Vzít další kartu" disabled>Vzít kartu</button>
+            <button id="stand-btn" aria-label="Zůstat s aktuálními kartami" disabled>Zůstat</button>
+            <button id="double-down-btn" aria-label="Zdvojnásobit sázku" disabled>Double Down</button>
+        </div>
+
+        <div class="controls w-full flex justify-center gap-4 mt-4">
+            <button id="new-game-btn" aria-label="Nová hra">Nová hra</button>
+            <button id="save-game-btn" aria-label="Uložit aktuální hru do souboru">Uložit hru</button>
+            <button id="load-game-btn" aria-label="Načíst hru ze souboru">Načíst hru</button>
+            <button id="help-btn" aria-label="Zobrazit nápovědu">Nápověda</button>
+            <input type="file" id="load-file-input" accept=".json" style="display: none;" aria-hidden="true">
+        </div>
+    </div>
+    
+    <div id="helpModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle" tabindex="-1">
+        <div class="modal-content">
+            <h3 id="helpModalTitle">Pravidla hry Blackjack</h3>
+            <p>
+                Cílem hry je získat skóre co nejblíže 21, aniž bys ho překročil. Soutěžíš s dealerem.
+            </p>
+            <ul>
+                <li>**Hodnoty karet:** Karty 2-10 mají svou číselnou hodnotu. Karty J, Q, K mají hodnotu 10. Eso (A) má hodnotu 11 nebo 1 (přepočítá se automaticky).</li>
+                <li>**Tvůj tah:** Máš na výběr z několika akcí:
+                    <ul>
+                        <li>**Vzít kartu (Hit):** Vezmeš si další kartu. Můžeš to dělat, dokud nepřekročíš 21.</li>
+                        <li>**Zůstat (Stand):** Ukončíš svůj tah a čekáš, až hraje dealer.</li>
+                        <li>**Double Down:** Zdvojnásobíš sázku a vezmeš si přesně jednu další kartu. Poté tvůj tah končí. Tato možnost je dostupná pouze na začátku tahu.</li>
+                    </ul>
+                </li>
+                <li>**Tah dealera:** Dealer bere karty, dokud jeho skóre nedosáhne alespoň 17.</li>
+                <li>**Výhra:** Vyhráváš, pokud máš vyšší skóre než dealer, nebo pokud dealer překročí 21.</li>
+                <li>**Prohra:** Prohráváš, pokud tvé skóre překročí 21, nebo pokud má dealer vyšší skóre než ty.</li>
+                <li>**Remíza (Push):** Pokud máte s dealerem stejné skóre, je to remíza.</li>
+            </ul>
+            <div class="modal-buttons">
+                <button id="closeHelpModalBtn">Rozumím, zavřít</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // === Získání DOM elementů ===
+        const dealerCardsDiv = document.getElementById('dealer-cards');
+        const playerCardsDiv = document.getElementById('player-cards');
+        const dealerScoreSpan = document.getElementById('dealer-score');
+        const playerScoreSpan = document.getElementById('player-score');
+        const gameMessageDiv = document.getElementById('game-message');
+        const newGameBtn = document.getElementById('new-game-btn');
+        const hitBtn = document.getElementById('hit-btn');
+        const standBtn = document.getElementById('stand-btn');
+        const doubleDownBtn = document.getElementById('double-down-btn');
+        const winsScoreSpan = document.getElementById('wins-score');
+        const lossesScoreSpan = document.getElementById('losses-score');
+        const saveGameBtn = document.getElementById('save-game-btn');
+        const loadGameBtn = document.getElementById('load-game-btn');
+        const loadFileInput = document.getElementById('load-file-input');
+        const helpBtn = document.getElementById('help-btn');
+        const helpModal = document.getElementById('helpModal');
+        const closeHelpModalBtn = document.getElementById('closeHelpModalBtn');
+
+        let audioContextStarted = false;
+
+        // === Tone.js syntezátory a zvuky ===
+        const cardDealSynth = new Tone.MembraneSynth({
+            pitchDecay: 0.05,
+            octaves: 8,
+            envelope: {
+                attack: 0.001,
+                decay: 0.1,
+                sustain: 0.01,
+                release: 0.1,
+            },
+        }).toDestination();
+
+        const hitSynth = new Tone.Synth({
+            oscillator: { type: "square" },
+            envelope: { attack: 0.01, decay: 0.05, sustain: 0, release: 0.05 }
+        }).toDestination();
+        
+        const standSynth = new Tone.Synth({
+            oscillator: { type: "triangle" },
+            envelope: { attack: 0.01, decay: 0.1, sustain: 0.01, release: 0.1 }
+        }).toDestination();
+
+        const winSynth = new Tone.Synth({
+            oscillator: { type: "sawtooth" },
+            envelope: { attack: 0.05, decay: 0.5, sustain: 0.1, release: 1 }
+        }).toDestination();
+
+        const loseSynth = new Tone.NoiseSynth({
+            envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 }
+        }).toDestination();
+
+        /**
+         * Inicializuje audio kontext při prvním uživatelském kliknutí.
+         */
+        function startAudioContext() {
+            if (!audioContextStarted) {
+                Tone.start();
+                audioContextStarted = true;
+                console.log("AudioContext started.");
+                document.body.removeEventListener('click', startAudioContext);
+            }
+        }
+        document.body.addEventListener('click', startAudioContext);
+
+        // === Základní proměnné hry ===
+        let deck = [];
+        let playerCards = [];
+        let dealerCards = [];
+        let playerScore = 0;
+        let dealerScore = 0;
+        let gameOver = false;
+        let wins = 0;
+        let losses = 0;
+        let hasDoubledDown = false; // Proměnná pro sledování Double Down
+        let lastFocusedElement = null; // Pro uložení fokusu pro přístupnost
+
+        /**
+         * Funkce pro oznámení čtečce obrazovky.
+         * Používá forced reflow, aby zajistila, že se hláška přečte, i když je stejná.
+         * @param {string} message Zpráva k oznámení.
+         */
+        function announce(message) {
+            gameMessageDiv.setAttribute('aria-hidden', 'true');
+            gameMessageDiv.textContent = '';
+            void gameMessageDiv.offsetWidth; // Vynutí překreslení DOM
+            gameMessageDiv.setAttribute('aria-hidden', 'false');
+            gameMessageDiv.textContent = message;
+        }
+
+        /**
+         * Vytvoří a zamíchá balíček karet.
+         */
+        function createDeck() {
+            const suits = ['Srdce', 'Káry', 'Kříže', 'Piky'];
+            const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+            deck = [];
+            for (let suit of suits) {
+                for (let rank of ranks) {
+                    deck.push({ rank, suit });
+                }
+            }
+            // Zamíchání balíčku (Fisher-Yates shuffle)
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+            announce("Balíček karet byl vytvořen a zamíchán.");
+        }
+
+        /**
+         * Získává číselnou hodnotu karty.
+         * @param {object} card Objekt karty.
+         * @returns {number} Hodnota karty.
+         */
+        function getCardValue(card) {
+            if (['J', 'Q', 'K'].includes(card.rank)) {
+                return 10;
+            }
+            if (card.rank === 'A') {
+                return 11;
+            }
+            return parseInt(card.rank);
+        }
+
+        /**
+         * Vypočítá skóre ruky s ohledem na esa.
+         * @param {Array} hand Pole karet.
+         * @returns {number} Celkové skóre.
+         */
+        function calculateScore(hand) {
+            let score = 0;
+            let numAces = 0;
+            for (let card of hand) {
+                score += getCardValue(card);
+                if (card.rank === 'A') {
+                    numAces++;
+                }
+            }
+            // Přepočet es na 1, pokud je skóre vyšší než 21
+            while (score > 21 && numAces > 0) {
+                score -= 10;
+                numAces--;
+            }
+            return score;
+        }
+
+        /**
+         * Zobrazí karty na obrazovce a aktualizuje ARIA labely.
+         * @param {Array} cards Pole karet.
+         * @param {HTMLElement} element DOM element pro zobrazení.
+         * @param {boolean} isDealer Zda se jedná o dealera.
+         */
+        function displayCards(cards, element, isDealer = false) {
+            element.innerHTML = '';
+            let cardDescriptions = [];
+            cards.forEach((card, index) => {
+                const cardDiv = document.createElement('div');
+                cardDiv.classList.add('card');
+                let cardText = `${card.rank} ${card.suit}`;
+                let ariaLabel = `Karta: ${card.rank} ${card.suit}`;
+
+                if (isDealer && index === 1 && !gameOver) {
+                    cardDiv.classList.add('hidden');
+                    cardText = 'Skrytá karta';
+                    ariaLabel = 'Skrytá karta dealera';
+                }
+                cardDiv.textContent = cardText;
+                cardDiv.setAttribute('aria-label', ariaLabel);
+                element.appendChild(cardDiv);
+                cardDescriptions.push(ariaLabel);
+            });
+            element.setAttribute('aria-label', cardDescriptions.join(', '));
+        }
+
+        /**
+         * Rozdá jednu kartu z balíčku.
+         * @param {Array} hand Ruka, do které se má karta přidat.
+         * @param {HTMLElement} element DOM element pro zobrazení.
+         * @param {boolean} isDealer Zda se jedná o dealera.
+         */
+        function dealCard(hand, element, isDealer = false) {
+            if (deck.length === 0) {
+                announce("Balíček je prázdný! Hra končí.");
+                endGame('draw');
+                return null;
+            }
+            const card = deck.pop();
+            hand.push(card);
+            displayCards(hand, element, isDealer);
+            if (audioContextStarted) {
+                cardDealSynth.triggerAttackRelease("C4", "8n");
+            }
+            return card;
+        }
+
+        /**
+         * Spustí novou hru.
+         */
+        function startNewGame() {
+            announce("Začíná nová hra!");
+            createDeck();
+            playerCards = [];
+            dealerCards = [];
+            playerScore = 0;
+            dealerScore = 0;
+            gameOver = false;
+            hasDoubledDown = false;
+
+            displayCards([], playerCardsDiv);
+            displayCards([], dealerCardsDiv);
+            playerScoreSpan.textContent = '0';
+            dealerScoreSpan.textContent = '0';
+
+            // Animace rozdávání karet
+            setTimeout(() => {
+                const playerCard1 = dealCard(playerCards, playerCardsDiv);
+                setTimeout(() => {
+                    const dealerCard1 = dealCard(dealerCards, dealerCardsDiv, true);
+                    setTimeout(() => {
+                        const playerCard2 = dealCard(playerCards, playerCardsDiv);
+                        setTimeout(() => {
+                            const dealerCard2 = dealCard(dealerCards, dealerCardsDiv, true);
+
+                            playerScore = calculateScore(playerCards);
+                            playerScoreSpan.textContent = playerScore;
+                            dealerScoreSpan.textContent = getCardValue(dealerCard1);
+
+                            announce(`Byly rozdány karty. Tvoje karty jsou ${playerCard1.rank} ${playerCard1.suit} a ${playerCard2.rank} ${playerCard2.suit}. Tvoje skóre je ${playerScore}. Dealer má ${dealerCard1.rank} ${dealerCard1.suit} a jednu skrytou kartu. Aktuální skóre: Výhry ${wins}, Prohry ${losses}.`);
+
+                            enablePlayerActions(true);
+                            newGameBtn.disabled = true;
+                            newGameBtn.tabIndex = -1;
+
+                            if (playerCards.length === 2) {
+                                doubleDownBtn.disabled = false;
+                                doubleDownBtn.tabIndex = 0;
+                            } else {
+                                doubleDownBtn.disabled = true;
+                                doubleDownBtn.tabIndex = -1;
+                            }
+
+                            hitBtn.focus();
+
+                            if (playerScore === 21) {
+                                announce("Máš Blackjack!");
+                                playerTurnEnded();
+                            }
+                        }, 500);
+                    }, 500);
+                }, 500);
+            }, 500);
+        }
+
+        /**
+         * Povolí nebo zakáže herní tlačítka hráče.
+         * @param {boolean} enable Zda tlačítka povolit.
+         */
+        function enablePlayerActions(enable) {
+            hitBtn.disabled = !enable;
+            standBtn.disabled = !enable;
+
+            hitBtn.tabIndex = enable ? 0 : -1;
+            standBtn.tabIndex = enable ? 0 : -1;
+
+            if (enable && playerCards.length === 2 && !hasDoubledDown) {
+                doubleDownBtn.disabled = false;
+                doubleDownBtn.tabIndex = 0;
+            } else {
+                doubleDownBtn.disabled = true;
+                doubleDownBtn.tabIndex = -1;
+            }
+        }
+        
+        /**
+         * Ukončí hru a vyhodnotí výsledek.
+         * @param {string} outcome Výsledek hry ('win', 'lose', 'draw').
+         */
+        function endGame(outcome) {
+            gameOver = true;
+            enablePlayerActions(false);
+            newGameBtn.disabled = false;
+            newGameBtn.tabIndex = 0;
+            
+            let resultMessage = "";
+
+            if (outcome === 'win') {
+                wins++;
+                resultMessage = "Vyhráváš!";
+                if (audioContextStarted) winSynth.triggerAttackRelease("C5", "2n");
+            } else if (outcome === 'lose') {
+                losses++;
+                resultMessage = "Prohráváš!";
+                if (audioContextStarted) loseSynth.triggerAttackRelease("8n");
+            } else {
+                resultMessage = "Remíza!";
+            }
+
+            updateScoreDisplay();
+            announce(`Konec hry: ${resultMessage} Aktuální skóre: Výhry ${wins}, Prohry ${losses}.`);
+            newGameBtn.focus();
+        }
+
+        /**
+         * Tah "Vzít kartu" (Hit).
+         */
+        function hit() {
+            if (gameOver) return;
+            const newCard = dealCard(playerCards, playerCardsDiv);
+            if (newCard) {
+                if (audioContextStarted) {
+                    hitSynth.triggerAttackRelease("C5", "8n");
+                }
+                playerScore = calculateScore(playerCards);
+                playerScoreSpan.textContent = playerScore;
+                announce(`Dostal jsi ${newCard.rank} ${newCard.suit}. Tvoje skóre je nyní ${playerScore}.`);
+
+                doubleDownBtn.disabled = true;
+                doubleDownBtn.tabIndex = -1;
+
+                if (playerScore > 21) {
+                    announce("Překročil jsi 21! Prohráváš. Hra končí.");
+                    endGame('lose');
+                } else if (playerScore === 21) {
+                    announce("Máš 21!");
+                    playerTurnEnded();
+                }
+            }
+        }
+
+        /**
+         * Tah "Zůstat" (Stand).
+         */
+        function stand() {
+            if (gameOver) return;
+            if (audioContextStarted) {
+                standSynth.triggerAttackRelease("C4", "8n");
+            }
+            announce("Zůstáváš s aktuálními kartami. Tvoje skóre je " + playerScore + ".");
+            playerTurnEnded();
+        }
+
+        /**
+         * Tah "Double Down".
+         */
+        function doubleDown() {
+            if (gameOver) return;
+            if (audioContextStarted) {
+                standSynth.triggerAttackRelease("C4", "8n");
+            }
+            announce("Zdvojnásobil jsi sázku a bereš jednu kartu.");
+            hasDoubledDown = true;
+            enablePlayerActions(false);
+            const newCard = dealCard(playerCards, playerCardsDiv);
+            if (newCard) {
+                playerScore = calculateScore(playerCards);
+                playerScoreSpan.textContent = playerScore;
+                announce(`Dostal jsi ${newCard.rank} ${newCard.suit}. Tvoje skóre je nyní ${playerScore}.`);
+
+                if (playerScore > 21) {
+                    announce("Překročil jsi 21! Prohráváš. Hra končí.");
+                    endGame('lose');
+                } else {
+                    playerTurnEnded();
+                }
+            }
+        }
+
+        /**
+         * Ukončí tah hráče a začne tah dealera.
+         */
+        function playerTurnEnded() {
+            enablePlayerActions(false);
+            setTimeout(() => {
+                dealerTurn();
+            }, 1000);
+        }
+
+        /**
+         * Tah dealera.
+         */
+        function dealerTurn() {
+            announce("Nyní hraje dealer.");
+            gameOver = true;
+            displayCards(dealerCards, dealerCardsDiv, false);
+            dealerScore = calculateScore(dealerCards);
+            dealerScoreSpan.textContent = dealerScore;
+            announce(`Dealer odkrývá svou skrytou kartu. Jeho karty jsou ${dealerCards.map(c => `${c.rank} ${c.suit}`).join(' a ')}. Skóre dealera je ${dealerScore}.`);
+
+            setTimeout(function dealerPlayStep() {
+                if (dealerScore < 17) {
+                    announce("Dealer bere další kartu.");
+                    setTimeout(() => {
+                        const newCard = dealCard(dealerCards, dealerCardsDiv);
+                        if (newCard) {
+                            dealerScore = calculateScore(dealerCards);
+                            dealerScoreSpan.textContent = dealerScore;
+                            announce(`Dealer dostal ${newCard.rank} ${newCard.suit}. Skóre dealera je nyní ${dealerScore}.`);
+                            setTimeout(dealerPlayStep, 2500);
+                        } else {
+                            evaluateGame();
+                        }
+                    }, 500);
+                } else {
+                    evaluateGame();
+                }
+            }, 2500);
+        }
+
+        /**
+         * Vyhodnotí výsledek hry.
+         */
+        function evaluateGame() {
+            let resultMessage = "";
+            let gameOutcome = '';
+
+            if (playerScore > 21) {
+                resultMessage = "Tvoje skóre je přes 21. Prohráváš!";
+                gameOutcome = 'lose';
+            } else if (dealerScore > 21) {
+                resultMessage = "Dealer překročil 21! Vyhráváš!";
+                gameOutcome = 'win';
+            } else if (playerScore > dealerScore) {
+                resultMessage = "Tvoje skóre je vyšší než dealerovo. Vyhráváš!";
+                gameOutcome = 'win';
+            } else if (dealerScore > playerScore) {
+                resultMessage = "Dealerovo skóre je vyšší než tvoje. Prohráváš!";
+                gameOutcome = 'lose';
+            } else {
+                resultMessage = "Remíza! Sázky se vrací.";
+                gameOutcome = 'draw';
+            }
+            
+            endGame(gameOutcome);
+        }
+
+        /**
+         * Aktualizuje zobrazení skóre.
+         */
+        function updateScoreDisplay() {
+            winsScoreSpan.textContent = wins;
+            lossesScoreSpan.textContent = losses;
+        }
+
+        /**
+         * Funkce pro uložení stavu hry do JSON souboru.
+         */
+        function saveGame() {
+            const gameState = {
+                deck: deck,
+                playerCards: playerCards,
+                dealerCards: dealerCards,
+                wins: wins,
+                losses: losses,
+                gameOver: gameOver,
+                hasDoubledDown: hasDoubledDown
+            };
+            const dataStr = JSON.stringify(gameState, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'blackjack_game_state.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            announce("Hra byla uložena do souboru 'blackjack_game_state.json'.");
+        }
+
+        /**
+         * Spustí dialog pro načtení souboru.
+         */
+        function loadGame() {
+            lastFocusedElement = document.activeElement;
+            loadFileInput.click();
+        }
+
+        loadFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) {
+                announce("Nebyl vybrán žádný soubor.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const loadedState = JSON.parse(e.target.result);
+                    if (
+                        loadedState &&
+                        Array.isArray(loadedState.deck) &&
+                        Array.isArray(loadedState.playerCards) &&
+                        Array.isArray(loadedState.dealerCards) &&
+                        typeof loadedState.wins === 'number' &&
+                        typeof loadedState.losses === 'number' &&
+                        typeof loadedState.gameOver === 'boolean' &&
+                        typeof loadedState.hasDoubledDown === 'boolean'
+                    ) {
+                        deck = loadedState.deck;
+                        playerCards = loadedState.playerCards;
+                        dealerCards = loadedState.dealerCards;
+                        playerScore = calculateScore(playerCards);
+                        dealerScore = calculateScore(dealerCards);
+                        wins = loadedState.wins;
+                        losses = loadedState.losses;
+                        gameOver = loadedState.gameOver;
+                        hasDoubledDown = loadedState.hasDoubledDown;
+
+                        displayCards(playerCards, playerCardsDiv);
+                        displayCards(dealerCards, dealerCardsDiv, !gameOver);
+                        playerScoreSpan.textContent = playerScore;
+                        dealerScoreSpan.textContent = gameOver ? dealerScore : getCardValue(dealerCards[0] || {rank: '0'});
+                        updateScoreDisplay();
+
+                        if (gameOver) {
+                            enablePlayerActions(false);
+                            newGameBtn.disabled = false;
+                            newGameBtn.tabIndex = 0;
+                        } else {
+                            enablePlayerActions(true);
+                            newGameBtn.disabled = true;
+                            newGameBtn.tabIndex = -1;
+                        }
+
+                        announce("Hra byla úspěšně načtena. Pokračuješ ve hře. Aktuální skóre: Výhry " + wins + ", Prohry " + losses + ".");
+                        if (lastFocusedElement) lastFocusedElement.focus();
+                    } else {
+                        announce("Chyba: Vybraný soubor není platný soubor pro uložení hry Blackjack.");
+                    }
+                } catch (error) {
+                    console.error("Error loading game state:", error);
+                    announce("Chyba při načítání souboru: " + error.message + ". Ujisti se, že soubor je platný JSON soubor s uloženou hrou.");
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        /**
+         * Zobrazí modální okno s nápovědou.
+         */
+        function showHelpModal() {
+            lastFocusedElement = document.activeElement;
+            helpModal.style.display = 'flex';
+            helpModal.focus();
+            helpModal.setAttribute('aria-hidden', 'false');
+            announce("Otevřena nápověda. Pro zavření stiskni tlačítko 'Rozumím' nebo klávesu Escape.");
+        }
+
+        /**
+         * Zavře modální okno s nápovědou.
+         */
+        function closeHelpModal() {
+            helpModal.style.display = 'none';
+            helpModal.setAttribute('aria-hidden', 'true');
+            if (lastFocusedElement) {
+                lastFocusedElement.focus();
+            }
+        }
+
+        // === Přidání posluchačů událostí na tlačítka ===
+        newGameBtn.addEventListener('click', () => {
+            startNewGame();
+        });
+        hitBtn.addEventListener('click', () => {
+            hit();
+        });
+        standBtn.addEventListener('click', () => {
+            stand();
+        });
+        doubleDownBtn.addEventListener('click', () => {
+            doubleDown();
+        });
+        saveGameBtn.addEventListener('click', () => {
+            saveGame();
+        });
+        loadGameBtn.addEventListener('click', () => {
+            loadGame();
+        });
+        helpBtn.addEventListener('click', showHelpModal);
+        closeHelpModalBtn.addEventListener('click', closeHelpModal);
+
+
+        // === Klávesové zkratky pro navigaci a akce ===
+        document.addEventListener('keydown', (event) => {
+            // Zavírání modalu klávesou Escape
+            if (event.key === 'Escape' && helpModal.style.display === 'flex') {
+                closeHelpModal();
+                return;
+            }
+
+            const activeElement = document.activeElement;
+            const gameActionButtons = Array.from(document.querySelectorAll('.game-actions button:not([disabled])'));
+            const controlButtons = Array.from(document.querySelectorAll('.controls button:not([disabled])'));
+
+            // Navigace mezi herními tlačítky
+            if (gameActionButtons.includes(activeElement)) {
+                const currentIndex = gameActionButtons.indexOf(activeElement);
+                if (event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    const nextIndex = (currentIndex + 1) % gameActionButtons.length;
+                    gameActionButtons[nextIndex].focus();
+                    announce(`Fokus na tlačítku: ${gameActionButtons[nextIndex].getAttribute('aria-label')}.`);
+                } else if (event.key === 'ArrowLeft') {
+                    event.preventDefault();
+                    const prevIndex = (currentIndex - 1 + gameActionButtons.length) % gameActionButtons.length;
+                    gameActionButtons[prevIndex].focus();
+                    announce(`Fokus na tlačítku: ${gameActionButtons[prevIndex].getAttribute('aria-label')}.`);
+                }
+            }
+            // Navigace mezi kontrolními tlačítky
+            else if (controlButtons.includes(activeElement)) {
+                const currentIndex = controlButtons.indexOf(activeElement);
+                if (event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    const nextIndex = (currentIndex + 1) % controlButtons.length;
+                    controlButtons[nextIndex].focus();
+                    announce(`Fokus na tlačítku: ${controlButtons[nextIndex].getAttribute('aria-label')}.`);
+                } else if (event.key === 'ArrowLeft') {
+                    event.preventDefault();
+                    const prevIndex = (currentIndex - 1 + controlButtons.length) % controlButtons.length;
+                    controlButtons[prevIndex].focus();
+                    announce(`Fokus na tlačítku: ${controlButtons[prevIndex].getAttribute('aria-label')}.`);
+                }
+            }
+
+
+            // Akce Enter/Space
+            if (event.key === 'Enter' || event.key === ' ') {
+                if (activeElement && activeElement.tagName === 'BUTTON' && !activeElement.disabled) {
+                    event.preventDefault();
+                    activeElement.click();
+                } else if (activeElement && activeElement.tagName === 'LABEL' && activeElement.htmlFor === 'load-file-input') {
+                    event.preventDefault();
+                    document.getElementById('load-file-input').click();
+                }
+            }
+        });
+
+
+        // === Inicializace hry při načtení stránky ===
+        window.onload = function() {
+            announce("Vítej ve hře Blackjack! Klikni na 'Nová hra' pro začátek. Aktuální skóre: Výhry " + wins + ", Prohry " + losses + ".");
+            newGameBtn.focus();
+            updateScoreDisplay();
+
+            enablePlayerActions(false);
+            newGameBtn.disabled = false;
+            newGameBtn.tabIndex = 0;
+            saveGameBtn.tabIndex = 0;
+            loadGameBtn.tabIndex = 0;
+            helpBtn.tabIndex = 0;
+        };
+
+    </script>
+</body>
+</html>

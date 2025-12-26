@@ -1,0 +1,175 @@
+/* ============================================
+   TXT / MD Helper – style.css
+   ============================================ */
+
+/* ---------- Základ ---------- */
+
+:root {
+  --bg-main: #0f172a;
+  --bg-panel: #111827;
+  --bg-input: #020617;
+  --bg-border: #1f2933;
+
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+  --accent: #38bdf8;
+
+  --btn-bg: #1e293b;
+  --btn-hover: #334155;
+  --btn-danger: #7f1d1d;
+  --btn-danger-hover: #991b1b;
+
+  --radius: 6px;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* ---------- Reset ---------- */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-main);
+  color: var(--text-main);
+}
+
+/* ---------- Layout ---------- */
+
+main {
+  max-width: 1200px;
+  margin: auto;
+  padding: 1.5rem;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 1.6rem;
+}
+
+.section {
+  background: var(--bg-panel);
+  border: 1px solid var(--bg-border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* ---------- Ovládací panel ---------- */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.toolbar button {
+  background: var(--btn-bg);
+  color: var(--text-main);
+  border: 1px solid var(--bg-border);
+  border-radius: var(--radius);
+  padding: 0.35rem 0.6rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.toolbar button:hover,
+.toolbar button:focus {
+  background: var(--btn-hover);
+  outline: none;
+}
+
+/* ---------- Editor ---------- */
+
+.editor-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 900px) {
+  .editor-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+textarea {
+  width: 100%;
+  min-height: 350px;
+  resize: vertical;
+  background: var(--bg-input);
+  color: var(--text-main);
+  border: 1px solid var(--bg-border);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+textarea:focus {
+  outline: 2px solid var(--accent);
+}
+
+/* ---------- Export ---------- */
+
+.export-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.export-panel input,
+.export-panel select {
+  background: var(--bg-input);
+  color: var(--text-main);
+  border: 1px solid var(--bg-border);
+  border-radius: var(--radius);
+  padding: 0.35rem 0.5rem;
+}
+
+.export-panel button {
+  background: var(--btn-bg);
+  border: 1px solid var(--bg-border);
+  color: var(--text-main);
+  border-radius: var(--radius);
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+}
+
+.export-panel button:hover,
+.export-panel button:focus {
+  background: var(--btn-hover);
+  outline: none;
+}
+
+.export-panel .danger {
+  background: var(--btn-danger);
+}
+
+.export-panel .danger:hover,
+.export-panel .danger:focus {
+  background: var(--btn-danger-hover);
+}
+
+/* ---------- Stavový řádek ---------- */
+
+.status {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ---------- Přístupnost ---------- */
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}

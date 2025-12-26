@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtuální Zahrádka</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Základní styly pro tělo stránky - TMAVÝ REŽIM pro UI */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000; /* Černé pozadí */
+            color: #e2e8f0; /* Světlý text */
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Kontejner pro aplikaci */
+        .container {
+            max-width: 5xl; /* Širší kontejner pro herní plochu a inventář */
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #1a1a1a;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        /* Styly pro nadpis */
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #facc15; /* Žlutá barva pro nadpis */
+            font-weight: 700;
+            text-align: center;
+        }
+        h2 {
+            font-size: 1.75rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            color: #90cdf4; /* Světlejší modrá pro podnadpisy */
+            font-weight: 700;
+            border-bottom: 1px solid #4a5568;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Styly pro herní pole */
+        #gardenGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Responzivní mřížka políček */
+            gap: 10px;
+            padding: 15px;
+            background-color: #2d3748; /* Tmavší pozadí pro pole */
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .plot {
+            width: 80px;
+            height: 80px;
+            background-color: #5a4a3a; /* Barva hlíny */
+            border: 2px solid #7a6a5a;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem; /* Velikost ikony rostliny */
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.1s ease-in-out;
+            outline: none;
+        }
+
+        .plot:hover {
+            background-color: #6a5a4a;
+        }
+        .plot:focus {
+            outline: 3px solid #facc15;
+            outline-offset: 2px;
+        }
+
+        .plant-icon {
+            font-size: 2.5rem; /* Větší ikona rostliny */
+            line-height: 1;
+            text-align: center;
+            position: absolute;
+            bottom: 5px; /* Trochu nad spodní okraj */
+            color: #4caf50; /* Zelená pro rostliny */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .plant-status {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 0.7rem;
+            color: #e2e8f0;
+            background-color: rgba(0,0,0,0.5);
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .plant-status.watered {
+            color: #63b3ed; /* Modrá pro zalito */
+        }
+        .plant-status.dry {
+            color: #f44336; /* Červená pro sucho */
+        }
+        .plant-status.ready {
+            color: #facc15; /* Žlutá pro připraveno ke sklizni */
+        }
+        .plant-status.pest { /* Styl pro škůdce */
+            background-color: #dc3545; /* Červené pozadí pro škůdce */
+            color: white;
+        }
+        /* Styl pro ikonu škůdce, aby se překrývala s rostlinou */
+        .pest-icon {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            font-size: 1.5rem;
+            color: #dc3545; /* Červená pro škůdce */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            z-index: 10; /* Zajistí, že je nad ikonou rostliny */
+        }
+
+
+        /* Styly pro inventář */
+        #inventory {
+            background-color: #222;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        #inventory h2 {
+            border-bottom: none;
+            margin-bottom: 1rem;
+        }
+        .inventory-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .inventory-item {
+            background-color: #333;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            color: #e2e8f0;
+            cursor: pointer; /* Přidáno pro vizuální indikaci klikatelnosti */
+            outline: none; /* Odstranění výchozího outline pro vlastní focus styl */
+        }
+        .inventory-item:focus {
+            border: 2px solid #facc15; /* Žlutý rámeček pro focus */
+        }
+        .inventory-item.selected {
+            border: 2px solid #63b3ed; /* Modrý rámeček pro vybraný předmět */
+        }
+
+        /* Styly pro tlačítka akcí */
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease;
+            color: #000; /* Černý text tlačítek pro lepší kontrast */
+        }
+        .btn-primary { background-color: #28a745; color: #fff;} /* Zelená */
+        .btn-secondary { background-color: #ffc107; color: #000; } /* Žlutá */
+        .btn-danger { background-color: #f44336; color: #fff;} /* Červená */
+        .btn-action { background-color: #007bff; color: #fff;} /* Modrá */
+        .btn-export { background-color: #17a2b8; color: #fff; } /* Azurová pro export */
+        .btn-import { background-color: #6f42c1; color: #fff; } /* Fialová pro import */
+        
+        button:hover { opacity: 0.9; }
+        button:focus { outline: 2px solid #facc15; outline-offset: 2px; }
+
+        /* Styl pro tlačítko Zpět na Dashboard */
+        .back-to-dashboard-link {
+            display: block;
+            width: fit-content;
+            background-color: #4a4a4a;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            transition: background-color 0.2s ease;
+        }
+        .back-to-dashboard-link:hover {
+            background-color: #6a6a6a;
+        }
+        .back-to-dashboard-link:focus {
+            outline: 2px solid #facc15;
+            outline-offset: 2px;
+        }
+
+        /* Styly pro modální okno */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #4a5568;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.4),0 6px 20px 0 rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .modal-buttons {
+            text-align: right;
+        }
+        .modal-buttons button {
+            padding: 0.5rem 1rem;
+            margin-left: 0.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .modal-buttons .bg-gray-500 { background-color: #4a4a4a; color: #fff; }
+        .modal-buttons .bg-red-500 { background-color: #f44336; color: #fff; }
+
+        /* Skrytá oblast pro čtečku obrazovky */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border-width: 0;
+        }
+
+        /* Styly pro shop modal */
+        #shopContent {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .shop-section {
+            background-color: #1a1a1a;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        .shop-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #333;
+        }
+        .shop-item:last-child {
+            border-bottom: none;
+        }
+        .shop-item-info {
+            flex-grow: 1;
+            text-align: left;
+        }
+        .shop-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .shop-item-controls input[type="number"] {
+            width: 60px;
+            padding: 4px;
+            background-color: #2d3748;
+            border: 1px solid #4a5568;
+            border-radius: 4px;
+            color: #e2e8f0;
+        }
+        .shop-item-controls button {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        /* Styly pro sekci úkolů */
+        #dailyQuests {
+            background-color: #222;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+            display: none; /* Skryto, dokud se neobjeví úkol */
+        }
+        #dailyQuests h4 {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #facc15;
+            margin-bottom: 0.75rem;
+        }
+        .quest-description {
+            color: #cbd5e0;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        .quest-requirements, .quest-rewards {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        .quest-requirements span, .quest-rewards span {
+            font-weight: bold;
+            color: #81e6d9;
+        }
+        .quest-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        /* Styly pro zprávy pod herním polem */
+        .game-messages {
+            width: 100%;
+            max-width: 5xl;
+            margin-top: 1rem;
+            min-height: 50px; /* Aby se zprávy neposouvaly moc rychle */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .game-message-item {
+            background-color: #4a4a4a;
+            color: #e2e8f0;
+            padding: 8px 15px;
+            border-radius: 5px;
+            opacity: 0; /* Začíná neviditelné */
+            animation: fadeOut 5s forwards; /* Animace mizení po 5 sekundách */
+            width: fit-content;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); display: none; }
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-to-dashboard-link" aria-label="Zpět na Palpatius games">← Zpět na Palpatius games</a>
+
+    <div class="container">
+        <h1>Virtuální Zahrádka</h1>
+
+        <section aria-labelledby="garden-status-heading">
+            <h2 id="garden-status-heading" tabindex="0">Stav zahrádky</h2>
+            <div class="flex justify-between items-center mb-4">
+                <div class="text-lg">Den: <span id="gameDayDisplay">1</span></div>
+            </div>
+
+            <div id="gardenGrid" role="grid" aria-label="Herní pole zahrádky">
+                </div>
+        </section>
+
+        <div id="gameMessages" class="game-messages" aria-live="polite" aria-atomic="false"></div>
+
+        <div class="info-message text-center text-gray-300 mb-4">
+            <p><strong>Jak interagovat:</strong></p>
+            <p>Klikněte na **prázdné políčko** pro zasazení semínka.</p>
+            <p>Klikněte na **rostlinu** pro zalití (s vybranou konví), hnojení (s vybraným urychlovačem), sklizeň (pokud je zralá) nebo odstranění škůdce.</p>
+        </div>
+
+        <section aria-labelledby="inventory-heading">
+            <h2 id="inventory-heading" tabindex="0">Inventář</h2>
+            <div class="text-lg mb-4">Zlaťáky: <span id="currencyDisplay">0</span></div>
+            <div id="inventoryItems" class="inventory-items">
+                </div>
+        </section>
+
+        <section aria-labelledby="daily-quests-heading">
+            <h2 id="daily-quests-heading" tabindex="0">Denní úkoly</h2>
+            <div id="dailyQuests" class="shop-section">
+                <div id="activeQuestDisplay">
+                    </div>
+            </div>
+        </section>
+
+        <section aria-labelledby="actions-heading">
+            <h2 id="actions-heading" tabindex="0">Akce</h2>
+            <div class="action-buttons">
+                <button class="btn-action" id="nextDayButton" onclick="nextDay()">Další den</button>
+                <button class="btn-primary" id="waterAllButton" onclick="waterAllPlants()">Zalít vše</button>
+                <button class="btn-primary" id="harvestAllButton" onclick="harvestAllRipePlants()">Sklidit vše</button>
+                <button class="btn-action" id="shopButton" onclick="showGardenShopModal()">Jít do Garden Shopu</button>
+                <button class="btn-export" onclick="exportGame()">Exportovat hru (JSON)</button>
+                <label class="btn-import">
+                    Importovat hru (JSON)
+                    <input type="file" id="importGameFile" accept=".json" onchange="importGame(event)" class="hidden" aria-label="Načíst hru ze souboru"/>
+                </label>
+            </div>
+        </section>
+    </div>
+
+    <div id="customMessageModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalMessageTitle" tabindex="-1">
+        <div class="modal-content">
+            <h3 id="modalMessageTitle" class="text-xl font-bold text-yellow-300 mb-4">Zpráva</h3>
+            <p id="modalMessage" class="text-gray-300 mb-4"></p>
+            <div class="modal-buttons">
+                <button id="modalOkButton" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">OK</button>
+                <button id="modalCancelButton" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md ml-2 hidden">Zrušit</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="plantSeedModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="plantSeedModalTitle" tabindex="-1">
+        <div class="modal-content">
+            <h3 id="plantSeedModalTitle" class="text-xl font-bold text-yellow-300 mb-4">Zasadit semínko</h3>
+            <p class="text-gray-300 mb-4">Vyberte semínko, které chcete zasadit:</p>
+            <div id="seedOptions" class="flex flex-wrap justify-center gap-3 mb-4">
+                </div>
+            <div class="modal-buttons">
+                <button id="cancelPlantingButton" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md">Zrušit</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="gardenShopModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="shopModalTitle" tabindex="-1">
+        <div class="modal-content max-w-2xl"> <h3 id="shopModalTitle" class="text-xl font-bold text-yellow-300 mb-4">Vítej v Garden Shopu!</h3>
+            <p class="text-lg text-gray-300 mb-4">Tvoje Zlaťáky: <span id="shopCurrencyDisplay">0</span></p>
+            
+            <div id="shopContent">
+                <div class="shop-section">
+                    <h4 class="text-lg font-semibold text-blue-300 mb-3">Prodat plodiny</h4>
+                    <div id="sellItemsContainer">
+                        </div>
+                </div>
+
+                <div class="shop-section">
+                    <h4 class="text-lg font-semibold text-green-300 mb-3">Koupit semínka a nástroje</h4>
+                    <div id="buyItemsContainer">
+                        </div>
+                </div>
+            </div>
+
+            <div class="modal-buttons mt-6">
+                <button id="closeShopButton" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">Zavřít Shop</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="announcer" class="sr-only" aria-live="polite" aria-atomic="false"></div>
+
+    <script>
+        // --- DOM elementy ---
+        const gardenGridElement = document.getElementById('gardenGrid');
+        const inventoryItemsElement = document.getElementById('inventoryItems');
+        const gameDayDisplay = document.getElementById('gameDayDisplay');
+        const announcer = document.getElementById('announcer');
+        const currencyDisplay = document.getElementById('currencyDisplay');
+        const shopCurrencyDisplay = document.getElementById('shopCurrencyDisplay');
+        const sellItemsContainer = document.getElementById('sellItemsContainer');
+        const buyItemsContainer = document.getElementById('buyItemsContainer');
+        const gardenShopModal = document.getElementById('gardenShopModal');
+        const closeShopButton = document.getElementById('closeShopButton');
+        const plantSeedModal = document.getElementById('plantSeedModal');
+        const seedOptionsContainer = document.getElementById('seedOptions');
+        const cancelPlantingButton = document.getElementById('cancelPlantingButton');
+        const dailyQuestsSection = document.getElementById('dailyQuests');
+        const activeQuestDisplay = document.getElementById('activeQuestDisplay');
+        const gameMessagesContainer = document.getElementById('gameMessages');
+        let currentPlotForPlanting = null;
+        let lastActiveElementBeforeModal = null;
+
+
+        // --- Sjednocený systém pro modální okna a zprávy ---
+        window.myoModals = {
+            lastFocusedElement: null,
+            showCustomModal: function(message, title = 'Zpráva', onConfirm = null, showCancel = false) {
+                this.lastFocusedElement = document.activeElement;
+                const modal = document.getElementById('customMessageModal');
+                document.getElementById('modalMessageTitle').textContent = title;
+                document.getElementById('modalMessage').innerHTML = message;
+                modal.style.display = 'flex';
+                
+                const okButton = document.getElementById('modalOkButton');
+                okButton.onclick = () => { this.closeCustomModal(); if (onConfirm) onConfirm(); };
+                
+                let cancelButton = document.getElementById('modalCancelButton');
+                cancelButton.style.display = showCancel ? 'inline-block' : 'none';
+                cancelButton.onclick = () => this.closeCustomModal();
+                
+                modal.focus();
+                modal.setAttribute('aria-hidden', 'false');
+            },
+            closeCustomModal: function() {
+                const modal = document.getElementById('customMessageModal');
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+                if (this.lastFocusedElement) {
+                    this.lastFocusedElement.focus();
+                }
+            },
+            closeModal: function(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'none';
+                    modal.setAttribute('aria-hidden', 'true');
+                    if (this.lastFocusedElement) {
+                        this.lastFocusedElement.focus();
+                    }
+                }
+            },
+            handleGlobalModalKeyboard: function(event) {
+                if (event.key === 'Escape') {
+                    const openModals = document.querySelectorAll('.modal[style*="display: flex"]');
+                    if (openModals.length > 0) {
+                        const topModal = openModals[openModals.length - 1];
+                        window.myoModals.closeModal(topModal.id);
+                    }
+                }
+            }
+        };
+
+        const ANNOUNCE_DELAY = 100;
+        let announceTimeout = null;
+        let pendingAnnouncement = null;
+        function announceToScreenReader(message) {
+            pendingAnnouncement = message;
+            if (announceTimeout) return;
+            announceTimeout = setTimeout(() => {
+                if (pendingAnnouncement && announcer) {
+                    announcer.textContent = pendingAnnouncement;
+                }
+                announceTimeout = null;
+                pendingAnnouncement = null;
+            }, ANNOUNCE_DELAY);
+        }
+
+        const MESSAGE_DURATION = 5000;
+        let messageTimeoutRefs = new Set();
+        function showGameMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('game-message-item');
+            messageDiv.textContent = message;
+            gameMessagesContainer.appendChild(messageDiv);
+            
+            const timeoutId = setTimeout(() => {
+                messageDiv.remove();
+                messageTimeoutRefs.delete(timeoutId);
+            }, MESSAGE_DURATION);
+            messageTimeoutRefs.add(timeoutId);
+            
+            announceToScreenReader(message);
+        }
+
+        const GARDEN_SIZE = 32;
+        const PEST_CHANCE = 0.20;
+        const QUEST_APPEARANCE_CHANCE = 0.30;
+        const QUEST_DECLINE_RETURN_DAYS_MIN = 2;
+        const QUEST_DECLINE_RETURN_DAYS_MAX = 5;
+
+        const plantsConfig = {
+            'Ředkvičky': { emoji: '🌱', growthStages: [ { name: 'Semínko', duration: 0 }, { name: 'Klíček', duration: 1 }, { name: 'Mladá rostlinka', duration: 1 }, { name: 'Zralá', duration: 1 } ], seedYield: 3, sellPrice: 5, buyPrice: 3, seedSellPrice: 1, description: 'Rychle rostoucí a křupavé ředkvičky.' },
+            'Hlávkový salát': { emoji: '🥬', growthStages: [ { name: 'Semínko', duration: 0 }, { name: 'Klíček', duration: 1 }, { name: 'Mladá rostlinka', duration: 1 }, { name: 'Zralý', duration: 1 } ], seedYield: 2, sellPrice: 10, buyPrice: 7, seedSellPrice: 3, description: 'Oblíbený hlávkový salát, ideální do salátů.' },
+            'Červená paprika': { emoji: '🌶️', growthStages: [ { name: 'Semínko', duration: 0 }, { name: 'Klíček', duration: 2 }, { name: 'Mladá rostlinka', duration: 2 }, { name: 'Zralá', duration: 2 } ], seedYield: 2, sellPrice: 20, buyPrice: 15, seedSellPrice: 5, description: 'Sladká a šťavnatá červená paprika.' },
+            'Chilli jalapeňos': { emoji: '🌶️', growthStages: [ { name: 'Semínko', duration: 0 }, { name: 'Klíček', duration: 2 }, { name: 'Mladá rostlinka', duration: 2 }, { name: 'Zralá', duration: 2 } ], seedYield: 3, sellPrice: 30, buyPrice: 20, seedSellPrice: 8, description: 'Pálivé chilli papričky jalapeňos.' },
+            'Jabloň': { emoji: '🍎', growthStages: [ { name: 'Sazenice', duration: 0 }, { name: 'Mladý stromek', duration: 5 }, { name: 'Plodící', duration: 5 } ], seedYield: 1, sellPrice: 100, buyPrice: 70, seedSellPrice: 20, description: 'Ovocný strom, který plodí sladká jablka.' },
+            'Třešeň': { emoji: '🍒', growthStages: [ { name: 'Sazenice', duration: 0 }, { name: 'Mladý stromek', duration: 5 }, { name: 'Plodící', duration: 5 } ], seedYield: 1, sellPrice: 100, buyPrice: 70, seedSellPrice: 20, description: 'Ovocný strom, který plodí šťavnaté třešně.' },
+            'Hruška': { emoji: '🍐', growthStages: [ { name: 'Sazenice', duration: 0 }, { name: 'Mladý stromek', duration: 5 }, { name: 'Plodící', duration: 5 } ], seedYield: 1, sellPrice: 100, buyPrice: 70, seedSellPrice: 20, description: 'Ovocný strom, který plodí sladké hrušky.' },
+            'Tulipán': { emoji: '🌷', growthStages: [ { name: 'Cibulka', duration: 0 }, { name: 'Výhonek', duration: 1 }, { name: 'Kvetoucí', duration: 1 } ], seedYield: 1, sellPrice: 20, buyPrice: 15, seedSellPrice: 5, description: 'Krásná jarní květina.' },
+            'Lilie': { emoji: '🌸', growthStages: [ { name: 'Cibulka', duration: 0 }, { name: 'Výhonek', duration: 1 }, { name: 'Kvetoucí', duration: 1 } ], seedYield: 1, sellPrice: 20, buyPrice: 15, seedSellPrice: 5, description: 'Elegantní a voňavá lilie.' },
+            'Máta': { emoji: '🌿', growthStages: [ { name: 'Sazenička', duration: 0 }, { name: 'Mladá bylinka', duration: 1 }, { name: 'Zralá', duration: 1 } ], seedYield: 5, sellPrice: 5, buyPrice: 3, seedSellPrice: 1, description: 'Osvěžující bylinka, ideální do nápojů.' },
+            'Pažitka': { emoji: '🌿', growthStages: [ { name: 'Sazenička', duration: 0 }, { name: 'Mladá bylinka', duration: 1 }, { name: 'Zralá', duration: 1 } ], seedYield: 5, sellPrice: 5, buyPrice: 3, seedSellPrice: 1, description: 'Jemná bylinka s cibulovou chutí.' },
+            'Chmel': { emoji: '🌾', growthStages: [ { name: 'Semínko', duration: 0 }, { name: 'Výhonek', duration: 2 }, { name: 'Zralý', duration: 2 } ], seedYield: 2, sellPrice: 25, buyPrice: 10, seedSellPrice: 4, description: 'Základní surovina pro výrobu piva.' },
+            'Tymián': { emoji: '🌿', growthStages: [ { name: 'Sazenička', duration: 0 }, { name: 'Mladá bylinka', duration: 1 }, { name: 'Zralá', duration: 1 } ], seedYield: 5, sellPrice: 5, buyPrice: 3, seedSellPrice: 1, description: 'Aromatická bylinka, skvělá do kuchyně.' }
+        };
+
+        const shopItemsConfig = {
+            'Ředkvičky Semínka': { type: 'seed', price: plantsConfig['Ředkvičky'].buyPrice, emoji: plantsConfig['Ředkvičky'].emoji },
+            'Hlávkový salát Semínka': { type: 'seed', price: plantsConfig['Hlávkový salát'].buyPrice, emoji: plantsConfig['Hlávkový salát'].emoji },
+            'Červená paprika Semínka': { type: 'seed', price: plantsConfig['Červená paprika'].buyPrice, emoji: plantsConfig['Červená paprika'].emoji },
+            'Chilli jalapeňos Semínka': { type: 'seed', price: plantsConfig['Chilli jalapeňos'].buyPrice, emoji: plantsConfig['Chilli jalapeňos'].emoji },
+            'Jabloň Sazenice': { type: 'seed', price: plantsConfig['Jabloň'].buyPrice, emoji: plantsConfig['Jabloň'].emoji },
+            'Třešeň Sazenice': { type: 'seed', price: plantsConfig['Třešeň'].buyPrice, emoji: plantsConfig['Třešeň'].emoji },
+            'Hruška Sazenice': { type: 'seed', price: plantsConfig['Hruška'].buyPrice, emoji: plantsConfig['Hruška'].emoji },
+            'Tulipán Semínka': { type: 'seed', price: plantsConfig['Tulipán'].buyPrice, emoji: plantsConfig['Tulipán'].emoji },
+            'Lilie Semínka': { type: 'seed', price: plantsConfig['Lilie'].buyPrice, emoji: plantsConfig['Lilie'].emoji },
+            'Máta Semínka': { type: 'seed', price: plantsConfig['Máta'].buyPrice, emoji: plantsConfig['Máta'].emoji },
+            'Pažitka Semínka': { type: 'seed', price: plantsConfig['Pažitka'].buyPrice, emoji: plantsConfig['Pažitka'].emoji },
+            'Chmel Semínka': { type: 'seed', price: plantsConfig['Chmel'].buyPrice, emoji: plantsConfig['Chmel'].emoji },
+            'Tymián Semínka': { type: 'seed', price: plantsConfig['Tymián'].buyPrice, emoji: plantsConfig['Tymián'].emoji },
+            'Konev na zalévání': { type: 'tool', price: 50, emoji: '💧' },
+            'Urychlovač': { type: 'tool', price: 25, emoji: '✨' }
+        };
+
+        const questsConfig = {
+            'Ondřej Jedlík': { emoji: '🧑', quests: [ { id: 'ondrej_quest_1', text: 'Potřebuji 5x Ředkvičky, 3x Hlávkový salát, 4x Tymián a 2x Červená paprika.', requirements: { 'Ředkvičky': 5, 'Hlávkový salát': 3, 'Tymián': 4, 'Červená paprika': 2 }, rewards: { currency: 120 } }, { id: 'ondrej_quest_2', text: 'Mám velkou zakázku. Potřebuji 6x Ředkvičky, 4x Hlávkový salát, 2x Tymián a 5x Červená paprika.', requirements: { 'Ředkvičky': 6, 'Hlávkový salát': 4, 'Tymián': 2, 'Červená paprika': 5 }, rewards: { currency: 150 } } ] },
+            'Jana Štíhlá': { emoji: ' ', quests: [ { id: 'jana_quest_1', text: 'Potřebuji na zítřejší salát 2x Hlávkový salát.', requirements: { 'Hlávkový salát': 2 }, rewards: { currency: 25, 'Ředkvičky Semínka': 1 } }, { id: 'jana_quest_2', text: 'Potřebuji na zítřejší salát 3x Ředkvičky.', requirements: { 'Ředkvičky': 3 }, rewards: { currency: 20, 'Hlávkový salát Semínka': 1 } }, { id: 'jana_quest_3', text: 'Dochází mi zásoby, potřebuji 10x Hlávkový salát.', requirements: { 'Hlávkový salát': 10 }, rewards: { currency: 90, 'Hlávkový salát Semínka': 2 } }, { id: 'jana_quest_4', text: 'Prodej mi 12x Hlávkový salát, nemohu se bez něj obejít!', requirements: { 'Hlávkový salát': 12 }, rewards: { currency: 110, 'Urychlovač': 1 } } ] },
+            'Radek Pivař': { emoji: '👨', quests: [ { id: 'radek_quest_1', text: 'Potřebuju nutně 5x Chmel na novou várku piva.', requirements: { 'Chmel': 5 }, rewards: { currency: 100, 'Urychlovač': 1 } }, { id: 'radek_quest_2', text: 'Došel mi chmel. Potřeboval bych 3x Chmel.', requirements: { 'Chmel': 3 }, rewards: { currency: 60, 'Konev na zalévání': 1 } }, { id: 'radek_quest_3', text: 'Dochází mi zásoby. Potřebuji 3x Tymián, 4x Máta a 2x Chilli jalapeňos.', requirements: { 'Tymián': 3, 'Máta': 4, 'Chilli jalapeňos': 2 }, rewards: { currency: 75, 'Chmel Semínka': 1 } }, { id: 'radek_quest_4', text: 'Potřebuji 6x Tymián, 7x Máta a 2x Chilli jalapeňos na speciální várku!', requirements: { 'Tymián': 6, 'Máta': 7, 'Chilli jalapeňos': 2 }, rewards: { currency: 110, 'Urychlovač': 1 } } ] },
+            'Jan Tlouštík': { emoji: '🧔', quests: [ { id: 'jan_quest_1', text: 'Jídlo mi už bez chilli nechutná. Nutně potřebuji 10x Chilli jalapeňos!', requirements: { 'Chilli jalapeňos': 10 }, rewards: { currency: 250, 'Urychlovač': 1 } }, { id: 'jan_quest_2', text: 'Jalapeňos nebo život! Prodej mi 15x Chilli jalapeňos?', requirements: { 'Chilli jalapeňos': 15 }, rewards: { currency: 400, 'Urychlovač': 2 } } ] },
+            'Marie Kropáčová': { emoji: '👵', quests: [ { id: 'marie_quest_1', text: 'Vykupuji semínka! Prodej mi 5x Ředkvičky Semínka.', requirements: { 'Ředkvičky Semínka': 5 }, rewards: { currency: 10 } }, { id: 'marie_quest_2', text: 'Potřebuji tolik semínek, kolik jen můžeš prodat! Můžeš mi prodat 3x Hlávkový salát Semínka a 3x Červená paprika Semínka?', requirements: { 'Hlávkový salát Semínka': 3, 'Červená paprika Semínka': 3 }, rewards: { currency: 30 } } ] }
+        };
+        
+        let game = {
+            day: 1,
+            garden: Array(GARDEN_SIZE).fill(null).map(() => ({ plant: null, watered: false, hasPest: false })),
+            inventory: {
+                'Ředkvičky Semínka': 3, 'Hlávkový salát Semínka': 3, 'Červená paprika Semínka': 3,
+                'Chilli jalapeňos Semínka': 3, 'Tymián Semínka': 3, 'Konev na zalévání': 1, 'Urychlovač': 0
+            },
+            currency: 50,
+            selectedItem: null,
+            activeQuest: null,
+            lastQuestCheckDay: 0
+        };
+        
+        let actionLock = false;
+        const DEBOUNCE_DELAY = 100;
+        let debounceTimer = null;
+        function debounce(func, delay) {
+            return function(...args) {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    func.apply(this, args);
+                }, delay);
+            };
+        }
+
+        function initializeGame() {
+            try {
+                renderAll();
+                announceToScreenReader(`Vítejte na zahrádce! Dnes je den ${game.day}.`);
+                checkAndGenerateQuest();
+            } catch (error) {
+                console.error('Chyba při inicializaci hry:', error);
+                myoModals.showCustomModal('Nastala chyba při inicializaci hry.', 'Chyba');
+            }
+        }
+        
+        let renderTimeout = null;
+        const RENDER_DELAY = 50;
+        function renderAll(focusedElement = null) {
+            if (renderTimeout) return;
+            renderTimeout = setTimeout(() => {
+                try {
+                    const currentFocusedIndex = focusedElement ? parseInt(focusedElement.dataset.index) : null;
+                    const currentFocusedItem = focusedElement ? focusedElement.dataset.item : null;
+                    const currentFocusedId = focusedElement ? focusedElement.id : null;
+
+                    renderGarden();
+                    renderInventory();
+                    gameDayDisplay.textContent = game.day;
+                    currencyDisplay.textContent = game.currency; 
+                    if (shopCurrencyDisplay) shopCurrencyDisplay.textContent = game.currency;
+                    displayActiveQuest();
+                    
+                    if (currentFocusedIndex !== null) {
+                        const newFocusedElement = document.querySelector(`.plot[data-index="${currentFocusedIndex}"]`);
+                        if (newFocusedElement) newFocusedElement.focus();
+                    } else if (currentFocusedItem) {
+                        const newFocusedElement = document.querySelector(`.inventory-item[data-item="${currentFocusedItem}"]`);
+                        if (newFocusedElement) newFocusedElement.focus();
+                    } else if(currentFocusedId) {
+                        const newFocusedElement = document.getElementById(currentFocusedId);
+                        if(newFocusedElement) newFocusedElement.focus();
+                    }
+                } catch (error) {
+                    console.error('Chyba při renderování:', error);
+                    myoModals.showCustomModal('Nastala chyba při aktualizaci hry.', 'Chyba');
+                } finally {
+                    renderTimeout = null;
+                }
+            }, RENDER_DELAY);
+        }
+
+        function updatePlotElement(plotDiv, plotData, index) {
+            try {
+                const PEST_EMOJI = '🐛';
+                if (plotData.plant) {
+                    const plantType = plotData.plant.type;
+                    const plantConfig = plantsConfig[plantType];
+                    const currentStage = plantConfig.growthStages[plotData.plant.stage];
+
+                    let statusText = currentStage.name;
+                    let statusClass = '';
+                    let ariaLabel = `${plantType} (${currentStage.name})`;
+                    
+                    plotDiv.innerHTML = `<span class="plant-icon">${plantConfig.emoji}</span>`;
+
+                    if (plotData.hasPest) {
+                        plotDiv.innerHTML = `<span class="pest-icon">${PEST_EMOJI}</span>` + plotDiv.innerHTML;
+                        statusText = 'Škůdce!';
+                        statusClass = 'pest';
+                        ariaLabel += `, napadena škůdcem.`;
+                    } else if (plotData.plant.stage === plantConfig.growthStages.length - 1) {
+                        statusText = 'Zralá!';
+                        statusClass = 'ready';
+                        ariaLabel += `, zralá.`;
+                    } else if (!plotData.watered) {
+                        statusText += ' (Sucho)';
+                        statusClass = 'dry';
+                        ariaLabel += `, sucho.`;
+                    } else {
+                        statusText += ' (Zalito)';
+                        statusClass = 'watered';
+                        ariaLabel += `, zalito.`;
+                    }
+                    plotDiv.innerHTML += `<span class="plant-status ${statusClass}">${statusText}</span>`;
+                    plotDiv.setAttribute('aria-label', ariaLabel);
+                } else {
+                    plotDiv.innerHTML = '➕';
+                    plotDiv.setAttribute('aria-label', `Prázdné políčko.`);
+                }
+            } catch (error) {
+                console.error('Chyba při aktualizaci políčka:', error);
+                plotDiv.innerHTML = 'Error';
+                plotDiv.setAttribute('aria-label', `Chyba při načítání políčka ${index + 1}.`);
+            }
+        }
+
+        function renderGarden() {
+            const currentPlots = gardenGridElement.querySelectorAll('.plot');
+            if (currentPlots.length !== game.garden.length) {
+                gardenGridElement.innerHTML = '';
+                game.garden.forEach((plotData, index) => {
+                    const plotDiv = document.createElement('div');
+                    plotDiv.classList.add('plot');
+                    plotDiv.setAttribute('tabindex', '0');
+                    plotDiv.setAttribute('role', 'gridcell');
+                    plotDiv.dataset.index = index;
+                    updatePlotElement(plotDiv, plotData, index);
+                    gardenGridElement.appendChild(plotDiv);
+                });
+            } else {
+                currentPlots.forEach((plotDiv, index) => {
+                    updatePlotElement(plotDiv, game.garden[index], index);
+                });
+            }
+        }
+        
+        gardenGridElement.addEventListener('click', (e) => {
+            const plot = e.target.closest('.plot');
+            if(plot) {
+                const index = parseInt(plot.dataset.index);
+                handlePlotClick(index);
+            }
+        });
+
+        function renderInventory() {
+            inventoryItemsElement.innerHTML = '';
+            for (const item in game.inventory) {
+                if (game.inventory[item] > 0 || item === 'Konev na zalévání') { 
+                    const itemDiv = document.createElement('div');
+                    itemDiv.classList.add('inventory-item');
+                    itemDiv.setAttribute('tabindex', '0');
+                    itemDiv.setAttribute('role', 'button');
+                    itemDiv.setAttribute('aria-label', `Položka inventáře: ${item}, množství ${game.inventory[item]}.`);
+                    itemDiv.dataset.item = item;
+                    itemDiv.textContent = `${item}: ${game.inventory[item]}`;
+                    if (game.selectedItem === item) itemDiv.classList.add('selected');
+                    inventoryItemsElement.appendChild(itemDiv);
+                }
+            }
+        }
+
+        inventoryItemsElement.addEventListener('click', (e) => {
+            const itemDiv = e.target.closest('.inventory-item');
+            if(itemDiv) {
+                const item = itemDiv.dataset.item;
+                selectInventoryItem(item);
+            }
+        });
+
+        function selectInventoryItem(item) {
+            try {
+                const focusedElement = document.activeElement;
+                if (game.selectedItem === item) {
+                    game.selectedItem = null;
+                    showGameMessage(`${item} odznačeno.`);
+                } else {
+                    game.selectedItem = item;
+                    showGameMessage(`${item} vybráno.`);
+                }
+                renderAll(focusedElement);
+            } catch (error) {
+                console.error('Chyba při výběru položky:', error);
+                myoModals.showCustomModal('Nastala chyba při výběru položky.', 'Chyba');
+            }
+        }
+        
+        function handlePlotClick(index) {
+            try {
+                const plot = game.garden[index];
+                const focusedElement = document.activeElement;
+                
+                if (plot.plant) {
+                    if (plot.hasPest) {
+                        plot.hasPest = false;
+                        showGameMessage(`Odstranil jsi škůdce.`);
+                    } else if (game.selectedItem === 'Konev na zalévání') {
+                        performAction('water', index);
+                    } else if (game.selectedItem === 'Urychlovač') {
+                        performAction('fertilize', index);
+                    } else if (plot.plant.stage === plantsConfig[plot.plant.type].growthStages.length - 1) {
+                        performAction('harvest', index);
+                    } else {
+                        showGameMessage(`${plot.plant.type} je ve fázi ${plantsConfig[plot.plant.type].growthStages[plot.plant.stage].name}.`);
+                    }
+                } else {
+                    showPlantSeedModal(index);
+                }
+                renderAll(focusedElement);
+            } catch (error) {
+                console.error('Chyba při interakci s políčkem:', error);
+                myoModals.showCustomModal('Nastala chyba při interakci s políčkem.', 'Chyba');
+            }
+        }
+        
+        function showPlantSeedModal(plotIndex) {
+            try {
+                currentPlotForPlanting = plotIndex;
+                myoModals.lastFocusedElement = document.activeElement;
+                seedOptionsContainer.innerHTML = '';
+                let hasSeeds = false;
+                for (const item in game.inventory) {
+                    if (item.endsWith('Semínka') && game.inventory[item] > 0) {
+                        hasSeeds = true;
+                        const plantType = item.replace(' Semínka', '');
+                        const button = document.createElement('button');
+                        button.classList.add('btn-action', 'px-4', 'py-2', 'rounded-md');
+                        button.textContent = `${plantType} (${game.inventory[item]})`;
+                        button.setAttribute('aria-label', `Zasadit ${plantType} semínko.`);
+                        button.onclick = () => plantSeed(plotIndex, plantType);
+                        seedOptionsContainer.appendChild(button);
+                    }
+                }
+                if (!hasSeeds) {
+                    seedOptionsContainer.innerHTML = '<p class="text-gray-400">Nemáte žádná semínka k zasazení.</p>';
+                }
+                plantSeedModal.style.display = 'flex';
+                plantSeedModal.focus();
+                announceToScreenReader('Vyberte semínko k zasazení.');
+            } catch (error) {
+                console.error('Chyba při otevírání modal okna pro sázení:', error);
+                myoModals.showCustomModal('Nastala chyba při otevírání modal okna.', 'Chyba');
+            }
+        }
+
+        function plantSeed(plotIndex, plantType) {
+            try {
+                const seedItemName = `${plantType} Semínka`;
+                if (game.inventory[seedItemName] && game.inventory[seedItemName] > 0) {
+                    game.garden[plotIndex] = {
+                        plant: {
+                            type: plantType,
+                            stage: 0,
+                            dayEnteredStage: game.day
+                        },
+                        watered: false,
+                        hasPest: false
+                    };
+                    game.inventory[seedItemName]--;
+                    showGameMessage(`Zasadil jsi ${plantType}.`);
+                } else {
+                    myoModals.showCustomModal('Nemáš dostatek semínek!', 'Chyba');
+                }
+                myoModals.closeModal('plantSeedModal');
+                renderAll(myoModals.lastFocusedElement);
+            } catch (error) {
+                console.error('Chyba při sázení semínka:', error);
+                myoModals.showCustomModal('Nastala chyba při sázení semínka.', 'Chyba');
+            }
+        }
+        cancelPlantingButton.onclick = () => {
+            myoModals.closeModal('plantSeedModal');
+            if(myoModals.lastFocusedElement) myoModals.lastFocusedElement.focus();
+        };
+
+        function performAction(action, plotIndex) {
+            try {
+                const plot = game.garden[plotIndex];
+                if (!plot || !plot.plant) {
+                    if (action === 'fertilize') {
+                        myoModals.showCustomModal('Nelze použít urychlovač na prázdné políčko!', 'Chyba');
+                    }
+                    return;
+                }
+                const focusedElement = document.activeElement;
+
+                if (action === 'water') {
+                    if (game.inventory['Konev na zalévání'] <= 0) {
+                        myoModals.showCustomModal('Nemáš konev na zalévání! Kup si ji v obchodě.', 'Chyba');
+                        return;
+                    }
+                    if (plot.watered) {
+                        showGameMessage(`Rostlina už je zalitá.`);
+                        return;
+                    }
+                    plot.watered = true;
+                    showGameMessage(`Zalil jsi rostlinu.`);
+                } else if (action === 'harvest') {
+                    const plantType = plot.plant.type;
+                    const plantConfig = plantsConfig[plantType];
+                    if (plot.plant.stage !== plantConfig.growthStages.length - 1) {
+                        showGameMessage(`Rostlina není zralá ke sklizni.`);
+                        return;
+                    }
+                    const harvestedItem = plantType;
+                    game.inventory[harvestedItem] = (game.inventory[harvestedItem] || 0) + 1;
+                    showGameMessage(`Sklidil jsi ${harvestedItem}.`);
+
+                    const seedItemName = `${plantType} Semínka`;
+                    game.inventory[seedItemName] = (game.inventory[seedItemName] || 0) + plantConfig.seedYield;
+                    showGameMessage(`Získal jsi ${plantConfig.seedYield} semínek.`);
+
+                    game.garden[plotIndex] = { plant: null, watered: false, hasPest: false };
+                } else if (action === 'fertilize') {
+                    if (game.inventory['Urychlovač'] <= 0) {
+                        myoModals.showCustomModal('Nemáš žádný Urychlovač!', 'Chyba');
+                        return;
+                    }
+                    const plantType = plot.plant.type;
+                    const plantConfig = plantsConfig[plantType];
+                    if (plot.plant.stage < plantConfig.growthStages.length - 1) {
+                        plot.plant.stage++;
+                        plot.plant.dayEnteredStage = game.day;
+                        game.inventory['Urychlovač']--;
+                        showGameMessage(`Použil jsi Urychlovač. Rostlina postoupila do další fáze!`);
+                    } else {
+                        myoModals.showCustomModal(`${plantType} už je v poslední fázi růstu, nelze použít Urychlovač.`, 'Nelze urychlit');
+                    }
+                }
+                renderAll(focusedElement);
+            } catch (error) {
+                console.error('Chyba při provádění akce:', error);
+                myoModals.showCustomModal('Nastala neočekávaná chyba.', 'Chyba');
+            }
+        }
+
+        function nextDay() {
+            try {
+                const focusedElement = document.activeElement;
+                game.day++;
+                announceToScreenReader(`Začal den ${game.day}.`);
+
+                const destroyedPlants = [];
+                for(let plot of game.garden) {
+                    if (plot.plant) {
+                        if (plot.hasPest) {
+                            destroyedPlants.push(plot.plant.type);
+                            plot.plant = null;
+                            plot.watered = false;
+                            plot.hasPest = false;
+                            continue;
+                        }
+                        const plantType = plot.plant.type;
+                        const plantConfig = plantsConfig[plantType];
+                        if (plot.plant.stage < plantConfig.growthStages.length - 1) {
+                            const daysInCurrentStage = game.day - plot.plant.dayEnteredStage;
+                            const requiredDuration = plantConfig.growthStages[plot.plant.stage].duration;
+                            if (plot.watered && daysInCurrentStage >= requiredDuration) {
+                                plot.plant.stage++;
+                                plot.plant.dayEnteredStage = game.day;
+                            }
+                        }
+                        plot.watered = false;
+                    }
+                }
+
+                if (destroyedPlants.length > 0) {
+                    myoModals.showCustomModal(`Škůdci zničili tyto rostliny: ${destroyedPlants.join(', ')}.`, 'Rostlina zničena');
+                    announceToScreenReader('Některé rostliny byly zničeny škůdci.');
+                }
+
+                const PEST_EMOJI = '🐛';
+                const PEST_CHANCE = 0.20;
+                const availablePlotsForPest = game.garden.filter(p => p.plant && !p.hasPest && p.plant.stage < plantsConfig[p.plant.type].growthStages.length - 1);
+                if (availablePlotsForPest.length > 0 && Math.random() < PEST_CHANCE) {
+                    const randomPlot = availablePlotsForPest[Math.floor(Math.random() * availablePlotsForPest.length)];
+                    const plotIndex = game.garden.indexOf(randomPlot);
+                    game.garden[plotIndex].hasPest = true;
+                    myoModals.showCustomModal(`Na políčku ${plotIndex + 1} se objevil škůdce!`, 'Pozor: Škůdce!');
+                    announceToScreenReader(`Na políčku ${plotIndex + 1} se objevil škůdce!`);
+                }
+
+                checkAndGenerateQuest();
+                renderAll(focusedElement);
+            } catch (error) {
+                console.error('Chyba při přechodu na další den:', error);
+                myoModals.showCustomModal('Nastala neočekávaná chyba.', 'Chyba');
+            }
+        }
+        
+        function waterAllPlants() {
+            try {
+                if (game.inventory['Konev na zalévání'] <= 0) {
+                    myoModals.showCustomModal('Nemáš konev na zalévání! Kup si ji v obchodě.', 'Chyba');
+                    return;
+                }
+                const focusedElement = document.activeElement;
+                let wateredCount = 0;
+                game.garden.forEach((plot) => {
+                    if (plot.plant && !plot.watered && !plot.hasPest) {
+                        plot.watered = true;
+                        wateredCount++;
+                    }
+                });
+                if (wateredCount > 0) {
+                    showGameMessage(`Zalil jsi ${wateredCount} rostlin.`);
+                } else {
+                    showGameMessage('Žádné rostliny nepotřebují zalít.');
+                }
+                renderAll(focusedElement);
+            } catch (error) {
+                console.error('Chyba při zalévání:', error);
+                myoModals.showCustomModal('Nastala neočekávaná chyba.', 'Chyba');
+            }
+        }
+        
+        function harvestAllRipePlants() {
+            try {
+                let harvestedCount = 0;
+                const focusedElement = document.activeElement;
+                game.garden.forEach((plot, index) => {
+                    if (plot.plant && plot.plant.stage === plantsConfig[plot.plant.type].growthStages.length - 1) {
+                        const plantType = plot.plant.type;
+                        const plantConfig = plantsConfig[plantType];
+                        game.inventory[plantType] = (game.inventory[plantType] || 0) + 1;
+                        const seedItemName = `${plantType} Semínka`;
+                        game.inventory[seedItemName] = (game.inventory[seedItemName] || 0) + plantConfig.seedYield;
+                        game.garden[index] = { plant: null, watered: false, hasPest: false };
+                        harvestedCount++;
+                    }
+                });
+                if (harvestedCount > 0) {
+                    showGameMessage(`Sklidil jsi ${harvestedCount} rostlin.`);
+                } else {
+                    showGameMessage('Žádné rostliny nejsou zralé ke sklizni.');
+                }
+                renderAll(focusedElement);
+            } catch (error) {
+                console.error('Chyba při sklizni:', error);
+                myoModals.showCustomModal('Nastala neočekávaná chyba.', 'Chyba');
+            }
+        }
+        
+        function exportGame() {
+            myoModals.lastFocusedElement = document.activeElement;
+            try {
+                const dataStr = JSON.stringify(game, null, 2);
+                const dl = document.createElement('a');
+                dl.setAttribute("href", "data:text/json;charset=utf-8," + encodeURIComponent(dataStr));
+                dl.setAttribute("download", `zahrada_save_${game.day}.json`);
+                dl.click();
+                myoModals.showCustomModal("Stav zahrádky byl úspěšně exportován.", "Uloženo");
+            } catch (error) {
+                console.error("Chyba při exportu:", error);
+                myoModals.showCustomModal("Nastala chyba při exportu. Zkuste to prosím znovu.", 'Chyba exportu');
+            }
+        }
+
+        function importGame(event) {
+            myoModals.lastFocusedElement = document.activeElement;
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const importedGame = JSON.parse(e.target.result);
+                    if (validateGameState(importedGame)) {
+                        Object.assign(game, importedGame);
+                        renderAll(myoModals.lastFocusedElement);
+                        myoModals.showCustomModal("Stav zahrádky byl úspěšně importován.", "Načteno");
+                    } else {
+                        myoModals.showCustomModal("Chyba: Importovaný soubor nemá očekávaný formát hry.", 'Chyba importu');
+                    }
+                } catch (error) {
+                    console.error("Chyba při importu:", error);
+                    myoModals.showCustomModal("Chyba při načítání souboru: " + error.message, 'Chyba importu');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function validateGameState(importedGame) {
+            return (
+                importedGame && typeof importedGame.day === 'number' && importedGame.day >= 1 &&
+                Array.isArray(importedGame.garden) && importedGame.garden.length === GARDEN_SIZE &&
+                typeof importedGame.currency === 'number' && importedGame.currency >= 0
+            );
+        }
+
+        const sectionHeadings = [];
+        function populateSectionHeadings() {
+            sectionHeadings.length = 0;
+            const mainTitle = document.querySelector('h1');
+            const gardenStatusHeading = document.getElementById('garden-status-heading');
+            const inventoryHeading = document.getElementById('inventory-heading');
+            const dailyQuestsHeading = document.getElementById('daily-quests-heading');
+            const actionsHeading = document.getElementById('actions-heading');
+            if (mainTitle) sectionHeadings.push(mainTitle);
+            if (gardenStatusHeading) sectionHeadings.push(gardenStatusHeading);
+            if (inventoryHeading) sectionHeadings.push(inventoryHeading);
+            if (dailyQuestsHeading && dailyQuestsSection.style.display !== 'none') sectionHeadings.push(dailyQuestsHeading);
+            if (actionsHeading) sectionHeadings.push(actionsHeading);
+        }
+
+        function jumpToNextSection() {
+            if (sectionHeadings.length === 0) return;
+            const focusedHeadingIndex = sectionHeadings.indexOf(document.activeElement);
+            let currentSectionIndex = (focusedHeadingIndex + 1) % sectionHeadings.length;
+            sectionHeadings[currentSectionIndex].focus();
+            announceToScreenReader(`Přesunuto na sekci: ${sectionHeadings[currentSectionIndex].textContent}`);
+        }
+
+        function moveFocusInGrid(currentIndex, key) {
+            const plots = Array.from(gardenGridElement.querySelectorAll('.plot'));
+            const numPlots = plots.length;
+            let nextIndex = currentIndex;
+            const plotsPerRow = Math.floor(gardenGridElement.clientWidth / (plots[0].offsetWidth + parseFloat(window.getComputedStyle(gardenGridElement).gap)));
+            
+            if (key === 'ArrowUp') nextIndex -= plotsPerRow;
+            else if (key === 'ArrowDown') nextIndex += plotsPerRow;
+            else if (key === 'ArrowLeft') nextIndex--;
+            else if (key === 'ArrowRight') nextIndex++;
+
+            if (nextIndex < 0) nextIndex = 0;
+            if (nextIndex >= numPlots) nextIndex = numPlots - 1;
+
+            const nextPlot = document.querySelector(`.plot[data-index="${nextIndex}"]`);
+            if (nextPlot) {
+                nextPlot.focus();
+                announceToScreenReader(nextPlot.getAttribute('aria-label'));
+            }
+        }
+
+        function moveFocusInInventory(currentItem, key) {
+            const inventoryItems = Array.from(document.querySelectorAll('.inventory-item'));
+            const currentIndex = inventoryItems.findIndex(item => item.dataset.item === currentItem);
+            if (currentIndex === -1) return;
+
+            let nextIndex = currentIndex;
+            if (key === 'ArrowLeft') nextIndex--;
+            else if (key === 'ArrowRight') nextIndex++;
+
+            if (nextIndex < 0) nextIndex = inventoryItems.length - 1;
+            if (nextIndex >= inventoryItems.length) nextIndex = 0;
+
+            if (inventoryItems[nextIndex]) {
+                inventoryItems[nextIndex].focus();
+                announceToScreenReader(inventoryItems[nextIndex].getAttribute('aria-label'));
+            }
+        }
+        
+        inventoryItemsElement.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                selectInventoryItem(e.target.dataset.item);
+            } else if (['ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                e.preventDefault();
+                moveFocusInInventory(e.target.dataset.item, e.key);
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'h' || e.key === 'H') {
+                e.preventDefault();
+                jumpToNextSection();
+            }
+        });
+
+        function showGardenShopModal() {
+            myoModals.lastFocusedElement = document.activeElement;
+            gardenShopModal.style.display = 'flex';
+            gardenShopModal.focus();
+            gardenShopModal.setAttribute('aria-hidden', 'false');
+
+            shopCurrencyDisplay.textContent = game.currency;
+            renderShopSellSection();
+            renderShopBuySection();
+            const firstInteractiveElement = gardenShopModal.querySelector('input, button');
+            if(firstInteractiveElement) firstInteractiveElement.focus();
+        }
+
+        function closeGardenShopModal() {
+            gardenShopModal.style.display = 'none';
+            gardenShopModal.setAttribute('aria-hidden', 'true');
+            if (myoModals.lastFocusedElement) {
+                myoModals.lastFocusedElement.focus();
+            }
+        }
+
+        function renderShopSellSection() {
+            sellItemsContainer.innerHTML = '';
+            let hasSellableItems = false;
+            for (const item in game.inventory) {
+                const isPlant = plantsConfig[item];
+                const isSeed = item.endsWith('Semínka') && plantsConfig[item.replace(' Semínka', '')];
+                
+                if (game.inventory[item] > 0 && (isPlant || isSeed)) {
+                    hasSellableItems = true;
+                    let displayPrice;
+                    let itemDisplayName = item;
+
+                    if (isPlant) {
+                        displayPrice = plantsConfig[item].sellPrice;
+                    } else if (isSeed) {
+                        const plantType = item.replace(' Semínka', '');
+                        displayPrice = plantsConfig[plantType].seedSellPrice;
+                    } else {
+                        continue; 
+                    }
+
+                    const itemDiv = document.createElement('div');
+                    itemDiv.classList.add('shop-item');
+                    itemDiv.innerHTML = `
+                        <div class="shop-item-info">
+                            ${itemDisplayName} (${game.inventory[item]} ks) - ${displayPrice} Zlaťáků/ks
+                        </div>
+                        <div class="shop-item-controls">
+                            <input type="number" min="1" max="${game.inventory[item]}" value="${game.inventory[item]}" id="sell-qty-${item.replace(/\s/g, '-')}" aria-label="Množství k prodeji ${item}">
+                            <button class="btn-primary" onclick="sellItem('${item}')">Prodat</button>
+                        </div>
+                    `;
+                    sellItemsContainer.appendChild(itemDiv);
+                }
+            }
+            if (!hasSellableItems) {
+                sellItemsContainer.innerHTML = '<p class="text-gray-400">Nemáš žádné plodiny ani semínka k prodeji.</p>';
+            }
+        }
+
+        function sellItem(itemType) {
+            try {
+                const quantityInput = document.getElementById(`sell-qty-${itemType.replace(/\s/g, '-')}`);
+                let quantityToSell = Math.max(1, Math.min(parseInt(quantityInput.value) || 1, game.inventory[itemType]));
+
+                if (quantityToSell <= 0 || quantityToSell > game.inventory[itemType]) {
+                    myoModals.showCustomModal(`Zadej prosím platné množství k prodeji.`, 'Chyba prodeje');
+                    return;
+                }
+
+                let earnedCurrency;
+                const isPlant = plantsConfig[itemType];
+                const isSeed = itemType.endsWith('Semínka') && plantsConfig[itemType.replace(' Semínka', '')];
+
+                if (isPlant) {
+                    earnedCurrency = quantityToSell * plantsConfig[itemType].sellPrice;
+                } else if (isSeed) {
+                    const plantType = itemType.replace(' Semínka', '');
+                    earnedCurrency = quantityToSell * plantsConfig[plantType].seedSellPrice;
+                } else {
+                    myoModals.showCustomModal(`Nelze prodat položku ${itemType}.`, 'Chyba prodeje');
+                    return;
+                }
+
+                game.inventory[itemType] -= quantityToSell;
+                game.currency += earnedCurrency;
+                showGameMessage(`Prodáno ${quantityToSell} ${itemType} za ${earnedCurrency} Zlaťáků.`);
+                renderAll(document.activeElement);
+            } catch (error) {
+                console.error('Chyba při prodeji:', error);
+                myoModals.showCustomModal('Nastala chyba při prodeji. Zkuste to prosím znovu.', 'Chyba prodeje');
+            }
+        }
+
+        function renderShopBuySection() {
+            buyItemsContainer.innerHTML = '';
+            let hasBuyableItems = false;
+            for (const item in shopItemsConfig) {
+                const itemConfig = shopItemsConfig[item];
+                hasBuyableItems = true;
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('shop-item');
+                itemDiv.innerHTML = `
+                    <div class="shop-item-info">
+                        ${itemConfig.emoji} ${item} - ${itemConfig.price} Zlaťáků
+                    </div>
+                    <div class="shop-item-controls">
+                        <input type="number" min="1" value="1" id="buy-qty-${item.replace(/\s/g, '-')}" aria-label="Množství k nákupu ${item}">
+                        <button class="btn-primary" onclick="buyItem('${item}')">Koupit</button>
+                    </div>
+                `;
+                buyItemsContainer.appendChild(itemDiv);
+            }
+            if (!hasBuyableItems) {
+                buyItemsContainer.innerHTML = '<p class="text-gray-400">Momentálně nic na prodej.</p>';
+            }
+        }
+
+        function buyItem(itemType) {
+            try {
+                const itemConfig = shopItemsConfig[itemType];
+                if (!itemConfig) return;
+                const quantityInput = document.getElementById(`buy-qty-${itemType.replace(/\s/g, '-')}`);
+                let quantityToBuy = Math.max(1, parseInt(quantityInput.value) || 1);
+                const totalCost = quantityToBuy * itemConfig.price;
+                if (game.currency < totalCost) {
+                    myoModals.showCustomModal(`Nemáš dostatek Zlaťáků pro nákup ${quantityToBuy} ks ${itemType}! Potřebuješ ${totalCost} Zlaťáků.`, 'Nemáš dost peněz');
+                    return;
+                }
+                game.currency -= totalCost;
+                game.inventory[itemType] = (game.inventory[itemType] || 0) + quantityToBuy;
+                showGameMessage(`Koupil jsi ${quantityToBuy} ks ${itemType} za ${totalCost} Zlaťáků.`);
+                renderAll(document.activeElement);
+            } catch (error) {
+                console.error('Chyba při nákupu:', error);
+                myoModals.showCustomModal('Nastala chyba při nákupu. Zkuste to prosím znovu.', 'Chyba');
+            }
+        }
+
+        closeShopButton.onclick = () => closeGardenShopModal();
+
+        function checkAndGenerateQuest() {
+            if (game.activeQuest && game.activeQuest.returnDay && game.activeQuest.returnDay > game.day) {
+                dailyQuestsSection.style.display = 'none';
+                return;
+            }
+            if (game.activeQuest && (!game.activeQuest.returnDay || game.activeQuest.returnDay <= game.day)) {
+                game.activeQuest.returnDay = null;
+                displayActiveQuest();
+                return;
+            }
+            const PEST_CHANCE = 0.20;
+            const QUEST_APPEARANCE_CHANCE = 0.30;
+            if (!game.activeQuest && Math.random() < QUEST_APPEARANCE_CHANCE) {
+                const npcNames = Object.keys(questsConfig);
+                const randomNpcName = npcNames[Math.floor(Math.random() * npcNames.length)];
+                const npcConfig = questsConfig[randomNpcName];
+                const randomQuest = npcConfig.quests[Math.floor(Math.random() * npcConfig.quests.length)];
+
+                game.activeQuest = {
+                    npc: randomNpcName,
+                    questId: randomQuest.id,
+                    text: randomQuest.text,
+                    requirements: randomQuest.requirements,
+                    rewards: randomQuest.rewards,
+                    returnDay: null
+                };
+                myoModals.showCustomModal(`Na políčku ${randomNpcName} se objevil s novým úkolem!`, 'Nový úkol!');
+                announceToScreenReader(`Na políčku ${randomNpcName} se objevil s novým úkolem!`);
+                displayActiveQuest();
+            } else if (!game.activeQuest) {
+                dailyQuestsSection.style.display = 'none';
+            }
+        }
+
+        function displayActiveQuest() {
+            if (!game.activeQuest) {
+                dailyQuestsSection.style.display = 'none';
+                return;
+            }
+            if (game.activeQuest.returnDay && game.activeQuest.returnDay > game.day) {
+                dailyQuestsSection.style.display = 'none';
+                return;
+            }
+            dailyQuestsSection.style.display = 'block';
+            activeQuestDisplay.innerHTML = `
+                <h4>${questsConfig[game.activeQuest.npc].emoji} ${game.activeQuest.npc} má pro tebe úkol!</h4>
+                <p class="quest-description">${game.activeQuest.text}</p>
+                <p class="quest-requirements">Potřebuje: <span>${formatRequirements(game.activeQuest.requirements)}</span></p>
+                <p class="quest-rewards">Nabízí: <span>${formatRewards(game.activeQuest.rewards)}</span></p>
+                <div class="quest-buttons">
+                    <button class="btn-primary" onclick="acceptQuest()">Přijmout</button>
+                    <button class="btn-danger" onclick="declineQuest()">Odmítnout</button>
+                </div>
+            `;
+            const dailyQuestsHeading = document.getElementById('daily-quests-heading');
+            if(dailyQuestsHeading) {
+                dailyQuestsHeading.focus();
+            }
+        }
+
+        function formatRequirements(requirements) {
+            let reqs = [];
+            for (const item in requirements) {
+                reqs.push(`${requirements[item]}x ${item}`);
+            }
+            return reqs.join(', ');
+        }
+
+        function formatRewards(rewards) {
+            let rews = [];
+            for (const item in rewards) {
+                if (item === 'currency') {
+                    rews.push(`${rewards[item]} Zlaťáků`);
+                } else {
+                    rews.push(`${rewards[item]}x ${item}`);
+                }
+            }
+            return rews.join(', ');
+        }
+
+        function acceptQuest() {
+            try {
+                const requirements = game.activeQuest.requirements;
+                let canFulfill = true;
+                let missingItems = [];
+                for (const item in requirements) {
+                    if ((game.inventory[item] || 0) < requirements[item]) {
+                        canFulfill = false;
+                        missingItems.push(`${requirements[item]}x ${item}`);
+                    }
+                }
+                if (canFulfill) {
+                    for (const item in requirements) {
+                        game.inventory[item] -= requirements[item];
+                    }
+                    const rewards = game.activeQuest.rewards;
+                    for (const item in rewards) {
+                        if (item === 'currency') {
+                            game.currency += rewards[item];
+                        } else {
+                            game.inventory[item] = (game.inventory[item] || 0) + rewards[item];
+                        }
+                    }
+                    myoModals.showCustomModal(`Úkol od ${game.activeQuest.npc} splněn! Získal jsi: ${formatRewards(rewards)}.`, 'Úkol splněn!');
+                    announceToScreenReader(`Úkol splněn. Získal jsi ${formatRewards(rewards)}.`);
+                    game.activeQuest = null;
+                } else {
+                    myoModals.showCustomModal(`Nemáš dostatek potřebných předmětů pro splnění úkolu! Chybí ti: ${missingItems.join(', ')}.`, 'Úkol nelze splnit');
+                    announceToScreenReader(`Úkol nelze splnit. Chybí ti ${missingItems.join(', ')}.`);
+                }
+                renderAll(document.activeElement);
+            } catch (error) {
+                console.error('Chyba při přijímání úkolu:', error);
+                myoModals.showCustomModal('Nastala neočekávaná chyba.', 'Chyba');
+            }
+        }
+
+        function declineQuest() {
+            try {
+                const npcName = game.activeQuest.npc;
+                const returnDays = Math.floor(Math.random() * (QUEST_DECLINE_RETURN_DAYS_MAX - QUEST_DECLINE_RETURN_DAYS_MIN + 1)) + QUEST_DECLINE_RETURN_DAYS_MIN;
+                game.activeQuest.returnDay = game.day + returnDays;
+                myoModals.showCustomModal(`Úkol od ${npcName} byl odmítnut. ${npcName} se vrátí za ${returnDays} dní.`, 'Úkol odmítnut');
+                announceToScreenReader(`Úkol odmítnut. ${npcName} se vrátí za ${returnDays} dní.`);
+                renderAll(document.activeElement);
+            } catch (error) {
+                console.error('Chyba při odmítnutí úkolu:', error);
+                myoModals.showCustomModal('Nastala neočekávaná chyba.', 'Chyba');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('keydown', myoModals.handleGlobalModalKeyboard);
+            initializeGame();
+            populateSectionHeadings();
+        });
+    </script>
+</body>
+</html>

@@ -24,3 +24,18 @@ function updateTime() {
 // Aktualizace ihned po načtení + každou sekundu
 updateTime();
 setInterval(updateTime, 1000);
+
+// Jemná animace easter eggu při hoveru / focusu
+document.addEventListener('DOMContentLoaded', () => {
+    const egg = document.querySelector('.game-link-fixed');
+    if (!egg) return;
+
+    const triggerAnimation = () => {
+        egg.classList.remove('game-link-animate');
+        void egg.offsetWidth; // restart animace
+        egg.classList.add('game-link-animate');
+    };
+
+    egg.addEventListener('mouseenter', triggerAnimation);
+    egg.addEventListener('focus', triggerAnimation);
+});

@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TextBox</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Základní styly pro tělo stránky - TMAVÝ REŽIM pro UI */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000; /* Černé pozadí */
+            color: #e2e8f0; /* Světlý text */
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Kontejner pro aplikaci */
+        .container {
+            max-width: 5xl; /* Širší kontejner pro tabulky a formuláře */
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #1a1a1a;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        /* Styly pro nadpis */
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #facc15; /* Žlutá barva pro nadpis */
+            font-weight: 700;
+            text-align: center;
+        }
+        h2 {
+            font-size: 1.75rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            color: #90cdf4; /* Světlejší modrá pro podnadpisy */
+            font-weight: 700;
+            border-bottom: 1px solid #4a5568;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Styly pro popisky formuláře */
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            color: #cbd5e0;
+            font-weight: 500;
+        }
+
+        /* Styly pro vstupní pole a selecty */
+        input[type="text"],
+        textarea,
+        select {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            width: 100%;
+            margin-bottom: 1rem; /* Mezera pod každým inputem */
+            border: 1px solid #4a5568;
+            border-radius: 0.5rem;
+            box-sizing: border-box;
+            background-color: #2d3748;
+            color: #e2e8f0;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #facc15; /* Žlutý rámeček při zaostření */
+            box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.5);
+        }
+
+        .form-section {
+            background-color: #222;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Styly pro tlačítka */
+        button {
+            padding: 0.75rem 1.5rem;
+            margin: 0.5rem;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease;
+            color: #000; /* Černý text tlačítek pro lepší kontrast */
+        }
+        .btn-primary { background-color: #28a745; color: #fff;} /* Zelená */
+        .btn-secondary { background-color: #ffc107; color: #000; } /* Žlutá */
+        .btn-danger { background-color: #f44336; color: #fff;} /* Červená */
+        .btn-export { background-color: #17a2b8; color: #fff; } /* Azurová pro export */
+        .btn-import { background-color: #6f42c1; color: #fff; } /* Fialová pro import */
+        .btn-toggle-form { background-color: #007bff; color: #fff;} /* Modrá pro toggle form */
+        
+        button:hover { opacity: 0.9; }
+        button:focus { outline: 2px solid #facc15; outline-offset: 2px; }
+
+        /* Styly pro tabulku */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background: #111;
+            color: #fff;
+            margin-top: 1.5rem;
+            border-radius: 0.5rem;
+            overflow: hidden; /* Aby se border-radius aplikoval na celou tabulku */
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 0.75rem;
+            text-align: left; /* Zarovnání textu vlevo pro lepší čitelnost */
+        }
+        th {
+            background: #222;
+            font-weight: bold;
+            color: #facc15;
+        }
+        tr:nth-child(even) { background-color: #1a1a1a; } /* Střídavé barvy řádků */
+        tr:hover { background-color: #2a2a2a; } /* Změna barvy při najetí */
+
+        /* Styly pro text scény */
+        #sceneTextDisplay {
+            background-color: #2d3748;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            white-space: pre-wrap; /* Zachová zalomení řádků */
+            text-align: left;
+        }
+
+        /* Styly pro volby */
+        .choice-button {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            margin-bottom: 0.75rem;
+            background-color: #4299e1; /* Modrá */
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            text-align: center;
+        }
+        .choice-button:hover {
+            background-color: #3182ce;
+        }
+        .choice-button:focus {
+            outline: 2px solid #facc15;
+            outline-offset: 2px;
+        }
+        .choice-button:disabled {
+            background-color: #a0aec0;
+            cursor: not-allowed;
+        }
+
+        /* Styl pro tlačítko Zpět na Dashboard */
+        .back-to-dashboard-link {
+            display: block;
+            width: fit-content;
+            background-color: #4a4a4a;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            transition: background-color 0.2s ease;
+        }
+        .back-to-dashboard-link:hover {
+            background-color: #6a6a6a;
+        }
+        .back-to-dashboard-link:focus {
+            outline: 2px solid #facc15;
+            outline-offset: 2px;
+        }
+
+        /* Styly pro modální okno */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #4a5568;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.4),0 6px 20px 0 rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .modal-buttons {
+            text-align: right;
+        }
+        .modal-buttons button {
+            padding: 0.5rem 1rem;
+            margin-left: 0.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .modal-buttons .bg-gray-500 { background-color: #4a4a4a; color: #fff; }
+        .modal-buttons .bg-red-500 { background-color: #f44336; color: #fff; }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-to-dashboard-link" aria-label="Zpět na Palpatius games">← Zpět na Palpatius games</a>
+
+    <div class="container">
+        <h1 id="appTitle">TextBox</h1>
+
+        <div id="startScreen" class="text-center space-y-4">
+            <p class="text-lg">Vítejte v aplikaci TextBox! Vyberte si, co chcete dělat:</p>
+            <button id="generatorButton" class="btn-primary" onclick="showMode('generator')">Vytvářet příběhy</button>
+            <button id="playerButton" class="btn-primary" onclick="showMode('player')">Hrát příběhy</button>
+        </div>
+
+        <div id="generatorMode" class="hidden">
+            <div class="flex justify-between items-center mb-6">
+                <a href="javascript:void(0)" onclick="showMode('start')" class="back-to-mode-select-link text-white bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg" aria-label="Zpět na výběr režimu">← Zpět na výběr</a>
+                <h1 class="flex-grow text-center">Generátor příběhů</h1>
+            </div>
+            <div class="flex flex-wrap justify-center mb-6">
+                <button class="btn-primary" onclick="toggleForm('addSceneFormSection')" aria-controls="addSceneFormSection" aria-expanded="false">Přidat novou scénu</button>
+                <button class="btn-export" onclick="exportStory()">Exportovat příběh (JSON)</button>
+                <label class="btn-import">
+                    Importovat příběh (JSON)
+                    <input type="file" id="importStoryFile" accept=".json" onchange="importStory(event)" class="hidden" aria-label="Načíst příběh ze souboru"/>
+                </label>
+            </div>
+
+            <div id="addSceneFormSection" class="form-section hidden">
+                <h2>Přidat/Upravit scénu</h2>
+                <input type="hidden" id="sceneIndex" value="">
+                <label for="storyTitleInput">Název příběhu:</label>
+                <input type="text" id="storyTitleInput" placeholder="Název vašeho příběhu" aria-label="Název příběhu" oninput="updateStoryMetadata()" /><br>
+                <label for="sceneId">ID scény:</label>
+                <input type="text" id="sceneId" placeholder="Unikátní ID scény (např. start, les_krizovatka)" aria-label="ID scény" /><br>
+                <label for="sceneText">Text scény:</label>
+                <textarea id="sceneText" placeholder="Zde napište text, který se zobrazí v této scéně." aria-label="Text scény"></textarea><br>
+                
+                <h3>Volba A:</h3>
+                <label for="choiceAText">Text volby A:</label>
+                <input type="text" id="choiceAText" placeholder="Např. Jít doleva" aria-label="Text volby A" /><br>
+                <label for="choiceANextSceneId">ID další scény pro volbu A:</label>
+                <input type="text" id="choiceANextSceneId" placeholder="ID scény, kam se uživatel přesune (např. les_doleva)" aria-label="ID další scény pro volbu A" /><br>
+
+                <h3>Volba B:</h3>
+                <label for="choiceBText">Text volby B:</label>
+                <input type="text" id="choiceBText" placeholder="Např. Jít doprava" aria-label="Text volby B" /><br>
+                <label for="choiceBNextSceneId">ID další scény pro volbu B:</label>
+                <input type="text" id="choiceBNextSceneId" placeholder="ID scény, kam se uživatel přesune (např. les_doprava)" aria-label="ID další scény pro volbu B" /><br>
+
+                <button class="btn-primary" onclick="saveScene()">Uložit scénu</button>
+                <button class="btn-secondary" onclick="toggleForm('addSceneFormSection')">Zrušit</button>
+            </div>
+
+            <div class="table-responsive">
+                <table id="scenesTable">
+                    <thead>
+                        <tr>
+                            <th>ID scény</th>
+                            <th>Text scény (začátek)</th>
+                            <th>Volba A</th>
+                            <th>Volba B</th>
+                            <th>Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="playerMode" class="hidden text-center">
+            <div class="flex justify-between items-center mb-6">
+                <a href="javascript:void(0)" onclick="showMode('start')" class="back-to-mode-select-link text-white bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg" aria-label="Zpět na výběr režimu">← Zpět na výběr</a>
+                <h1 class="flex-grow text-center">Přehrávač příběhů</h1>
+            </div>
+            <div id="gameScreen">
+                <p id="sceneTextDisplay" aria-live="polite" aria-atomic="true" class="text-left bg-gray-800 p-4 rounded-lg"></p>
+                <div id="choicesContainer" class="space-y-3 mt-4">
+                    <button id="choiceAButton" class="choice-button" onclick="makeChoice(0)"></button>
+                    <button id="choiceBButton" class="choice-button" onclick="makeChoice(1)"></button>
+                </div>
+                <div class="flex justify-center flex-wrap gap-4 mt-6">
+                    <button class="btn-secondary" onclick="saveGame()">Uložit postup</button>
+                    <label class="btn-import">
+                        Načíst postup
+                        <input type="file" id="loadGameFile" accept=".json" onchange="loadGame(event)" class="hidden" aria-label="Načíst uložený postup"/>
+                    </label>
+                    <button class="btn-danger" onclick="restartStory()">Restartovat příběh</button>
+                </div>
+            </div>
+            <div id="playerIntro" class="space-y-4">
+                <p class="text-lg">Vítejte v TextBoxu! Zde můžete hrát interaktivní textové příběhy.</p>
+                <label class="btn-import text-lg" style="color: #fff;">
+                    Načíst vlastní příběh (JSON)
+                    <input type="file" id="importStoryFilePlayer" accept=".json" onchange="importStoryPlayer(event)" class="hidden" aria-label="Načíst příběh ze souboru"/>
+                </label>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="customMessageModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalMessageTitle" tabindex="-1">
+        <div class="modal-content">
+            <h3 id="modalMessageTitle" class="text-xl font-bold text-yellow-300 mb-4">Zpráva</h3>
+            <p id="modalMessage" class="text-gray-300 mb-4"></p>
+            <div class="modal-buttons">
+                <button id="modalOkButton" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">OK</button>
+                <button id="modalCancelButton" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md ml-2 hidden">Zrušit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Globální datová struktura pro příběh
+        let story = {
+            title: "Můj nový příběh",
+            author: "Neznámý autor",
+            scenes: []
+        };
+        let gameProgress = {};
+        let currentSceneId = null;
+        let lastFocusedElement = null; // Udržení fokusu pro přístupnost
+
+        // --- DOM elementy ---
+        const startScreen = document.getElementById('startScreen');
+        const generatorMode = document.getElementById('generatorMode');
+        const playerMode = document.getElementById('playerMode');
+        const appTitle = document.getElementById('appTitle');
+
+        const storyTitleInput = document.getElementById('storyTitleInput');
+        const sceneIdInput = document.getElementById('sceneId');
+        const sceneTextInput = document.getElementById('sceneText');
+        const choiceATextInput = document.getElementById('choiceAText');
+        const choiceANextSceneIdInput = document.getElementById('choiceANextSceneId');
+        const choiceBTextInput = document.getElementById('choiceBText');
+        const choiceBNextSceneIdInput = document.getElementById('choiceBNextSceneId');
+        const sceneIndexInput = document.getElementById('sceneIndex');
+        const scenesTableBody = document.querySelector('#scenesTable tbody');
+
+        const playerIntro = document.getElementById('playerIntro');
+        const gameScreen = document.getElementById('gameScreen');
+        const sceneTextDisplay = document.getElementById('sceneTextDisplay');
+        const choicesContainer = document.getElementById('choicesContainer');
+        const choiceAButton = document.getElementById('choiceAButton');
+        const choiceBButton = document.getElementById('choiceBButton');
+
+        // --- Custom modální okno (sjednoceno s ostatními aplikacemi) ---
+        function showCustomModal(message, title = 'Zpráva', onConfirm = null, showCancel = false) {
+            lastFocusedElement = document.activeElement;
+            const modal = document.getElementById('customMessageModal');
+            document.getElementById('modalMessageTitle').textContent = title;
+            document.getElementById('modalMessage').innerHTML = message;
+            modal.style.display = 'flex';
+            modal.focus();
+            modal.setAttribute('aria-hidden', 'false');
+            
+            const okButton = document.getElementById('modalOkButton');
+            okButton.onclick = () => { closeCustomModal(); if (onConfirm) onConfirm(); };
+            
+            let cancelButton = document.getElementById('modalCancelButton');
+            if (cancelButton) {
+                cancelButton.style.display = showCancel ? 'inline-block' : 'none';
+                cancelButton.onclick = closeCustomModal;
+            }
+            document.addEventListener('keydown', handleModalKeyboard);
+        }
+
+        function closeCustomModal() {
+            const modal = document.getElementById('customMessageModal');
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+            document.removeEventListener('keydown', handleModalKeyboard);
+            if (lastFocusedElement) {
+                lastFocusedElement.focus();
+            }
+        }
+
+        function handleModalKeyboard(event) {
+            if (event.key === 'Escape') {
+                closeCustomModal();
+            }
+        }
+
+        // --- Logika pro přepínání režimů (Generátor / Přehrávač) ---
+        function showMode(mode) {
+            startScreen.classList.add('hidden');
+            generatorMode.classList.add('hidden');
+            playerMode.classList.add('hidden');
+            
+            if (mode === 'generator') {
+                generatorMode.classList.remove('hidden');
+                appTitle.textContent = "TextBox - Generátor";
+                storyTitleInput.value = story.title;
+                updateScenesTable();
+            } else if (mode === 'player') {
+                playerMode.classList.remove('hidden');
+                appTitle.textContent = "TextBox - Přehrávač";
+                playerIntro.classList.remove('hidden');
+                gameScreen.classList.add('hidden');
+            } else if (mode === 'start') {
+                startScreen.classList.remove('hidden');
+                appTitle.textContent = "TextBox";
+            }
+        }
+
+        // --- Logika Generátoru ---
+        let activeFormId = null;
+        function toggleForm(formId) {
+            const targetForm = document.getElementById(formId);
+            const button = document.querySelector(`button[aria-controls="${formId}"]`);
+
+            if (activeFormId === formId) {
+                targetForm.classList.add('hidden');
+                if (button) button.setAttribute('aria-expanded', 'false');
+                activeFormId = null;
+            } else {
+                document.querySelectorAll('.form-section').forEach(form => {
+                    if (form.id !== formId) {
+                        form.classList.add('hidden');
+                        const btn = document.querySelector(`button[aria-controls="${form.id}"]`);
+                        if (btn) btn.setAttribute('aria-expanded', 'false');
+                    }
+                });
+                targetForm.classList.remove('hidden');
+                if (button) button.setAttribute('aria-expanded', 'true');
+                activeFormId = formId;
+                targetForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                targetForm.querySelector('input, textarea, select, button')?.focus();
+            }
+        }
+
+        function updateStoryMetadata() {
+            story.title = storyTitleInput.value.trim() || "Můj nový příběh";
+        }
+
+        function saveScene() {
+            lastFocusedElement = document.activeElement;
+            const sceneIndex = sceneIndexInput.value;
+            const id = sceneIdInput.value.trim();
+            const text = sceneTextInput.value.trim();
+            const choiceAText = choiceATextInput.value.trim();
+            const choiceANextSceneId = choiceANextSceneIdInput.value.trim();
+            const choiceBText = choiceBTextInput.value.trim();
+            const choiceBNextSceneId = choiceBNextSceneIdInput.value.trim();
+
+            if (!id || !text) {
+                showCustomModal('Prosím, zadejte ID scény a text scény.', 'Chyba zadání');
+                return;
+            }
+
+            if (sceneIndex === "" && story.scenes.some(s => s.id === id)) {
+                showCustomModal(`Scéna s ID "${id}" již existuje. Zvolte prosím jiné ID.`, 'Duplicitní ID scény');
+                return;
+            }
+
+            const newScene = { id, text, choices: [] };
+            if (choiceAText && choiceANextSceneId) {
+                newScene.choices.push({ text: choiceAText, nextSceneId: choiceANextSceneId });
+            }
+            if (choiceBText && choiceBNextSceneId) {
+                newScene.choices.push({ text: choiceBText, nextSceneId: choiceBNextSceneId });
+            }
+
+            if (sceneIndex !== "") {
+                story.scenes[parseInt(sceneIndex)] = newScene;
+                showCustomModal('Scéna byla úspěšně upravena.', 'Úspěch');
+            } else {
+                story.scenes.push(newScene);
+                showCustomModal('Scéna byla úspěšně přidána.', 'Úspěch');
+            }
+
+            sceneIndexInput.value = '';
+            sceneIdInput.value = '';
+            sceneTextInput.value = '';
+            choiceATextInput.value = '';
+            choiceANextSceneIdInput.value = '';
+            choiceBTextInput.value = '';
+            choiceBNextSceneIdInput.value = '';
+
+            updateScenesTable();
+            toggleForm('addSceneFormSection');
+            if (lastFocusedElement) lastFocusedElement.focus();
+        }
+
+        function editScene(index) {
+            const scene = story.scenes[parseInt(index)];
+            if (scene) {
+                sceneIndexInput.value = index;
+                sceneIdInput.value = scene.id;
+                sceneTextInput.value = scene.text;
+                choiceATextInput.value = scene.choices[0] ? scene.choices[0].text : '';
+                choiceANextSceneIdInput.value = scene.choices[0] ? scene.choices[0].nextSceneId : '';
+                choiceBTextInput.value = scene.choices[1] ? scene.choices[1].text : '';
+                choiceBNextSceneIdInput.value = scene.choices[1] ? scene.choices[1].nextSceneId : '';
+                toggleForm('addSceneFormSection');
+            }
+        }
+
+        function deleteScene(index) {
+            showCustomModal('Opravdu chcete smazat tuto scénu?', 'Potvrdit smazání', () => {
+                story.scenes.splice(parseInt(index), 1);
+                updateScenesTable();
+                showCustomModal('Scéna byla smazána.', 'Úspěch');
+            }, true);
+        }
+
+        function updateScenesTable() {
+            scenesTableBody.innerHTML = '';
+            story.scenes.sort((a, b) => a.id.localeCompare(b.id));
+            story.scenes.forEach((scene, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${scene.id}</td>
+                    <td>${scene.text.substring(0, 100)}${scene.text.length > 100 ? '...' : ''}</td>
+                    <td>${scene.choices[0] ? `${scene.choices[0].text} (-> ${scene.choices[0].nextSceneId})` : '---'}</td>
+                    <td>${scene.choices[1] ? `${scene.choices[1].text} (-> ${scene.choices[1].nextSceneId})` : '---'}</td>
+                    <td>
+                        <button class="btn-secondary mr-2" onclick="editScene('${index}')">Upravit</button>
+                        <button class="btn-danger" onclick="deleteScene('${index}')">Smazat</button>
+                    </td>
+                `;
+                scenesTableBody.appendChild(row);
+            });
+        }
+
+        function exportStory() {
+            lastFocusedElement = document.activeElement;
+            try {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(story, null, 2));
+                const dl = document.createElement('a');
+                dl.setAttribute("href", dataStr);
+                dl.setAttribute("download", `${story.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.json`);
+                dl.click();
+                showCustomModal("Příběh byl úspěšně exportován jako JSON.", "Export dokončen");
+            } catch (error) {
+                console.error("Chyba při exportu JSON dat:", error);
+                showCustomModal("Nastala chyba při exportu příběhu. Zkuste to prosím znovu.", 'Chyba exportu');
+            }
+            if (lastFocusedElement) lastFocusedElement.focus();
+        }
+
+        function importStory(event) {
+            lastFocusedElement = document.activeElement;
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (validateStoryData(importedData)) {
+                        story = importedData;
+                        const uniqueSceneIds = new Set();
+                        story.scenes.forEach(scene => {
+                            if (!scene.id) {
+                                scene.id = `scene_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+                            }
+                            if (uniqueSceneIds.has(scene.id)) {
+                                scene.id = `${scene.id}_duplicate_${Math.random().toString(36).substring(2, 8)}`;
+                            }
+                            uniqueSceneIds.add(scene.id);
+                        });
+                        storyTitleInput.value = story.title;
+                        updateScenesTable();
+                        showCustomModal("Příběh byl úspěšně importován.", "Import dokončen");
+                    } else {
+                        showCustomModal("Chyba: Importovaný soubor nemá očekávaný formát příběhu.", 'Chyba importu');
+                    }
+                } catch (error) {
+                    console.error("Chyba při importu JSON dat:", error);
+                    showCustomModal("Chyba při načítání souboru JSON: " + error.message, 'Chyba importu');
+                }
+            };
+            reader.readAsText(file);
+            if (lastFocusedElement) lastFocusedElement.focus();
+        }
+
+        function validateStoryData(data) {
+            return data && typeof data.title === 'string' && Array.isArray(data.scenes) && data.scenes.every(s => typeof s.id === 'string' && typeof s.text === 'string');
+        }
+
+        // --- Logika Přehrávače ---
+        function startGamePlayer(storyData) {
+            story = storyData;
+            const startScene = story.scenes.find(s => s.id === 'start');
+            currentSceneId = startScene ? startScene.id : (story.scenes[0] ? story.scenes[0].id : null);
+            gameProgress = { currentSceneId: currentSceneId };
+            
+            const allSceneIds = story.scenes.map(s => s.id);
+            for(const scene of story.scenes) {
+                for(const choice of scene.choices) {
+                    if (!allSceneIds.includes(choice.nextSceneId)) {
+                        showCustomModal(`Chyba validace: Scéna '${scene.id}' odkazuje na neexistující scénu '${choice.nextSceneId}'. Příběh nelze spustit.`, 'Chyba příběhu');
+                        return;
+                    }
+                }
+            }
+
+
+            if (!currentSceneId) {
+                showCustomModal('Příběh neobsahuje žádné scény. Zkontrolujte soubor.', 'Chyba příběhu');
+                return;
+            }
+
+            appTitle.textContent = story.title || "TextBox Příběh";
+            playerIntro.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            displayScene(currentSceneId);
+        }
+
+        function displayScene(sceneId) {
+            const scene = story.scenes.find(s => s.id === sceneId);
+            if (!scene) {
+                sceneTextDisplay.textContent = `Chyba: Scéna s ID '${sceneId}' nebyla nalezena.`;
+                choicesContainer.innerHTML = '';
+                addEndGameButtons();
+                showCustomModal(`Chyba: Scéna s ID '${sceneId}' nebyla nalezena. Zkontrolujte propojení scén v generátoru.`, 'Chyba v příběhu');
+                return;
+            }
+
+            currentSceneId = sceneId;
+            gameProgress.currentSceneId = currentSceneId;
+            sceneTextDisplay.textContent = scene.text;
+            sceneTextDisplay.setAttribute('aria-label', `Scéna: ${scene.text}`);
+
+            choicesContainer.innerHTML = '';
+            if (scene.choices && scene.choices.length > 0) {
+                scene.choices.forEach((choice, index) => {
+                    const button = document.createElement('button');
+                    button.textContent = choice.text;
+                    button.className = "choice-button";
+                    button.onclick = () => makeChoice(index);
+                    button.setAttribute('aria-label', `Volba ${index + 1}: ${choice.text}`);
+                    choicesContainer.appendChild(button);
+                });
+                choicesContainer.querySelector('button')?.focus();
+            } else {
+                addEndGameButtons();
+                showCustomModal('Dosáhl/a jsi konce příběhu.', 'Konec příběhu');
+            }
+        }
+
+        function makeChoice(choiceIndex) {
+            const scene = story.scenes.find(s => s.id === currentSceneId);
+            if (scene && scene.choices && scene.choices[choiceIndex]) {
+                const nextSceneId = scene.choices[choiceIndex].nextSceneId;
+                const nextScene = story.scenes.find(s => s.id === nextSceneId);
+                if(nextScene) {
+                    displayScene(nextSceneId);
+                } else {
+                    showCustomModal(`Chyba: Scéna s ID '${nextSceneId}' pro tuto volbu neexistuje.`, 'Chyba v příběhu');
+                }
+            } else {
+                showCustomModal('Neplatná volba. Zkuste to znovu.', 'Chyba volby');
+            }
+        }
+
+        function addEndGameButtons() {
+            choicesContainer.innerHTML = '';
+            const newGameButton = document.createElement('button');
+            newGameButton.textContent = "Začít novou hru";
+            newGameButton.className = "choice-button btn-primary";
+            newGameButton.onclick = restartStory;
+            newGameButton.setAttribute('aria-label', 'Začít novou hru');
+            choicesContainer.appendChild(newGameButton);
+            newGameButton.focus();
+        }
+
+        function restartStory() {
+            startGamePlayer(story);
+            showCustomModal('Příběh byl restartován.', 'Restart');
+        }
+
+        function saveGame() {
+            lastFocusedElement = document.activeElement;
+            try {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gameProgress, null, 2));
+                const dl = document.createElement('a');
+                dl.setAttribute("href", dataStr);
+                dl.setAttribute("download", `${story.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_postup.json`);
+                dl.click();
+                showCustomModal("Postup hry byl úspěšně uložen.", "Uloženo");
+            } catch (error) {
+                console.error("Chyba při ukládání postupu:", error);
+                showCustomModal("Nastala chyba při ukládání postupu. Zkuste to prosím znovu.", 'Chyba ukládání');
+            }
+            if (lastFocusedElement) lastFocusedElement.focus();
+        }
+
+        function loadGame(event) {
+            lastFocusedElement = document.activeElement;
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const loadedProgress = JSON.parse(e.target.result);
+                    if (loadedProgress && loadedProgress.currentSceneId) {
+                        if (story && story.scenes.some(s => s.id === loadedProgress.currentSceneId)) {
+                            gameProgress = loadedProgress;
+                            displayScene(gameProgress.currentSceneId);
+                            showCustomModal("Postup hry byl úspěšně načten.", "Načteno");
+                        } else {
+                            showCustomModal("Načtený postup nepatří k aktuálnímu příběhu, nebo je poškozený. Načtěte prosím nejprve správný příběh.", 'Chyba načítání');
+                        }
+                    } else {
+                        showCustomModal("Chyba: Soubor s postupem je neplatný.", 'Chyba načítání');
+                    }
+                } catch (error) {
+                    console.error("Chyba při načítání postupu:", error);
+                    showCustomModal("Chyba při načítání souboru postupu: " + error.message, 'Chyba načítání');
+                }
+            };
+            reader.readAsText(file);
+            if (lastFocusedElement) lastFocusedElement.focus();
+        }
+
+        function importStoryPlayer(event) {
+            lastFocusedElement = document.activeElement;
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (validateStoryData(importedData)) {
+                        startGamePlayer(importedData);
+                        showCustomModal("Příběh byl úspěšně importován a spuštěn.", "Import dokončen");
+                    } else {
+                        showCustomModal("Chyba: Importovaný soubor nemá očekávaný formát příběhu.", 'Chyba importu');
+                    }
+                } catch (error) {
+                    console.error("Chyba při importu příběhu:", error);
+                    showCustomModal("Chyba při načítání souboru příběhu: " + error.message, 'Chyba importu');
+                }
+            };
+            reader.readAsText(file);
+            if (lastFocusedElement) lastFocusedElement.focus();
+        }
+
+        // --- Inicializace ---
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('modalOkButton').addEventListener('click', closeCustomModal);
+            const cancelButton = document.getElementById('modalCancelButton');
+            if (cancelButton) {
+                cancelButton.addEventListener('click', closeCustomModal);
+            }
+            document.getElementById('customMessageModal').addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeCustomModal();
+            });
+
+            document.getElementById('generatorButton').addEventListener('click', () => {
+                showMode('generator');
+                storyTitleInput.value = story.title;
+            });
+            document.getElementById('playerButton').addEventListener('click', () => showMode('player'));
+            document.getElementById('importStoryFilePlayer').addEventListener('change', importStoryPlayer);
+
+            showMode('start');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,310 @@
+/* =====================================================
+   Palpatius Offline Check – style.css
+   Diagnostický, klidný, nástrojový styl
+   ===================================================== */
+
+:root {
+  --bg-main: #0f1115;
+  --bg-card: #151821;
+  --bg-input: #1d2130;
+  --bg-result: #10131a;
+
+  --text-main: #e6e6e6;
+  --text-muted: #a0a3ad;
+
+  --accent: #4da3ff;
+  --accent-soft: #2a5fa0;
+
+  --ok: #4caf50;
+  --fail: #ff6b6b;
+
+  --border: #2a2f3d;
+}
+
+/* ---------- Základ ---------- */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Roboto, Ubuntu, Cantarell, Arial, sans-serif;
+  background: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+/* ---------- Skip link ---------- */
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+}
+
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+  background: var(--accent);
+  color: #000;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  z-index: 1000;
+}
+
+/* ---------- Hlavička ---------- */
+
+.app-header {
+  border-bottom: 1px solid var(--border);
+  padding: 2rem 1.5rem 1.5rem;
+}
+
+.header-inner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.app-title {
+  font-size: 2rem;
+  margin: 0 0 0.5rem;
+}
+
+.app-subtitle {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ---------- Layout ---------- */
+
+.app-main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.card-title {
+  font-size: 1.4rem;
+  margin: 0 0 1rem;
+}
+
+/* ---------- Ovládání ---------- */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.btn {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-soft);
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  color: var(--text-main);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  background: var(--accent);
+  border-color: var(--accent);
+  outline: none;
+}
+
+.btn-secondary {
+  background: var(--bg-input);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus-visible {
+  background: #2a2f40;
+}
+
+/* ---------- Stav ---------- */
+
+.status {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* ---------- Výsledky ---------- */
+
+.results {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+
+.result-item {
+  background: var(--bg-result);
+  border: 1px solid var(--border);
+  border-left: 6px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem 1rem;
+}
+
+.result-item strong {
+  font-weight: 600;
+}
+
+.result-item span {
+  font-weight: 700;
+}
+
+/* ---------- OK / FAIL ---------- */
+
+.result-ok {
+  border-left-color: var(--ok);
+}
+
+.result-ok span {
+  color: var(--ok);
+}
+
+.result-fail {
+  border-left-color: var(--fail);
+}
+
+.result-fail span {
+  color: var(--fail);
+}
+
+.result-detail {
+  grid-column: 1 / -1;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* ---------- Prázdný stav ---------- */
+
+.result-empty {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ---------- Souhrn ---------- */
+
+.summary {
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+
+/* ---------- Details / technické info ---------- */
+
+.details {
+  margin-top: 1.5rem;
+}
+
+.details summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.details-body {
+  margin-top: 1rem;
+}
+
+.meta {
+  margin: 0 0 1rem;
+}
+
+.meta-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  margin-bottom: 0.4rem;
+}
+
+.meta-row dt {
+  color: var(--text-muted);
+}
+
+.log {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem;
+  color: var(--text-main);
+  font-family: monospace;
+  font-size: 0.9rem;
+  resize: vertical;
+}
+
+/* ---------- Info ---------- */
+
+.info-list {
+  padding-left: 1.2rem;
+}
+
+.info-list li {
+  margin-bottom: 0.4rem;
+}
+
+.help {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* ---------- Footer ---------- */
+
+.app-footer {
+  border-top: 1px solid var(--border);
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* ---------- Přístupnost ---------- */
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Screenreader only ---------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Responsivita ---------- */
+
+@media (max-width: 600px) {
+  .app-title {
+    font-size: 1.7rem;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .result-item {
+    grid-template-columns: 1fr;
+  }
+}

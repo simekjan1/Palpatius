@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Palpatius Data Manager</title>
+  <meta name="description" content="Palpatius Data Manager – přehled a analýza exportovaných JSON souborů z modulů Palpatius. Offline nástroj." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Přeskočit na hlavní obsah</a>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <h1 class="app-title">Palpatius Data Manager</h1>
+      <p class="app-subtitle" id="appHint">
+        Nahraj exportovaný JSON soubor, vyber modul a získej přehled počtů záznamů.
+        Tento nástroj je pouze ke čtení a nijak neupravuje žádná data.
+      </p>
+    </div>
+  </header>
+
+  <main id="main" class="app-main" tabindex="-1">
+    <section class="card" aria-labelledby="uploadTitle">
+      <h2 id="uploadTitle" class="card-title">Načtení souboru</h2>
+
+      <form id="dmForm" class="form" novalidate>
+        <div class="field">
+          <label for="jsonFile"><strong>JSON soubor</strong></label>
+          <input
+            id="jsonFile"
+            name="jsonFile"
+            type="file"
+            accept="application/json,.json"
+            required
+            aria-describedby="fileHelp"
+          />
+          <p id="fileHelp" class="help">
+            Nahraj export z modulu (soubor <strong>.json</strong>). Data se nikam neodesílají.
+          </p>
+        </div>
+
+        <div class="field">
+          <label for="moduleSelect"><strong>Modul</strong></label>
+          <select id="moduleSelect" name="moduleSelect" required aria-describedby="moduleHelp">
+            <option value="" selected>— Vyber modul —</option>
+            <option value="maserna">Masérna</option>
+            <option value="finance">Finanční správce</option>
+            <option value="zaznamnik">Záznamník</option>
+            <option value="knihovna">Knihovna</option>
+            <option value="fs_extra">Finanční správce Extra</option>
+          </select>
+          <p id="moduleHelp" class="help">
+            Vyber modul, ze kterého pochází exportovaný soubor. Nástroj neprovádí autodetekci.
+          </p>
+        </div>
+
+        <div class="actions" role="group" aria-label="Akce">
+          <button type="button" id="analyzeBtn" class="btn">
+            Vyhodnotit
+          </button>
+
+          <button type="button" id="resetBtn" class="btn btn-secondary">
+            Reset
+          </button>
+
+          <button type="button" id="exportTxtBtn" class="btn btn-outline" disabled>
+            Export do TXT
+          </button>
+        </div>
+
+        <p id="formStatus" class="status" role="status" aria-live="polite" aria-atomic="true">
+          Připraveno.
+        </p>
+      </form>
+    </section>
+
+    <section class="card" aria-labelledby="resultTitle">
+      <h2 id="resultTitle" class="card-title">Výsledek</h2>
+
+      <div class="result" aria-live="polite" aria-atomic="true">
+        <dl class="result-list" id="resultList">
+          <!-- script.js sem vloží <div class="result-row"><dt>…</dt><dd>…</dd></div> -->
+          <div class="result-empty" id="resultEmpty">
+            Zatím nic k zobrazení. Nahraj soubor a klikni na „Vyhodnotit“.
+          </div>
+        </dl>
+      </div>
+
+      <details class="details" id="rawDetails">
+        <summary>Zobrazit technické informace</summary>
+        <div class="details-body">
+          <p class="help">
+            Tato část je pro kontrolu. Není nutné ji používat.
+          </p>
+          <ul class="meta" id="metaList">
+            <li><strong>Vybraný modul:</strong> <span id="metaModule">—</span></li>
+            <li><strong>Název souboru:</strong> <span id="metaFileName">—</span></li>
+            <li><strong>Velikost souboru:</strong> <span id="metaFileSize">—</span></li>
+            <li><strong>Stav načtení:</strong> <span id="metaLoadState">—</span></li>
+          </ul>
+
+          <label for="rawOutput" class="sr-only">Raw výstup</label>
+          <textarea id="rawOutput" class="raw" rows="8" readonly aria-label="Technický výpis (raw)"></textarea>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p class="footer-text">
+      Offline nástroj (tools) · Pouze ke čtení · Import/Export souborů probíhá lokálně v prohlížeči
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

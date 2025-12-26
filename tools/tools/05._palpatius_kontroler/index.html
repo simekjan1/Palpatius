@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Palpatius kontroler</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Základní přístupnost -->
+    <meta name="description" content="Palpatius kontroler – přehled poslední aktivity v jednotlivých modulech systému Palpatius.">
+
+    <!-- Styl bude doplněn samostatně -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main id="main-content" tabindex="-1">
+
+    <header>
+        <h1>Palpatius kontroler</h1>
+        <p>
+            Tento nástroj slouží k rychlé kontrole,
+            <strong>kdy byl naposledy použit jednotlivý modul Palpatia</strong>.
+        </p>
+    </header>
+
+    <section aria-labelledby="status-heading">
+        <h2 id="status-heading">Stav modulů</h2>
+
+        <p id="status-description">
+            Přehled níže je pouze ke čtení. Žádná data se neupravují ani neukládají.
+        </p>
+
+        <div class="table-wrapper">
+            <table aria-describedby="status-description">
+                <thead>
+                    <tr>
+                        <th scope="col">Modul</th>
+                        <th scope="col">Poslední aktivita</th>
+                        <th scope="col">Stav</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <!-- Masérna -->
+                    <tr data-module="maserna">
+                        <th scope="row">Masérna</th>
+                        <td class="last-activity">Načítám…</td>
+                        <td class="status">—</td>
+                    </tr>
+
+                    <!-- Finanční správce -->
+                    <tr data-module="finance">
+                        <th scope="row">Finanční správce</th>
+                        <td class="last-activity">Načítám…</td>
+                        <td class="status">—</td>
+                    </tr>
+
+                    <!-- Záznamník -->
+                    <tr data-module="zaznamnik">
+                        <th scope="row">Záznamník</th>
+                        <td class="last-activity">Načítám…</td>
+                        <td class="status">—</td>
+                    </tr>
+
+                    <!-- Knihovna -->
+                    <tr data-module="knihovna">
+                        <th scope="row">Knihovna</th>
+                        <td class="last-activity">Načítám…</td>
+                        <td class="status">—</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section aria-labelledby="info-heading">
+        <h2 id="info-heading">Poznámka</h2>
+        <p>
+            Pokud modul nebyl nikdy použit nebo jeho databáze neexistuje,
+            zobrazí se stav <strong>„Nikdy“</strong>.
+        </p>
+        <p>
+            Palpatius kontroler je samostatný nástroj a nijak nezasahuje do chodu systému.
+        </p>
+    </section>
+
+</main>
+
+<footer>
+    <p>
+        Palpatius tools – Kontroler<br>
+        Pouze ke čtení · Offline · Bez zápisu
+    </p>
+</footer>
+
+<!-- Logika bude doplněna samostatně -->
+<script src="script.js"></script>
+
+</body>
+</html>

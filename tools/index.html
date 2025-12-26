@@ -4,15 +4,97 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Utility Palpatius</title>
-    <link rel="stylesheet" href="style.css"> 
+
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="antialiased">
     <div class="container">
-        <h1 class="text-5xl font-extrabold text-center text-yellow-300 mb-6 mt-8">Palpatius nástroje</h1>
-        
-        <div id="modules">
+        <h1>Palpatius nástroje</h1>
+
+        <p class="intro">
+            Tato sekce obsahuje samostatné pomocné nástroje systému Palpatius.
+            Nejedná se o moduly ani systémové části – každý nástroj funguje nezávisle,
+            nesdílí data s ostatními a je určen k řešení konkrétního úkolu.
+        </p>
+
+        <p class="intro">
+            Nástroje můžete používat jednotlivě, dle potřeby. 
+            Některé slouží k diagnostice, jiné k práci s daty nebo k osobním poznámkám.
+        </p>
+
+        <section id="modules">
             <h2>Spustit utilitu</h2>
-            <a href="palpatius_zalohovaci_protokol/index.html" class="app-link" aria-label="Spustit zálohovací protokol"> Zálohovací protokol</a>
+
+            <div class="tools-grid">
+                <a href="tools/01._palpatius_zalohovaci_protokol/index.html" class="app-link">
+                    Zálohovací protokol
+                </a>
+
+                <a href="tools/02._offline_poznamky/index.html" class="app-link">
+                    Offline poznámky
+                </a>
+
+                <a href="tools/03._import_dat/index.html" class="app-link">
+                    Import dat
+                </a>
+
+                <a href="tools/04._kalendar/index.html" class="app-link">
+                    Kalendář
+                </a>
+
+                <a href="tools/05._palpatius_kontroler/index.html" class="app-link">
+                    Palpatius kontroler
+                </a>
+
+                <a href="tools/06._palpatius_data_manager/index.html" class="app-link">
+                    Data manager
+                </a>
+
+                <a href="tools/07._user_manager/index.html" class="app-link">
+                    User manager
+                </a>
+
+                <a href="tools/08._txt_md_helper/index.html" class="app-link">
+                    TXT / MD helper
+                </a>
+
+                <a href="tools/09._offline_check/index.html" class="app-link">
+                    Offline check
+                </a>
+
+                <a href="tools/10._system_note/index.html" class="app-link important">
+                    System note
+                </a>
+
+                <a href="tools/11._read_me/read_me.md" class="app-link info">
+                    Přečti si mě
+                </a>
+
+                <!-- 🔒 Statický informační blok -->
+                <div class="app-link placeholder" aria-hidden="true">
+                    <div>
+                        <strong>Palpatius Tools</strong><br>
+                        Samostatné nástroje<br>
+                        Bez sdílení dat
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🎮 ARCHIV PALPATIUS GAMES -->
+        <div class="archive-entry">
+            <a href="tools/archiv/index.html"
+               class="archive-link"
+               aria-label="Vstoupit do archivní herní odnože Palpatius Games">
+                🎮 Palpatius Games – archiv
+            </a>
+            <p class="archive-note">
+                Archivní herní odnož projektu Palpatius.
+                Skrytý prostor pro hry, které již nejsou dále vyvíjeny.
+            </p>
         </div>
+
+    </div>
 </body>
 </html>

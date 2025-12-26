@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nox</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Nastavení fontu Inter pro celou stránku, aby to vypadalo moderně a čitelně */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Styly pro modální okna */
+        .modal {
+            background: #111;
+            border: 2px solid #facc15;
+            padding: 2rem;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal h3 {
+            color: #facc15;
+            margin-top: 0;
+            text-align: center;
+        }
+        .modal button {
+            margin-top: 1rem;
+            width: auto;
+            display: inline-block;
+        }
+        .modal-text {
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+        .modal-buttons {
+            text-align: right;
+            width: 100%;
+        }
+        .sickness-text {
+            color: #F87171;
+            font-weight: bold;
+        }
+        .poison-text {
+            color: #A348A3;
+            font-weight: bold;
+        }
+        .task-container {
+            background-color: #facc15;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            color: #000;
+        }
+        .job-item {
+            background-color: #f0f0f0;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .job-item h4 {
+            font-weight: bold;
+            color: #111;
+            font-size: 1.1rem;
+        }
+        .job-item p {
+            color: #444;
+        }
+        /* Navíc styl pro tlačítko Zpět na Dashboard */
+        .back-to-dashboard-link {
+            display: block;
+            width: fit-content;
+            background-color: #4a4a4a;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            transition: background-color 0.2s ease;
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            z-index: 100;
+        }
+        .back-to-dashboard-link:hover {
+            background-color: #6a6a6a;
+        }
+        .back-to-dashboard-link:focus {
+            outline: 2px solid #facc15;
+            outline-offset: 2px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-indigo-900 to-black min-h-screen flex items-center justify-center p-4">
+    <a href="../index.html" class="back-to-dashboard-link" aria-label="Zpět na hlavní dashboard Palpatius games" role="button">← Zpět na Palpatius games</a>
+
+    <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-4xl w-full text-center space-y-6">
+        <h1 class="text-4xl font-extrabold text-gray-800 mb-4">Nox</h1>
+
+        <div id="introScreen" class="hidden">
+            <p class="text-gray-700 text-base leading-relaxed text-left">
+                Vracím se domů, unavený jako pes po dlouhém dni. Už skoro otvírám dveře od domu, když mě něco donutí zastavit se. Něco sedí přímo na prahu. Malé, chlupaté, a úplně absurdní stvoření.
+                Přikrčím se, abych si ho pořádně prohlédl. Má černou  srst, která se v šeru mísí s okolím. Má lehce protáhlý čumáček, a titěrné růžky na hlavě. Vypadá jako pes, ale ne tak úplně. Dívá se na mě. Těma nejstaršíma, nejhlubšíma očima, co jsem kdy viděl. 
+                „Kdo jsi, maličký?“ zeptám se šeptem, opatrně k němu vztáhnu ruku. Pomalu se natáhnu a pohladím ho. Jeho srst je neuvěřitelně hladká, jako ta nejjemnější látka. V tu chvíli mi hlavou probleskne jedno jediné slovo, jasné jako zvon: „Nox.“
+                „Takže ty jsi Nox?“ zopakuju překvapeně, zatímco dál hladím to zázračné stvoření. Dívá se na mě, a najednou, jako by mi někdo otevřel okno do jiné dimenze, vím všechno. Vím, že přišel ze světa jménem Noxor, světa, který už neexistuje. Vím, že je poslední. Vím, že přeživší se rozutekli, ale on, Nox, si mě nějak našel. Hledá domov, bezpečí, lásku a přátelství. A taky vím, že má příšerný hlad.
+                Bez váhání ho vezmu do náruče. Je lehký jako pírko, ale cítím z něj obrovskou sílu a smutek. Otevřu dveře a vstoupíme do mého bytu. Od té chvíle se stáváme neoddělitelnou dvojkou. Nox už nemusí mluvit slovy. Stačí mi pohled do jeho hlubokých očí, nebo letmý dotyk, a vždycky vím, co mi chce říct. A já vím, že naše dobrodružství teprve začínají.
+            </p>
+        </div>
+
+        <div id="startScreen" class="space-y-4">
+            <p class="text-gray-700 text-base leading-relaxed text-left">
+                Příběh Noxe začíná! Připrav se na dobrodružství se svým vlastním stvořením jménem Nox.
+            </p>
+            <button id="startGameButton" class="mt-6 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                Začít hrát s Noxem!
+            </button>
+            <button id="showStoryButton" class="mt-6 bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                Příběh
+            </button>
+        </div>
+
+        <div id="gameStats" class="hidden space-y-4 flex flex-row items-start justify-center gap-8">
+            <div class="flex-shrink-0 mt-6">
+                <img src="005._nox.png" alt="Nox" class="w-48 h-auto rounded-3xl shadow-2xl border-4 border-indigo-600" />
+            </div>
+
+            <div class="flex-1 max-w-xl space-y-4">
+                <h2 id="petNameDisplay" class="text-3xl font-bold text-indigo-700" aria-live="polite">Nox</h2>
+                <div id="noxStatus" class="mt-2 text-red-500 font-bold hidden" role="status" aria-live="polite"></div>
+                
+                <div class="grid grid-cols-2 gap-4 mt-4">
+                    <div class="flex items-center justify-between bg-gray-100 p-3 rounded-xl shadow-sm">
+                        <span class="text-lg font-medium text-gray-700">Jméno:</span>
+                        <span id="petName" class="text-xl font-bold text-gray-700">Nox</span>
+                    </div>
+
+                    <div class="flex items-center justify-between bg-gray-100 p-3 rounded-xl shadow-sm">
+                        <span class="text-lg font-medium text-gray-700">Měna:</span>
+                        <span id="currencyDisplay" class="text-xl font-bold text-gray-700">100 Kreditů</span>
+                    </div>
+
+                    <div class="flex items-center justify-between bg-gray-100 p-3 rounded-xl shadow-sm">
+                        <span class="text-lg font-medium text-gray-700">Váha:</span>
+                        <span id="weightStat" class="text-xl font-bold text-gray-700">5 kg</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between bg-gray-100 p-3 rounded-xl shadow-sm">
+                        <span class="text-lg font-medium text-gray-700">Hlad:</span>
+                        <span id="hungerStat" class="text-xl font-bold text-red-500">100%</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between bg-gray-100 p-3 rounded-xl shadow-sm">
+                        <span class="text-lg font-medium text-gray-700">Energie:</span>
+                        <span id="energyStat" class="text-xl font-bold text-green-500">100%</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between bg-gray-100 p-3 rounded-xl shadow-sm">
+                        <span class="text-lg font-medium text-gray-700">Hygiena:</span>
+                        <span id="hygieneStat" class="text-xl font-bold text-blue-500">100%</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between bg-gray-100 p-3 rounded-xl shadow-sm">
+                        <span class="text-lg font-medium text-gray-700">Zábava:</span>
+                        <span id="funStat" class="text-xl font-bold text-yellow-500">100%</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between bg-gray-100 p-3 rounded-xl shadow-sm">
+                        <span class="text-lg font-medium text-gray-700">Spokojenost:</span>
+                        <span id="satisfactionStat" class="text-xl font-bold text-purple-500">100%</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <button id="feedButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                        Nakrmit
+                    </button>
+                    <button id="batheButton" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                        Vykoupat
+                    </button>
+                    <button id="sleepButton" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                        Spát
+                    </button>
+                    <button id="playButton" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                        Hrát si
+                    </button>
+                    <button id="talkButton" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                        Promluvit si
+                    </button>
+                    <button id="shopButton" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                        Obchod
+                    </button>
+                    <button id="firstAidKitButton" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                        Lékárnička
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <button id="jobManagementButton" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                        Správa zaměstnání
+                    </button>
+                    <button id="jobButton" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                        Zaměstnání
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <button id="saveGameButton" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                        Exportovat do JSON
+                    </button>
+                    <button id="loadGameButton" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                        Nahrát ze souboru
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="foodMenu" class="hidden mt-6 p-4 bg-gray-50 rounded-xl shadow-inner space-y-3">
+            <h3 id="foodMenuTitle" class="text-xl font-semibold text-gray-800 mb-3" tabindex="-1">Vyber jídlo:</h3>
+            <div id="foodOptions" class="grid grid-cols-2 gap-3">
+                </div>
+            <button id="closeFoodMenuButton" class="mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-300 ease-in-out">
+                Zpět
+            </button>
+        </div>
+
+        <div id="playMenu" class="hidden mt-6 p-4 bg-gray-50 rounded-xl shadow-inner space-y-3">
+            <h3 id="playMenuTitle" class="text-xl font-semibold text-gray-800 mb-3" tabindex="-1">Vyber si, co budete dělat:</h3>
+            <div id="playOptions" class="grid grid-cols-2 gap-3">
+                </div>
+            <button id="closePlayMenuButton" class="mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-300 ease-in-out">
+                Zpět
+            </button>
+        </div>
+        
+        <div id="shopMenu" class="hidden mt-6 p-4 bg-gray-50 rounded-xl shadow-inner space-y-3">
+            <h3 id="shopMenuTitle" class="text-xl font-semibold text-gray-800 mb-3" tabindex="-1">Vítej v obchodě, páníčku!</h3>
+            <p class="text-lg text-gray-700">Tvoje Kredity: <span id="shopCurrencyDisplay" class="font-bold">0</span></p>
+            <div id="shopItems" class="grid grid-cols-2 gap-3">
+                </div>
+            <button id="closeShopMenuButton" class="mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-300 ease-in-out">
+                Zpět
+            </button>
+        </div>
+        
+        <div id="firstAidKitMenu" class="hidden mt-6 p-4 bg-gray-50 rounded-xl shadow-inner space-y-3">
+            <h3 id="firstAidKitMenuTitle" class="text-xl font-semibold text-gray-800 mb-3" tabindex="-1">Tvoje lékárnička</h3>
+            <div id="firstAidKitItems" class="grid grid-cols-2 gap-3">
+                </div>
+            <button id="closeFirstAidKitButton" class="mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-300 ease-in-out">
+                Zpět
+            </button>
+        </div>
+        
+        <div id="tasksMenu" class="hidden mt-6 p-4 bg-gray-50 rounded-xl shadow-inner space-y-3">
+            <h3 id="tasksMenuTitle" class="text-xl font-semibold text-gray-800 mb-3" tabindex="-1">Úkoly</h3>
+            <div id="tasksMenuContent" class="text-gray-600">
+                </div>
+            <div id="taskButtonsContainer" class="flex justify-center space-x-4 mt-4 hidden">
+                <button id="acceptTaskButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-xl">Přijmout</button>
+                <button id="declineTaskButton" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-xl">Odmítnout</button>
+            </div>
+            <button id="closeTasksMenuButton" class="mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-300 ease-in-out">
+                Zpět
+            </button>
+        </div>
+        
+        <div id="jobManagementMenu" class="hidden mt-6 p-4 bg-gray-50 rounded-xl shadow-inner space-y-3">
+            <h3 id="jobManagementTitle" class="text-xl font-semibold text-gray-800 mb-3" tabindex="-1">Správa zaměstnání</h3>
+            <div id="jobManagementContent" class="text-gray-600">
+                <p class="mb-2">Zde můžeš spravovat Noxovo zaměstnání. Vyber práci, kterou bude Nox vykonávat.</p>
+                <div id="currentJobDisplay" class="bg-gray-200 p-3 rounded-lg text-black mb-4">
+                    <p id="currentJobText"></p>
+                </div>
+                <div id="jobList" class="space-y-2">
+                    </div>
+            </div>
+            <button id="closeJobManagementMenuButton" class="mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-300 ease-in-out">
+                Zpět
+            </button>
+        </div>
+        
+        <div id="jobMenu" class="hidden mt-6 p-4 bg-gray-50 rounded-xl shadow-inner space-y-3">
+            <h3 id="jobMenuTitle" class="text-xl font-semibold text-gray-800 mb-3" tabindex="-1">Zaměstnání</h3>
+            <div id="jobContent" class="text-gray-600">
+                <p id="jobDescriptionText" class="mb-4">Nox je momentálně nezaměstnaný. Vyber mu práci ve Správě zaměstnání.</p>
+                <button id="startJobButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-300 ease-in-out hidden">
+                    Jít do práce
+                </button>
+            </div>
+            <button id="closeJobMenuButton" class="mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-300 ease-in-out">
+                Zpět
+            </button>
+        </div>
+
+    </div>
+
+    <div id="customMessageModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalMessageTitle" tabindex="-1" aria-live="assertive">
+        <div class="modal-content" role="alert">
+            <h3 id="modalMessageTitle" class="text-xl font-bold text-yellow-300 mb-4">Zpráva</h3>
+            <p id="modalMessage" class="text-gray-300 mb-4"></p>
+            <div class="modal-buttons text-right">
+                <button id="modalCancelButton" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md ml-2 hidden">Zrušit</button>
+                <button id="modalOkButton" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // === VÝCHOZÍ KONFIGURACE A STAV HRY ===
+        
+        // Konstanta pro automatické ukládání (v sekundách)
+        const AUTOSAVE_INTERVAL = 60; // každých 60 sekund
+
+        // Načtení Tone.js syntezátorů pro zvuky
+        const simpleSynth = new Tone.Synth().toDestination();
+        const polySynth = new Tone.PolySynth(Tone.Synth).toDestination();
+
+        // Konfigurace jídla
+        const foodItems = [
+            {
+                name: "Granule",
+                effects: {
+                    hunger: 25, energy: -2, hygiene: 0, fun: -5, satisfaction: -5, weight: 0.1
+                },
+                taskReward: 5,
+                messages: {
+                    low: ["Hlad je nejlepší kuchař. Nox sice granule v lásce nemá, ale pro plné bříško udělá všechno.", "Granule? No tak jo. Nox má velký hlad, a i obyčejné granule mu přijdou k chuti.", "Hele, páníčku, nebylo by něco jiného? Ne? Tak ne. Nox se pustil do jídla. Ne protože by mu to chutnalo, ale proto, že je hladový."],
+                    mid: ["Granule, no tak jo. Když jinak nedáš. Nox se s přemáháním pustil do jídla, ale nadšený z toho není.", "Ach jo, vážně, granule? No tak jo. Nox se s nechutí pustil do jídla. Spořádal je jen proto, že je hladový.", "Já tak nesnáším granule. Vždycky po nich pšoukám. Nox se s přemáháním pouští do jídla."],
+                    high: ["Tak tohle teda ne! Tohle jíst nebudu. Nox se znechuceně odvrátil od nevábných granulí, a odešel.", "Né! Co že? Tohle fakt, ale fakt jíst nebudu. Nox se odvrátil a odchází od jídla.", "Ale fuj, to si jez sám. Nox přišel k misce, a vší silou jí packou poslal pryč. Miska narazila do zdi, a granule se vysypali."]
+                }
+            },
+            {
+                name: "Těstoviny se sýrem a kuřecím",
+                effects: {
+                    hunger: 40, energy: 5, hygiene: -5, fun: 15, satisfaction: 20, weight: 0.3
+                },
+                taskReward: 25,
+                messages: {
+                    low: ["Mňám! Tohle je fakt lahůdka. Nox se pouští do jídla s takovou chutí, že ho málem spořádal i s miskou.", "Těstovinky! To je pecka! Nox běží k misce s obrovským nadšením. Ještě než před myskou zabrzdil, tak do ní vrazil čumák, a začal hltat.", "To je dobrota. To je taková dobrota. Tohle chci častěji. Nox během mrknutí oka jídlo spořádal, a pak začal málem jíst i misku."],
+                    mid: ["Dneska má někdo narozeniny? Nox se s láskou pustil do jídla, a vychutnává každé sousto.", "Jó! Tohle je mňamka. Nox se s chutí pouští do jídla, a během chvilky ho má v sobě. Pak si odříhne, zavrtí se, a koukne na tebe."],
+                    high: ["Tohle miluju! Nox si jídlo tak vychutnává, že blahem vrní.", "Ty jo, těstoviny. To je lahoda. Je vidět, jak se nox s jídlem vysloveně mazlí. Čumák má celý od omáčky, a něco se mu dostalo i do srsti. Budeš ho muset vykoupat.", "Když dáváš Noxovy jídlo, tak ti nejprve skočí do náruče. Jeho vděčnost je víc neš zřejmá. Nox v mžiku jídlo spořádá. Ten jeho pohled je k nezaplacení."]
+                }
+            },
+            {
+                name: "Vepřová kotleta",
+                effects: {
+                    hunger: 50, energy: 10, hygiene: -10, fun: 20, satisfaction: 25, weight: 0.4
+                },
+                taskReward: 25,
+                messages: {
+                    low: ["Kotletko moje milovaná. Tolik se na tebe těším. Nox jí nejprve opatrně olízl, ale pak jí rychle spořádal.", "Kotleta? No teda páníčku. Ty jsi úžasnej. Nox se s chutí pouští do hltání kotlety.", "Kotleta kotletka, sežeru jí hnedka. Nox se s obrovskou chutí pouští do jídla. Má takový hlad, že mu hed dáváš druhou."],
+                    mid: ["No, tak tohle jsme na Noxoru neměli. Kotletu prostě miluji. Ani nemrkneš, a nox má kotletu v sobě.", "Taková lahůdka. Nechtěl sis jí dát ty sám páníčku? Ne? Ty jsi ale úžasnej. Nox se s chutí pouští do jídla.", "Jestli se páníčku nepletu, tak cítím lahodnou vepřovou kotletu. Nox jí zhltne během vteřiny."],
+                    high: ["Nox šťastně zavrní, bříško si kotletou naplní. Nox má kotletu moc rád.", "Ty jo, to byl ale luxus. Nemáš tam ještě jednu? Pozor! Další už mu nedávej, jinak se ti tu pozvrací.", "Tak, Noxíku. Dnes si dáme oba to samé. Nox očichá tvůj talíř. Potom zjistí, že má to samé v misce, a s chutí se pouští do jídla."]
+                }
+            },
+            {
+                name: "Syrové maso",
+                effects: {
+                    hunger: 35, energy: 15, hygiene: -5, fun: -10, satisfaction: -5, weight: 0.2
+                },
+                taskReward: 25,
+                messages: {
+                    low: ["Syrové masíčko, pak zesílím maličko. Nox sice syrové maso moc nemusí, ale má po něm krásnou srst, a větší sílu.", "Syrové maso? No ale mňam, ty kráso. Nox se hltavě pouští do jídla. Dej pozor Noxi, abys tam nenašel přehlédnutou kost.", "Nox má takový hlad, že spořádá jídlo během sekundy. Pozor! Syrové maso je dobré na sílu a srst, ale v nadměrném množství může dojít u noxe k otravě."],
+                    mid: ["Nox se těší na něco dobrého. Když přijde k misce, tak zjistí, že tam má jen syrové maso. Není moc nadšený, ale sní ho.", "Nox má takový hlad, že mu syrové maso chutná. Jak se říká, hlad je nejlepší kuchař.", "A co ty páníčku? Ty by sis nedal syrové maso? Ne? No vidíš, a já ho mám jíst? Nox se bez nadšení pouští do jídla."],
+                    high: ["Páníčku to si děláš srandu? Promiň, ale tohle jíst nebudu. Jo, když má nox fakt hlad, tak i syrové maso pozře. Jenže teď má jen malý hlad, a tak si vybírá.", "Ech, syrové maso? Nechceš ho hodit na pánev, a něco z něho uklohnit? Takhle to jíst nebudu.", "Páníčku promiň, ale tohle si jez sám. Já na to nemám žaludek."]
+                }
+            },
+            {
+                name: "Vařená zelenina",
+                effects: {
+                    hunger: 10, energy: 0, hygiene: 0, fun: -20, satisfaction: -30, weight: -0.5
+                },
+                taskReward: 5,
+                messages: {
+                    low: ["Vařená zelenina je hnus páníčku. Víš to? Nakonec jí nox sní, protože umírá hlady.", "Vařená zelenina? To si snad děláš srandu. Já jí sním, protože hlady šilhám. Nox zeleninu snědl, ale nálada mu prudce poklesla.", "Ach ne! Udělal jsem něco špatného? Nox fakt nesnáší vařenou zeleninu. Teď má ale brutální hlad, a tak jí sní."],
+                    mid: ["Ale fuj! Co to mám v misce? Vypadá to, jako kdyby to přede mnou už někdo jedl. Nox jídlo sní, ale radost z toho nemá.", "Ty tohle jíš páníčku? Jo? No tak to tě lituji. Nox s odporem jídlo spořádá.", "Já tak nesnáším vařenou zeleninu. Už jsi někdy viděl psa, jak jí zeleninu? Já sice pes nejsem, ale jsem mu dost podobný. Nox jídlo sní, ale fakt mu nechutná."],
+                    high: ["Tak tohle jíst nebudu. Nox se naštvaně odvrátí, a jde do pelíšku.", "Zelenina to je hnus, kdo jí žere, nemá vkus! Já vkus mám, a jíst to rozhodně nebudu.", "Nox se snažil zdrhnout v okamžiku, kdy jsi mu do misky dával vařenou zeleninu. Nakonec se přemohl a snědl jí. Připrav se na Noxovo legendární, a rozhodně ne voňavé, pšoukání. To budeš koukat, jak Nox bude pšoukat."]
+                }
+            },
+            {
+                name: "Tatranka",
+                effects: {
+                    hunger: 15, energy: 5, hygiene: -3, fun: 10, satisfaction: 10, weight: 0.2
+                },
+                taskReward: 15,
+                messages: {
+                    low: ["Nox má strašný hlad. Než si uvědomil co jí, tak jí měl v sobě.", "Nox má takový hlad, že i tatranka mu přijde k duhu.", "Tatranka zmizela v Noxových útrobách tak rychle, že sis toho ani nevšiml."],
+                    mid: ["Tatranku miluji. Dám si jí jen jednou, slibuji. Nox jí sní, že to ani nezaregistruješ.", "Tatranka! Tu mám strašně rád. Nox jí spolkl celou, ani nekousal.", "Nox přijde k misce, a kouká. Tatranka? To se asi páníček musel splést. Nox jí snědl okamžitě."],
+                    high: ["A, zákuseček. To si dám líbit.", "No tedy páníčku, ty mě rozmazluješ. Ale díky.", "Mňam, tatranka. To je dobrůtka."]
+                }
+            },
+            {
+                name: "Koláč",
+                effects: {
+                    hunger: 20, energy: 8, hygiene: -8, fun: 15, satisfaction: 20, weight: 0.3
+                },
+                taskReward: 15,
+                messages: {
+                    low: ["Páníčku? Dnes má někdo narozeniny? Nox se vrhá na koláč, až mu drobky odletují od zběsile přežvykujících čelistí.", "Nox tak moc hltá, až se z toho zadýchal. Hlad je prostě hlad.", "Nox trpí hlady, a koláč mu dodá energiy. Moc by ho ale jíst neměl."],
+                    mid: ["Nox se pokusí koláč sníst najednou, jen že mu to nejde. Nakonec se rozhodne, že ho sní normálně. Koukejme jak mu chutná.", "Nox tak strašně hltá, až se z toho zakucká, a musí na chvilku přestat. Jo chlapče, tvarohový koláč se musí jíst pomalu, aby ti nezaskočil.", "No tedy páníčku. Koláč? Tak to je lahoda. Nox se s velkou chutí pouští do jídla."],
+                    high: ["Koláček si s chutí dám, ráno pěkné bobky mám. Nox si vychutnává každé sousto.", "To bych byl ale hlupáček, abych si nedal koláček. Nox se s ním nejprve laská, ale pak ho zhltne. Pozor! NOx má drobky i na srsti. Budeš ho muset vykoupat.", "No páni. To jsem musel být obzvlášť hodný, že my páníček dal koláč."]
+                }
+            },
+            {
+                name: "Kobliha",
+                effects: {
+                    hunger: 10, energy: 3, hygiene: -15, fun: 5, satisfaction: 5, weight: 0.2
+                },
+                taskReward: 15,
+                messages: {
+                    low: ["Vážně? Nox ti tu umírá hlady, a ty mu dáš koblihu. No už je pozdě. Nox jí celou zhltl, ale marmeládu má až na hlavě.", "Kobliha vážně není dobrá pro noxe. Vážně mu jí chceš dát? A, už je pozdě. No podívej se na toho čuníka. Marmeládu má až za ušima.", "Noxi ty jsi ale čuně! Podívej se, jak vypadáš. Proboha kam až se ti ta marmeláda dostala?"],
+                    mid: ["Tohle není dobrý nápad. Tohle fakt není dobrý nápad. Nox zhltl koblihu, ale je celý špinavý.", "Ty jsi se musel asi zbláznit. Podívej na Noxe, jak je celý od marmelády. Může si říkat marmeládový Joe. Šmahem ho běž vykoupat!", "Tak tohle je nešťastné. Nox koblihu zhltl, ale náplň se mu dostala na packy. Teď tu chodí, a packama rozmazává náplň po zemi. Mazej ho vykoupat, a rychle!"],
+                    high: ["To jako vážně? No, už je pozdě. Nox skousnul koblihu, ale všechno mu vyteklo na packy. Vykoupej ho, ať nemáš marmeládu všude.", "Nox prostě neumí jíst koblihy. Už mu je prosím nedávej. Je celý umazaný. Je ale vidět, že je spokojený."]
+                }
+            },
+            {
+                name: "Hovězí vývar",
+                effects: {
+                    hunger: 30, energy: 10, hygiene: -5, fun: 10, satisfaction: 15, weight: -0.1
+                },
+                taskReward: 35,
+                messages: {
+                    low: ["Jó, tak tohle je lahůdka. Nox má vývar hrozně rád. Zvlášť, když je v něm hodně masa.", "Vývar pro noxe, je jako kaviár pro člověka. Nox ho zbožňuje.", "Nox má tak strašný hlad, že začne vývar hltat. Jenže cintá všude kolem, a dokonce i na sebe."],
+                    mid: ["Nox miluje vývar. Miluje ho tak moc, že je to až legrační.", "Nox zabořil čumák do vývaru, až se kolem rozstříkl.", "Jo, vývar je fakt dobrota. Nox si ho užívá. Ach jo, právě do něj omylem vrazil packou, až se trocha rozstříkla."],
+                    high: ["No páni? Koukám páníčku, že ses kvůli me, patlal s vývarem. Děkuji moc.", "Vývar? To je blaho. Břicho mám ještě trošku plné, ale vývarem nikdy nepohrdnu.", "Mňam, to je lahůčka."]
+                }
+            },
+            {
+                name: "Pivo",
+                effects: {
+                    hunger: 5, energy: -15, hygiene: -5, fun: 20, satisfaction: -20, weight: 0
+                },
+                taskReward: 5,
+                messages: {
+                    low: ["Ty si se musel asi zbláznit. Prostředí z jiného světa, a ty mu dáváš pivo? Nox hlady šilhá a jediné co dostane, je pivo. Tleskám, fakt super!", "Tak tos přehnal! Noxovi pivo zachutnalo, ale je mu po něm dost zle.", "Nox přišel k misce a kouká se, co to v ní má. Ochutná, říhne si, ale pak to všechno vypije. Odnes ho prosím do pelechu, protože on to sám nedokáže."],
+                    mid: ["Promiň, já to asi nechápu. Tato hra je o tom, že se staráš o mazlíčka z jiného světa. A ty mu dáváš pivo? No, tak teď máš problém. Noxovi je po něm špatně.", "Já fakt nevím, co tím sleduješ. Ty učíš noxe kalit, aby ti dělal v baru společníka?", "A koukejme, co to má Nox v misce. Pivo? No, pak po něm budeš muset vytírat podlahu, protože on ho za chviličku vyzvrací."],
+                    high: ["Páníčku, ale tohle není pro mě. Já pivo nechci. Je my po něm špatně, a strašně se motám.", "No, tak tohle pít nebudu. Vodu ano, ale tohle ne.", "Páníčku, ale já chci vodu. Já mám žízeň, ale nechci se opít."]
+                }
+            }
+        ];
+        
+        const playItems = [
+            { name: "Mazlit se", effects: { fun: 20, energy: -5, hunger: -2, satisfaction: 15, weight: -0.1 } },
+            { name: "Aportovat", effects: { fun: 30, energy: -20, hunger: -10, satisfaction: 25, weight: -0.5 } },
+            { name: "Jít na procházku", effects: { fun: 25, energy: -15, hunger: -8, satisfaction: 20, weight: -0.25 } },
+            { name: "Jít si hrát ven", effects: { fun: 40, energy: -30, hunger: -15, satisfaction: 30, weight: -0.5 } },
+            { name: "Ležet a poslouchat audioknihu", effects: { fun: 10, energy: 5, hunger: -1, satisfaction: 10, weight: 0.25 } }
+        ];
+
+        const noxMessages = {
+            bath: [
+                "A podívejme, jak prokouknul. Jsem čistý a voňavý. Ten šampón dělá divy!",
+                "Mám velkou radost, že jsi mě vykoupal. Než jsi mě stačil utřít, tak jsem se oklepal, a celého tě pocákal.",
+                "Ježiš to je krásný pocit. Jsem zabalený v ručníku, spokojeně odfrkávám, a ležím ti v náručí."
+            ],
+            sleep: {
+                low: ["Podívej, jak krásně spím, ten náš šmudla.", "Spím tak nádherně. Nebudeme mě rušit, ať se nevzbudím.", "Nejprve jsem spal v pelíšku, ale pak jsem se přesunul k tobě. Vzal jsi mě do náruče, a tam jsem spokojeně a tvrdě usnul."],
+                mid: ["Podívej se na mě. Hojím si v pelíšku, a spokojeně odfukuji.", "Nechtěl jsem spát v pelíšku, ale u tebe v posteli. Ležím u tebe, a poslouchám tlukot tvého srdce. Jsem šťastný a spokojený.", "Schoulil jsem se do pelíšku, a spokojeně usnul. Ty jsi mě ještě polaskal, a pak jsi odešel."],
+                high: ["Mám nějaký živý sen. Hrabej packami, a něco si v mé řeči mrmlám.", "Krátké zdřímnutí ještě nikomu neuškodilo. Nejsem moc unavený, ale rád odpočívám.", "Na hodinku jsem si schrupnul, ale už jsem zase čilý a hravý."]
+            },
+            talk: {
+                howAreYou: {
+                    low: ["Já se mám moc zle, páníčku. Mám hrozný hlad, jsem příšerně špinavý a hrozně unavený. Necítím se moc dobře.", "Jsem smutný. Břicho mám prázdné, špínu mám až za ušima, a spal bych, až bych brečel.", "Jsem naštvaný. Mám hlad, jsem špinavý a chci spát, ale nemůžu. Vrrrr!"],
+                    mid: ["Ani dobře, ani zle. Mám dost hlad. Také se my nelíbí, že jsem tak špinavý. Chci spát, ale ta nečistota my vadí.", "Jo páníčku, mohlo by být lépe. Kdybys my dal najíst, a vykoupal mě. Pak bych byl spokojený.", "Páníčku, nechceš my dát najíst? Taky jsem špinavý, a chci spát."],
+                    high: ["Já se mám dobře. Co ty? Jsem spokojený a veselý. Cítím se úžasně!", "Jsem ve skvělé náladě! Díky tobě mám všechno, co potřebuji.", "Mám se výborně, páníčku. Život je krásný!"]
+                }
+            },
+            lowStats: "Mám malý hlad, jsem unavený a špinavý. Mám taky málo energie, a už se moc neusmívám. Udělej se mnou něco, prosím. Potřebuji pomoct.",
+            lowSatisfaction: "Cítím se smutný. Chceš si se mnou promluvit?",
+            overweight: "Jéje, páníčku, mám nadváhu. Měl bych více cvičit. Můžeš my s tím prosím pomoct?",
+            underweight: "Páníčku, jsem podvyživený. Potřebuji více jídla, abych zesílil, a mohl ti pomoct?"
+        };
+
+        const shopItems = [
+            {
+                name: "Žvýkací kost",
+                price: 50,
+                type: "toy",
+                effects: {
+                    fun: 25,
+                    satisfaction: 15,
+                    hygiene: -5
+                },
+                message: "Noxovi se v očích rozzářily jiskry. Hned se do kosti zakousnul a spokojeně vrní."
+            },
+            {
+                name: "Luxusní pelíšek",
+                price: 200,
+                type: "bed",
+                effects: {
+                    satisfaction: 50,
+                    energy: 20,
+                    hygiene: 10
+                },
+                message: "Nox si pelíšek okamžitě zamiloval. Schoulil se do něj a usnul s blaženým úsměvem na tváři."
+            },
+            {
+                name: "Zlaté kapsičky",
+                price: 75,
+                type: "food",
+                effects: {
+                    hunger: 50,
+                    satisfaction: 25,
+                    hygiene: -5
+                },
+                message: "Nox si vychutnává každé sousto. To je pane dobrota!"
+            },
+            {
+                name: "Léčivý lektvar",
+                price: 300,
+                type: "potion",
+                effects: {
+                    hunger: 10,
+                    energy: 10,
+                    hygiene: 10,
+                    fun: 10,
+                    satisfaction: 10
+                },
+                message: "Nox se napil lektvaru a všechny jeho statistiky se stabilizovaly."
+            },
+            {
+                name: "Noxolit",
+                price: 50,
+                type: "medicine",
+                message: "Po léku se cítím mnohem lépe. Teď jsem připravený na jakoukoliv výzvu!"
+            },
+            {
+                name: "Noxotronik",
+                price: 50,
+                type: "medicine",
+                message: "Ulevilo se mi. Teď už mě z bříška nic nebolí."
+            },
+            {
+                name: "Nomax",
+                price: 400,
+                type: "potion",
+                message: "Celý jsem se rozzářil a září štěstím. Všechny mé potřeby jsou naplněny!"
+            },
+            {
+                name: "Noxofit",
+                price: 450,
+                type: "potion",
+                message: "Cítím se lehčí a jsem plný energie. Znovu se dostal na svou ideální váhu!"
+            }
+        ];
+        
+        const jobsConfig = {
+            "Záchranář": {
+                name: "Záchranář",
+                duration: 5 * 60, // 5 minut
+                reward: 100,
+                description: "Nox bude pracovat v horách, kde bude hledat lavinou zavalené lidi.",
+                messages: [
+                    "Ty jo, to byla ale šichta. Dnes jsem zachránil několik lidí.",
+                    "Dneska byla ale nuda. Žádná lavina, a tak jsme celý den jen odpočívali, a chlemtali čaj.",
+                    "Dneska jsem zachránil jednoho turistu co lezl po horách, a přecenil svoje síly."
+                ]
+            },
+            "Hlídač": {
+                name: "Hlídač",
+                duration: 8 * 60, // 8 minut
+                reward: 80,
+                description: "Nox hlídá pozemek, aby se tam nikdo nevloupal.",
+                messages: [
+                    "Téda, dneska byla ále nůdá. Nic se nedělo.",
+                    "Já jsem tak unavený. Odchytil jsem týpka co se chtěl vloupat na pozemek, a tak jsem ho pěkně prohnal.",
+                    "Nevíš co se to dneska s lidmi děje? Každý se nutně chtěl dostat na soukromý pozemek."
+                ]
+            },
+            "Ochránce": {
+                name: "Ochránce",
+                duration: 7 * 60, // 7 minut
+                reward: 60,
+                description: "Nox pomáhá ve městě, kde bude pomáhat dětem a starým lidem s přecházením přes rušnou silnici.",
+                messages: [
+                    "Dneska byla legrace. Převáděl jsem děti ze školky. Jejich učitelka my poděkovala za to, jak pěkně pomáhám.",
+                    "Dneska jsem pomáhal jedné staré dámě. Když jsem jí převedl, tak mě pohladila, a dala my koláček.",
+                    "Dneska jsem pomáhal jednomu nevidomému, a byla s ním sranda. Když jsem ho převedl, tak se se mnou pěkně pomazlil, a celou dobu se smál."
+                ]
+            },
+            "Filmová branže": {
+                name: "Filmová branže",
+                duration: 12 * 60, // 12 minut
+                reward: 125,
+                description: "Nox pracuje u filmu, kde občas dostane roli.",
+                messages: [
+                    "Páníčku, dostal jsem roli! Budu hrát ve filmu!",
+                    "Dnes jsem dělal kaskadéra pro jeden film, ve kterém hrají jen zvířata. Seznámil jsem se z jednou pěknou mickou.",
+                    "Dnes jsem měl na mále, páníčku. Dělal jsem kaskadéra, a musel skočit z jednoho jedoucího auta do druhého. Bylo to o fous. Na štěstí se záběr povedl. Režizér mě pochválil."
+                ]
+            },
+            "Terapeut": {
+                name: "Terapeut",
+                duration: 15 * 60, // 15 minut
+                reward: 150,
+                description: "Nox pomáhá dětem a lidem s postižením, nebo nějakým traumatem.",
+                messages: [
+                    "Páníčku, 😢 já jsem tak smutný. Dneska jsem byl u jedné malé holčičky. Pak jsem zjistil, že má rakovinu, a dlouho už tu nebude. Od ní jsem odcházel strašně smutný.",
+                    "Dneska jsem byl u jednoho kloučka, který se bál psů. Ležel jsem u něj, a v tom se to stalo. Začal mě hladit, a začalo se mu to líbit. Díky mě už nemá strach. Když jsem odcházel, tak slyším. Mami, nepořídíme si pejska? To bylo tak krásné.",
+                    "Dnes jsem pomáhal v domově dúchodců. Mělo to úspěch, a zítra mám přijít zase. Jsou tam hrozně hodné babičky."
+                ]
+            }
+        };
+
+        // Objekt s aktuálním stavem hry
+        let nox = {
+            hunger: 100,
+            energy: 100,
+            hygiene: 100,
+            fun: 100,
+            satisfaction: 100,
+            weight: 5,
+            currency: 100,
+            isSick: false,
+            isPoisoned: false,
+            playCount: 0,
+            bathCount: 0,
+            lastFood: null,
+            sameFoodCount: 0,
+            inventory: [],
+            currentJob: null,
+            isWorking: false,
+            workTimer: null,
+            workRemaining: 0,
+            lastWarning: null
+        };
+
+        let gameInterval;
+        let autoSaveInterval;
+
+        // === REFERENCE NA HTML PRVKY ===
+        const elements = {
+            startScreen: document.getElementById('startScreen'),
+            showStoryButton: document.getElementById('showStoryButton'),
+            startGameButton: document.getElementById('startGameButton'),
+            gameStats: document.getElementById('gameStats'),
+            petNameDisplay: document.getElementById('petNameDisplay'),
+            foodMenu: document.getElementById('foodMenu'),
+            foodOptionsContainer: document.getElementById('foodOptions'),
+            closeFoodMenuButton: document.getElementById('closeFoodMenuButton'),
+            playMenu: document.getElementById('playMenu'),
+            playOptionsContainer: document.getElementById('playOptions'),
+            closePlayMenuButton: document.getElementById('closePlayMenuButton'),
+            shopMenu: document.getElementById('shopMenu'),
+            shopItemsContainer: document.getElementById('shopItems'),
+            closeShopMenuButton: document.getElementById('closeShopMenuButton'),
+            noxStatusElem: document.getElementById('noxStatus'),
+            firstAidKitButton: document.getElementById('firstAidKitButton'),
+            firstAidKitMenu: document.getElementById('firstAidKitMenu'),
+            firstAidKitItemsContainer: document.getElementById('firstAidKitItems'),
+            closeFirstAidKitButton: document.getElementById('closeFirstAidKitButton'),
+            tasksButton: document.getElementById('tasksButton'),
+            tasksMenu: document.getElementById('tasksMenu'),
+            tasksMenuContent: document.getElementById('tasksMenuContent'),
+            taskButtonsContainer: document.getElementById('taskButtonsContainer'),
+            acceptTaskButton: document.getElementById('acceptTaskButton'),
+            declineTaskButton: document.getElementById('declineTaskButton'),
+            closeTasksMenuButton: document.getElementById('closeTasksMenuButton'),
+            jobManagementButton: document.getElementById('jobManagementButton'),
+            jobButton: document.getElementById('jobButton'),
+            jobManagementMenu: document.getElementById('jobManagementMenu'),
+            closeJobManagementMenuButton: document.getElementById('closeJobManagementMenuButton'),
+            jobMenu: document.getElementById('jobMenu'),
+            closeJobMenuButton: document.getElementById('closeJobMenuButton'),
+            jobListContainer: document.getElementById('jobList'),
+            currentJobText: document.getElementById('currentJobText'),
+            jobDescriptionText: document.getElementById('jobDescriptionText'),
+            startJobButton: document.getElementById('startJobButton'),
+            hungerStatElem: document.getElementById('hungerStat'),
+            energyStatElem: document.getElementById('energyStat'),
+            hygieneStatElem: document.getElementById('hygieneStat'),
+            funStatElem: document.getElementById('funStat'),
+            satisfactionStatElem: document.getElementById('satisfactionStat'),
+            weightStatElem: document.getElementById('weightStat'),
+            currencyDisplay: document.getElementById('currencyDisplay'),
+            shopCurrencyDisplay: document.getElementById('shopCurrencyDisplay'),
+            feedButton: document.getElementById('feedButton'),
+            batheButton: document.getElementById('batheButton'),
+            sleepButton: document.getElementById('sleepButton'),
+            playButton: document.getElementById('playButton'),
+            talkButton: document.getElementById('talkButton'),
+            shopButton: document.getElementById('shopButton'),
+            saveGameButton: document.getElementById('saveGameButton'),
+            loadGameButton: document.getElementById('loadGameButton'),
+            customMessageModal: document.getElementById('customMessageModal'),
+            modalMessageTitle: document.getElementById('modalMessageTitle'),
+            modalMessage: document.getElementById('modalMessage'),
+            modalCancelButton: document.getElementById('modalCancelButton'),
+            modalOkButton: document.getElementById('modalOkButton')
+        };
+        
+        // Ukládáme si, který prvek byl naposledy zaostřený, abychom se k němu mohli vrátit
+        let lastFocusedElement = null;
+
+        // === ZVUKOVÉ FUNKCE ===
+        function playSound(type) {
+            if (Tone.context.state !== 'running') {
+                Tone.start();
+            }
+
+            switch (type) {
+                case 'action': simpleSynth.triggerAttackRelease("C5", "8n"); break;
+                case 'warning':
+                    simpleSynth.triggerAttackRelease("C3", "16n", Tone.now());
+                    simpleSynth.triggerAttackRelease("C2", "16n", Tone.now() + 0.1);
+                    break;
+                case 'gameOver': polySynth.triggerAttackRelease(["C3", "G2", "Eb2"], "2n"); break;
+                case 'happy': simpleSynth.triggerAttackRelease("E5", "8n"); break;
+                case 'grumpy': simpleSynth.triggerAttackRelease("C4", "8n"); break;
+                case 'eating': simpleSynth.triggerAttackRelease("G4", "16n"); break;
+                case 'badFood': simpleSynth.triggerAttackRelease("C3", "8n"); break;
+                case 'sleeping': simpleSynth.triggerAttackRelease("A3", "4n"); break;
+                case 'playful': simpleSynth.triggerAttackRelease("G5", "8n"); break;
+                case 'activity': simpleSynth.triggerAttackRelease("D5", "8n"); break;
+                case 'saveLoad': simpleSynth.triggerAttackRelease("C6", "16n"); break;
+                case 'jobDone':
+                    simpleSynth.triggerAttackRelease("E4", "8n");
+                    simpleSynth.triggerAttackRelease("G4", "8n", "+0.1");
+                    break;
+                default: break;
+            }
+        }
+        
+        // === OBSLUHA UI A ZPRÁV ===
+        // Funkce pro nastavení zaměření na první interaktivní prvek v kontejneru
+        function focusOnFirstInteractiveElement(container) {
+            const firstElement = container.querySelector('button, a, input, [tabindex]:not([tabindex="-1"])');
+            if (firstElement) {
+                firstElement.focus();
+            } else {
+                // Pokud není žádný interaktivní prvek, zaměř se na samotný kontejner
+                container.focus();
+            }
+        }
+
+        function showCustomModal(message, title = 'Zpráva', onConfirm = null, showCancel = false) {
+            // Uložíme si prvek, který měl zaměření před otevřením modálního okna
+            lastFocusedElement = document.activeElement;
+            elements.modalMessageTitle.textContent = title;
+            elements.modalMessage.innerHTML = message;
+            elements.customMessageModal.style.display = 'flex';
+            
+            elements.modalOkButton.textContent = 'OK';
+            elements.modalOkButton.onclick = () => {
+                closeCustomModal();
+                if (onConfirm) onConfirm();
+            };
+            
+            elements.modalCancelButton.style.display = showCancel ? 'inline-block' : 'none';
+            elements.modalCancelButton.onclick = closeCustomModal;
+
+            // Přesuneme zaměření na modální okno a nastavíme ho na skryté pro odečítač, aby ho nečetl dvakrát
+            elements.customMessageModal.focus();
+            elements.customMessageModal.setAttribute('aria-hidden', 'false');
+            document.addEventListener('keydown', handleModalKeyboard);
+        }
+
+        function closeCustomModal() {
+            elements.customMessageModal.style.display = 'none';
+            elements.customMessageModal.setAttribute('aria-hidden', 'true');
+            document.removeEventListener('keydown', handleModalKeyboard);
+            // Vrátíme zaměření zpět na prvek, který ho měl před otevřením okna
+            if (lastFocusedElement) {
+                lastFocusedElement.focus();
+            }
+        }
+
+        function handleModalKeyboard(event) {
+            if (event.key === 'Escape') {
+                closeCustomModal();
+            }
+            // Zajišťujeme, že se zaměření neztratí, když stiskneš tab
+            const focusableElements = elements.customMessageModal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            const firstFocusable = focusableElements[0];
+            const lastFocusable = focusableElements[focusableElements.length - 1];
+            if (event.key === 'Tab') {
+                if (event.shiftKey) { // Zpětný tab
+                    if (document.activeElement === firstFocusable) {
+                        lastFocusable.focus();
+                        event.preventDefault();
+                    }
+                } else { // Normální tab
+                    if (document.activeElement === lastFocusable) {
+                        firstFocusable.focus();
+                        event.preventDefault();
+                    }
+                }
+            }
+        }
+
+        function showMessage(message, title = 'Nox říká:') {
+            showCustomModal(message, title);
+        }
+
+        function getRandomMessage(messages) {
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            return messages[randomIndex];
+        }
+
+        // Vylepšená funkce pro přepínání menu
+        function toggleMenu(menuToShow, focusElementId = null) {
+            const menus = [elements.startScreen, elements.gameStats, elements.foodMenu, elements.playMenu, elements.shopMenu, elements.firstAidKitMenu, elements.jobManagementMenu, elements.jobMenu];
+            menus.forEach(menu => {
+                if (menu === menuToShow) {
+                    menu.classList.remove('hidden');
+                    // Po zobrazení nového menu přesuneme zaměření na první prvek
+                    if (focusElementId) {
+                        document.getElementById(focusElementId).focus();
+                    } else {
+                        focusOnFirstInteractiveElement(menu);
+                    }
+                } else {
+                    menu.classList.add('hidden');
+                }
+            });
+        }
+        
+        // === HLAVNÍ HERNÍ LOGIKA ===
+        function updateStatsDisplay() {
+            elements.hungerStatElem.textContent = `${nox.hunger}%`;
+            elements.energyStatElem.textContent = `${nox.energy}%`;
+            elements.hygieneStatElem.textContent = `${nox.hygiene}%`;
+            elements.funStatElem.textContent = `${nox.fun}%`;
+            elements.satisfactionStatElem.textContent = `${nox.satisfaction}%`;
+            elements.weightStatElem.textContent = `${nox.weight.toFixed(2)} kg`;
+            elements.currencyDisplay.textContent = `${nox.currency} Kreditů`;
+            if (elements.shopCurrencyDisplay) elements.shopCurrencyDisplay.textContent = `${nox.currency}`;
+
+            elements.hungerStatElem.className = `text-xl font-bold ${nox.hunger < 30 ? 'text-red-600' : (nox.hunger < 60 ? 'text-orange-500' : 'text-green-500')}`;
+            elements.energyStatElem.className = `text-xl font-bold ${nox.energy < 30 ? 'text-red-600' : (nox.energy < 60 ? 'text-orange-500' : 'text-green-500')}`;
+            elements.hygieneStatElem.className = `text-xl font-bold ${nox.hygiene < 30 ? 'text-red-600' : (nox.hygiene < 60 ? 'text-orange-500' : 'text-blue-500')}`;
+            elements.funStatElem.className = `text-xl font-bold ${nox.fun < 30 ? 'text-red-600' : (nox.fun < 60 ? 'text-orange-500' : 'text-yellow-500')}`;
+            elements.satisfactionStatElem.className = `text-xl font-bold ${nox.satisfaction < 25 ? 'text-red-600' : (nox.satisfaction < 50 ? 'text-orange-500' : (nox.satisfaction < 75 ? 'text-yellow-600' : 'text-purple-600'))}`;
+            
+            // Nový stav pro váhu
+            elements.weightStatElem.className = `text-xl font-bold ${nox.weight > 10 || nox.weight < 3 ? 'text-red-600' : 'text-gray-700'}`;
+
+            // --- PŘIDANÁ LOGIKA PRO ZOBRAZOVÁNÍ VAROVÁNÍ ---
+            let currentWarning = null;
+            if (nox.weight > 10) {
+                currentWarning = 'overweight';
+            } else if (nox.isSick) {
+                currentWarning = 'sick';
+            } else if (nox.isPoisoned) {
+                currentWarning = 'poisoned';
+            } else if (nox.weight < 3) {
+                currentWarning = 'underweight';
+            }
+
+            if (currentWarning && currentWarning !== nox.lastWarning) {
+                if (currentWarning === 'overweight') {
+                     showCustomModal(noxMessages.overweight, "Nadváha!");
+                } else if (currentWarning === 'sick') {
+                    elements.noxStatusElem.classList.remove('hidden');
+                    elements.noxStatusElem.textContent = 'Nox je nemocný!';
+                    elements.noxStatusElem.classList.add('sickness-text');
+                    elements.noxStatusElem.classList.remove('poison-text');
+                } else if (currentWarning === 'poisoned') {
+                    elements.noxStatusElem.classList.remove('hidden');
+                    elements.noxStatusElem.textContent = 'Nox má otravu z jídla!';
+                    elements.noxStatusElem.classList.add('poison-text');
+                    elements.noxStatusElem.classList.remove('sickness-text');
+                } else if (currentWarning === 'underweight') {
+                    showCustomModal(noxMessages.underweight, "Podváha!");
+                }
+                nox.lastWarning = currentWarning;
+                playSound('warning');
+            } else if (!currentWarning && nox.lastWarning) {
+                 elements.noxStatusElem.classList.add('hidden');
+                 elements.noxStatusElem.textContent = '';
+                 elements.noxStatusElem.classList.remove('sickness-text', 'poison-text');
+                 nox.lastWarning = null;
+            }
+            
+            if (nox.isWorking) {
+                elements.petNameDisplay.textContent = `${nox.currentJob.name} - zbývá ${Math.floor(nox.workRemaining / 60)} min ${nox.workRemaining % 60} s`;
+                disableAllActions();
+            } else {
+                elements.petNameDisplay.textContent = 'Nox';
+                enableAllActions();
+            }
+        }
+        
+        function decreaseStats() {
+            let decreaseRate = 0.5; // Upraveno, aby statistiky klesaly pomaleji
+
+            if (nox.isSick || nox.isPoisoned) decreaseRate += 0.5;
+            if (nox.weight > 10 || nox.weight < 3) decreaseRate += 0.25;
+
+            nox.hunger = Math.max(0, nox.hunger - decreaseRate);
+            nox.energy = Math.max(0, nox.energy - decreaseRate);
+            nox.hygiene = Math.max(0, nox.hygiene - decreaseRate);
+            nox.fun = Math.max(0, nox.fun - decreaseRate);
+            nox.satisfaction = Math.max(0, nox.satisfaction - decreaseRate);
+            nox.weight = Math.max(1, nox.weight - 0.05);
+
+            updateStatsDisplay();
+
+            if (nox.hunger === 0 || nox.energy === 0 || nox.hygiene === 0 || nox.fun === 0 || nox.satisfaction === 0) {
+                endGame();
+            } else {
+                if (nox.hunger < 20 || nox.energy < 20 || nox.hygiene < 20 || nox.fun < 20) {
+                    // showMessage(noxMessages.lowStats);
+                    // playSound('warning');
+                } else if (nox.satisfaction < 30) {
+                    // showMessage(noxMessages.lowSatisfaction);
+                    // playSound('grumpy');
+                }
+            }
+        }
+        
+        function endGame() {
+            clearInterval(gameInterval);
+            clearInterval(autoSaveInterval);
+            showCustomModal(`Ach ne! Nox už nemá sílu. Hra skončila. Zkus to znovu!`, 'Konec hry');  
+            playSound('gameOver');
+            elements.startGameButton.textContent = 'Hrát znovu!';
+            toggleMenu(elements.startScreen);
+            
+            // Resetování stavu hry
+            nox = { 
+                hunger: 100, 
+                energy: 100, 
+                hygiene: 100, 
+                fun: 100, 
+                satisfaction: 100, 
+                weight: 5, 
+                currency: 100,
+                isSick: false,
+                isPoisoned: false,
+                playCount: 0,
+                bathCount: 0,
+                lastFood: null,
+                sameFoodCount: 0,
+                inventory: [],
+                currentJob: null,
+                isWorking: false,
+                workTimer: null,
+                workRemaining: 0,
+                lastWarning: null
+            };
+            
+            localStorage.removeItem('noxSave');
+            updateStatsDisplay();
+        }
+
+        function startGame() {
+            toggleMenu(elements.gameStats);
+            elements.petNameDisplay.textContent = 'Nox';
+            showMessage('Vítej. Tvůj Nox je připraven na dobrodružství.');
+            updateStatsDisplay();
+            
+            if (gameInterval) clearInterval(gameInterval);
+            if (autoSaveInterval) clearInterval(autoSaveInterval);
+
+            gameInterval = setInterval(decreaseStats, 60000);
+            autoSaveInterval = setInterval(saveGameToLocalStorage, AUTOSAVE_INTERVAL * 1000);
+        }
+
+        // === AKCE A INTERAKCE ===
+        function applyEffects(effects) {
+            if (effects.hunger !== undefined) nox.hunger = Math.min(100, Math.max(0, nox.hunger + effects.hunger));
+            if (effects.energy !== undefined) nox.energy = Math.min(100, Math.max(0, nox.energy + effects.energy));
+            if (effects.hygiene !== undefined) nox.hygiene = Math.min(100, Math.max(0, nox.hygiene + effects.hygiene));
+            if (effects.fun !== undefined) nox.fun = Math.min(100, Math.max(0, nox.fun + effects.fun));
+            if (effects.satisfaction !== undefined) nox.satisfaction = Math.min(100, Math.max(0, nox.satisfaction + effects.satisfaction));
+            if (effects.weight !== undefined) nox.weight = Math.max(1, nox.weight + effects.weight);
+            updateStatsDisplay();
+        }
+        
+        function applyFoodEffects(food) {
+            if (nox.lastFood === food.name) {
+                nox.sameFoodCount++;
+                if (nox.sameFoodCount >= 5) {
+                    nox.isPoisoned = true;
+                    showCustomModal("Noxovi je zle! Odešel od misky a pozvracel se. Potřebuješ lék Noxotronik z lékárničky!", "Nox má otravu!");
+                }
+            } else {
+                nox.sameFoodCount = 1;
+                nox.lastFood = food.name;
+            }
+            
+            applyEffects(food.effects);
+            updateStatsDisplay();
+
+            let message;
+            if (nox.hunger <= 30) {
+                message = getRandomMessage(food.messages.low);
+            } else if (nox.hunger >= 90) {
+                message = getRandomMessage(food.messages.high);
+            } else {
+                message = getRandomMessage(food.messages.mid);
+            }
+            showMessage(message);
+            
+            if (food.name === "Vařená zelenina" || food.name === "Pivo") {
+                playSound('badFood');
+            } else {
+                playSound('eating');
+            }
+            toggleMenu(elements.gameStats);
+        }
+
+        function showFoodMenu() {
+            toggleMenu(elements.foodMenu, 'foodMenuTitle');
+            elements.foodOptionsContainer.innerHTML = '';
+
+            foodItems.forEach(food => {
+                const button = document.createElement('button');
+                button.textContent = food.name;
+                button.className = 'bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-xl shadow-sm transition duration-300 ease-in-out transform hover:scale-105';
+                button.addEventListener('click', () => {
+                    applyFoodEffects(food);
+                });
+                elements.foodOptionsContainer.appendChild(button);
+            });
+        }
+
+        function applyPlayEffects(activity) {
+            if (activity.name === "Jít si hrát ven" || activity.name === "Jít na procházku" || activity.name === "Aportovat") {
+                nox.playCount++;
+                if (nox.playCount >= 5) {
+                    nox.isSick = true;
+                    showCustomModal("Nox je nachlazený! Neustálé hraní venku mu nedělá dobře. Potřebuješ lék Noxolit z lékárničky!", "Nox je nemocný!");
+                }
+            } else {
+                nox.playCount = 0;
+            }
+            
+            applyEffects(activity.effects);
+
+            showMessage(activity.message);
+            playSound('activity');
+            toggleMenu(elements.gameStats);
+        }
+
+        function showPlayMenu() {
+            toggleMenu(elements.playMenu, 'playMenuTitle');
+            elements.playOptionsContainer.innerHTML = '';
+
+            playItems.forEach(activity => {
+                const button = document.createElement('button');
+                button.textContent = activity.name;
+                button.className = 'bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-xl shadow-sm transition duration-300 ease-in-out transform hover:scale-105';
+                button.addEventListener('click', () => {
+                    applyPlayEffects(activity);
+                });
+                elements.playOptionsContainer.appendChild(button);
+            });
+        }
+        
+        function batheNox() {
+            nox.hygiene = Math.min(100, nox.hygiene + 25);
+            nox.fun = Math.min(100, nox.fun + 5);
+            nox.satisfaction = Math.min(100, nox.satisfaction + 10);
+            updateStatsDisplay();
+            showMessage(getRandomMessage(noxMessages.bath));
+            playSound('action');
+        }
+
+        function sleepNox() {
+            let message;
+            let soundType = 'action';
+            
+            if (nox.energy >= 90) {
+                message = getRandomMessage(noxMessages.sleep.high);
+                nox.satisfaction = Math.max(0, nox.satisfaction - 5);
+                soundType = 'grumpy';
+            } else if (nox.energy >= 50) {
+                message = getRandomMessage(noxMessages.sleep.mid);
+                nox.energy = Math.min(100, nox.energy + 30);
+                nox.hunger = Math.max(0, nox.hunger - 10);
+                nox.satisfaction = Math.min(100, nox.satisfaction + 15);
+                soundType = 'sleeping';
+            } else {
+                message = getRandomMessage(noxMessages.sleep.low);
+                nox.energy = Math.min(100, nox.energy + 50);
+                nox.hunger = Math.max(0, nox.hunger - 15);
+                nox.satisfaction = Math.min(100, nox.satisfaction + 25);
+                soundType = 'sleeping';
+            }
+
+            updateStatsDisplay();
+            showMessage(message);
+            playSound(soundType);
+        }
+        
+        function talkToNox() {
+            let message;
+            const avgStat = (nox.hunger + nox.energy + nox.hygiene) / 3;
+            if (avgStat <= 30) {
+                message = getRandomMessage(noxMessages.talk.howAreYou.low);
+            } else if (avgStat <= 90) {
+                message = getRandomMessage(noxMessages.talk.howAreYou.mid);
+            } else {
+                message = getRandomMessage(noxMessages.talk.howAreYou.high);
+            }
+            showCustomModal(message, 'Nox odpovídá');
+        }
+
+        function openShop() {
+            toggleMenu(elements.shopMenu, 'shopMenuTitle');
+            elements.shopCurrencyDisplay.textContent = `${nox.currency}`;
+            renderShopItems();
+        }
+
+        function buyItem(item) {
+            if (nox.currency >= item.price) {
+                nox.currency -= item.price;
+                
+                if (item.type === "medicine" || item.type === "potion") {
+                    nox.inventory.push(item);
+                    showMessage(`Koupil jsi ${item.name} za ${item.price} Kreditů a uložil jej do lékárničky.`);
+                } else {
+                    applyEffects(item.effects);
+                    showMessage(item.message);
+                }
+                
+                updateStatsDisplay();
+                toggleMenu(elements.gameStats);
+            } else {
+                showCustomModal(`Nemáš dostatek Kreditů na nákup ${item.name}. Potřebuješ ${item.price} Kreditů, ale máš jen ${nox.currency}.`, "Nedostatek Kreditů");
+            }
+        }
+
+        function renderShopItems() {
+            elements.shopItemsContainer.innerHTML = '';
+            
+            shopItems.forEach(item => {
+                const button = document.createElement('button');
+                button.textContent = item.name;
+                button.className = 'bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-xl shadow-sm transition duration-300 ease-in-out transform hover:scale-105';
+                button.addEventListener('click', () => {
+                    buyItem(item);
+                });
+                elements.shopItemsContainer.appendChild(button);
+            });
+        }
+        
+        function openFirstAidKit() {
+            toggleMenu(elements.firstAidKitMenu, 'firstAidKitMenuTitle');
+            renderFirstAidKitItems();
+        }
+
+        function useItemFromInventory(item, index) {
+            switch (item.name) {
+                case "Nomax":
+                    nox.hunger = 100;
+                    nox.energy = 100;
+                    nox.hygiene = 100;
+                    nox.fun = 100;
+                    nox.satisfaction = 100;
+                    break;
+                case "Noxofit":
+                    nox.weight = 5;
+                    break;
+                case "Noxolit":
+                    nox.isSick = false;
+                    break;
+                case "Noxotronik":
+                    nox.isPoisoned = false;
+                    break;
+            }
+
+            nox.inventory.splice(index, 1);
+            updateStatsDisplay();
+            showMessage(item.message);
+            renderFirstAidKitItems();
+            toggleMenu(elements.gameStats);
+        }
+
+        function renderFirstAidKitItems() {
+            elements.firstAidKitItemsContainer.innerHTML = '';
+            if (nox.inventory.length === 0) {
+                elements.firstAidKitItemsContainer.innerHTML = '<p class="text-gray-600">Lékárnička je prázdná.</p>';
+            } else {
+                nox.inventory.forEach((item, index) => {
+                    const button = document.createElement('button');
+                    button.textContent = item.name;
+                    button.className = 'bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-xl shadow-sm transition duration-300 ease-in-out transform hover:scale-105';
+                    button.addEventListener('click', () => {
+                        useItemFromInventory(item, index);
+                    });
+                    elements.firstAidKitItemsContainer.appendChild(button);
+                });
+            }
+        }
+        
+        // === ZAMĚSTNÁNÍ ===
+        function disableAllActions() {
+            const buttons = document.querySelectorAll('#gameStats button');
+            buttons.forEach(btn => btn.disabled = true);
+        }
+
+        function enableAllActions() {
+            const buttons = document.querySelectorAll('#gameStats button');
+            buttons.forEach(btn => btn.disabled = false);
+        }
+        
+        function openJobManagementMenu() {
+            toggleMenu(elements.jobManagementMenu, 'jobManagementTitle');
+            renderJobList();
+        }
+        
+        function renderJobList() {
+            elements.jobListContainer.innerHTML = '';
+            if (nox.currentJob) {
+                elements.currentJobText.textContent = `Noxovo aktuální zaměstnání: ${nox.currentJob.name}`;
+            } else {
+                elements.currentJobText.textContent = `Nox je nezaměstnaný.`;
+            }
+            
+            for (const jobName in jobsConfig) {
+                const job = jobsConfig[jobName];
+                const jobDiv = document.createElement('div');
+                jobDiv.classList.add('job-item');
+                jobDiv.innerHTML = `
+                    <h4>${job.name}</h4>
+                    <p>${job.description}</p>
+                    <p>Trvání: ${job.duration / 60} minut | Plat: ${job.reward} Kreditů</p>
+                    <button class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-xl mt-2" data-job-name="${job.name}">Vybrat</button>
+                `;
+                elements.jobListContainer.appendChild(jobDiv);
+            }
+        }
+        
+        // Přidán event listener na kontejner pro delegaci událostí
+        elements.jobListContainer.addEventListener('click', (event) => {
+            const button = event.target.closest('button');
+            if (button && button.dataset.jobName) {
+                setJob(button.dataset.jobName);
+            }
+        });
+
+        function setJob(jobName) {
+            nox.currentJob = jobsConfig[jobName];
+            showMessage(`Ahoj páníčku, tak jsem ${nox.currentJob.name}! Můžeš mě poslat do práce.`);
+            toggleMenu(elements.gameStats);
+            updateJobMenu();
+        }
+
+        function openJobMenu() {
+            toggleMenu(elements.jobMenu, 'jobMenuTitle');
+            updateJobMenu();
+        }
+
+        function updateJobMenu() {
+            if (nox.currentJob) {
+                elements.jobDescriptionText.innerHTML = `${nox.currentJob.name}: ${nox.currentJob.description}<br>Trvání: ${nox.currentJob.duration / 60} minut, Odměna: ${nox.currentJob.reward} Kreditů.`;
+                elements.startJobButton.classList.remove('hidden');
+            } else {
+                elements.jobDescriptionText.textContent = `Nox je momentálně nezaměstnaný. Vyber mu práci ve Správě zaměstnání.`;
+                elements.startJobButton.classList.add('hidden');
+            }
+        }
+
+        function startJob() {
+            if (!nox.currentJob) {
+                showCustomModal('Nejprve musíš Noxovi vybrat zaměstnání!', 'Chyba');
+                return;
+            }
+            nox.isWorking = true;
+            nox.workRemaining = nox.currentJob.duration;
+            showMessage(`Odešel jsem do práce na pozici ${nox.currentJob.name}. Ahoj!`);
+            updateStatsDisplay();
+            nox.workTimer = setInterval(updateWorkTimer, 1000);
+            toggleMenu(elements.gameStats);
+        }
+
+        function updateWorkTimer() {
+            if (nox.isWorking) {
+                nox.workRemaining--;
+                updateStatsDisplay();
+            }
+            if (nox.workRemaining <= 0) {
+                clearInterval(nox.workTimer);
+                finishJob();
+            }
+        }
+
+        function finishJob() {
+            nox.isWorking = false;
+            nox.currency += nox.currentJob.reward;
+            nox.energy = Math.max(0, nox.energy - 30);
+            nox.hunger = Math.max(0, nox.hunger - 20);
+            nox.hygiene = Math.max(0, nox.hygiene - 10);
+            nox.fun = Math.min(100, nox.fun + 10);
+            nox.satisfaction = Math.min(100, nox.satisfaction + 20);
+            
+            const jobMessage = getRandomMessage(nox.currentJob.messages);
+            
+            showCustomModal(`Vrátil jsem se z práce, a přinesl jsem ti ${nox.currentJob.reward} Kreditů.<br><br>"${jobMessage}"`, 'Práce dokončena!');
+            playSound('jobDone');
+            updateStatsDisplay();
+        }
+
+        // === UKLÁDÁNÍ A NAČÍTÁNÍ ===
+        function saveGameToLocalStorage() {
+            try {
+                localStorage.setItem('noxSave', JSON.stringify(nox));
+                console.log('Hra uložena do lokálního úložiště.');
+            } catch (e) {
+                console.error("Chyba při ukládání hry:", e);
+            }
+        }
+
+        function loadGameFromLocalStorage() {
+            try {
+                const savedData = localStorage.getItem('noxSave');
+                if (savedData) {
+                    const loadedNox = JSON.parse(savedData);
+                    if (loadedNox) {
+                        Object.assign(nox, loadedNox);
+                        return true;
+                    }
+                }
+            } catch (e) {
+                console.error("Chyba při načítání hry z lokálního úložiště:", e);
+            }
+            return false;
+        }
+
+        function exportGame() {
+            try {
+                const noxData = JSON.stringify(nox, null, 2);
+                const blob = new Blob([noxData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'nox_save.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showCustomModal('Hra exportována do souboru nox_save.json!', 'Uloženo');
+                playSound('saveLoad');
+            } catch (e) {
+                showCustomModal('Chyba při exportu hry: ' + e.message, 'Chyba');
+                console.error("Chyba při exportu hry:", e);
+            }
+        }
+
+        function importGame() {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.json';
+            fileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const loadedNox = JSON.parse(e.target.result);
+                            if (loadedNox && typeof loadedNox.hunger === 'number' && typeof loadedNox.energy === 'number') {
+                                Object.assign(nox, loadedNox);
+                                updateStatsDisplay();
+                                showCustomModal('Hra načtena úspěšně ze souboru!', 'Načteno');
+                                playSound('saveLoad');
+                                if (gameInterval) clearInterval(gameInterval);
+                                if (autoSaveInterval) clearInterval(autoSaveInterval);
+                                gameInterval = setInterval(decreaseStats, 60000);
+                                autoSaveInterval = setInterval(saveGameToLocalStorage, AUTOSAVE_INTERVAL * 1000);
+                                toggleMenu(elements.gameStats);
+                            } else {
+                                showCustomModal('Chyba: Soubor neobsahuje platná data hry Nox.', 'Chyba');
+                                playSound('badFood');
+                            }
+                        } catch (parseError) {
+                            showCustomModal('Chyba při čtení souboru: ' + parseError.message, 'Chyba');
+                            console.error("Chyba při parsování JSON souboru:", parseError);
+                            playSound('badFood');
+                        }
+                    };
+                    reader.onerror = (readerError) => {
+                        showCustomModal('Chyba při čtení souboru: ' + readerError.message, 'Chyba');
+                        console.error("Chyba FileReaderu:", readerError);
+                        playSound('badFood');
+                    };
+                    reader.readAsText(file);
+                } else {
+                    showCustomModal('Žádný soubor nebyl vybrán.', 'Chyba');
+                }
+            });
+            fileInput.click();
+        }
+
+        // === PŘÍPRAVA HRY PŘI NAČTENÍ STRÁNKY ===
+        function init() {
+            const savedGameExists = loadGameFromLocalStorage();
+            if (savedGameExists) {
+                toggleMenu(elements.gameStats);
+                startGame();
+            } else {
+                toggleMenu(elements.startScreen);
+            }
+        }
+
+        // === PŘIDÁNÍ EVENT LISTENERŮ ===
+        elements.startGameButton.addEventListener('click', () => {
+            // Kontrola, zda existuje uložená hra, a dotaz na uživatele
+            if (localStorage.getItem('noxSave')) {
+                showCustomModal('Našlo se uložená hra. Chceš ji nahrát?', 'Načíst hru?', () => {
+                    loadGameFromLocalStorage();
+                    startGame();
+                }, true);
+            } else {
+                startGame();
+            }
+        });
+        elements.feedButton.addEventListener('click', showFoodMenu);
+        elements.batheButton.addEventListener('click', batheNox);
+        elements.sleepButton.addEventListener('click', sleepNox);
+        elements.playButton.addEventListener('click', showPlayMenu);
+        elements.talkButton.addEventListener('click', talkToNox);
+        elements.shopButton.addEventListener('click', openShop);
+        elements.firstAidKitButton.addEventListener('click', openFirstAidKit);
+        elements.jobManagementButton.addEventListener('click', openJobManagementMenu);
+        elements.jobButton.addEventListener('click', openJobMenu);
+        elements.startJobButton.addEventListener('click', startJob);
+        elements.saveGameButton.addEventListener('click', exportGame);
+        elements.loadGameButton.addEventListener('click', importGame);
+        elements.showStoryButton.addEventListener('click', () => {
+            showCustomModal(document.getElementById('introScreen').innerHTML, 'Příběh Noxe');
+        });
+
+        // Tlačítka pro zavírání menu s přesunem zaměření zpět na hlavní menu
+        elements.closeFoodMenuButton.addEventListener('click', () => toggleMenu(elements.gameStats));
+        elements.closePlayMenuButton.addEventListener('click', () => toggleMenu(elements.gameStats));
+        elements.closeShopMenuButton.addEventListener('click', () => toggleMenu(elements.gameStats));
+        elements.closeFirstAidKitButton.addEventListener('click', () => toggleMenu(elements.gameStats));
+        elements.closeJobManagementMenuButton.addEventListener('click', () => toggleMenu(elements.gameStats));
+        elements.closeJobMenuButton.addEventListener('click', () => toggleMenu(elements.gameStats));
+        
+        // Funkce pro obnovení zaměření na startovací tlačítko po načtení stránky
+        window.addEventListener('load', () => {
+            const savedGameExists = loadGameFromLocalStorage();
+            if (!savedGameExists) {
+                elements.startGameButton.focus();
+            } else {
+                elements.feedButton.focus(); // Zaměř se na první herní tlačítko
+            }
+        });
+        
+        // Spuštění inicializační funkce po načtení stránky
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

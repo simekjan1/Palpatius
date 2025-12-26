@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palpatius Games - Rozcestník</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Zábavné a veselé styly pro relaxační atmosféru */
+        body {
+            /* Hravý barevný přechod jako pozadí */
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            font-family: 'Inter', sans-serif;
+            color: #333; /* Tmavší text pro lepší čitelnost na světlém pozadí */
+            padding: 1rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 4xl;
+            margin: 0 auto;
+            padding: 2.5rem;
+            /* Efekt "mléčného skla" pro moderní vzhled */
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem; /* Více zakulacené rohy pro přátelštější dojem */
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        h1 {
+            color: #2c3e50; /* Tmavě modrošedá pro elegantní kontrast */
+            font-size: 4rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .intro-text {
+            color: #34495e; /* Mírně světlejší odstín pro text */
+            text-align: center;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+        
+        /* Společné styly pro všechna tlačítka */
+        .app-link {
+            display: flex; /* Použijeme flexbox pro zarovnání ikony a textu */
+            align-items: center;
+            justify-content: center;
+            gap: 1rem; /* Mezera mezi ikonou a textem */
+            padding: 1.25rem 2rem;
+            margin-bottom: 1rem;
+            text-decoration: none;
+            border-radius: 1rem; /* Kulatější rohy */
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff; /* Bílý text na barevných tlačítkách */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Zvětšená ikona */
+        .app-link .icon {
+            font-size: 2.5rem; /* Výrazně větší ikona */
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        
+        .app-link:hover .icon {
+            transform: rotate(10deg) scale(1.1); /* Hravá animace ikony při najetí */
+        }
+        
+        /* Každé tlačítko má svou vlastní veselou barvu */
+        .app-link.docs { background-color: #1abc9c; } /* Tyrkysová */
+        .app-link.nox { background-color: #3498db; } /* Modrá */
+        .app-link.blackjack { background-color: #9b59b6; } /* Fialová */
+        .app-link.garden { background-color: #2ecc71; } /* Zelená */
+        .app-link.textbox { background-color: #f1c40f; } /* Žlutá */
+
+        .app-link:hover {
+            transform: translateY(-5px) scale(1.03); /* Zvětšení a posunutí nahoru při najetí */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .app-link:focus {
+            outline: 3px solid #e74c3c; /* Výrazný červený focus pro přístupnost */
+            outline-offset: 3px;
+        }
+
+        kbd {
+            background-color: #e0e0e0; /* Světle šedé pozadí */
+            color: #333; /* Tmavý text */
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+            border: 1px solid #ccc;
+        }
+
+        /* Responzivní úpravy */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .container { padding: 1.5rem; }
+            .app-link {
+                font-size: 1.15rem;
+                padding: 1rem 1.5rem;
+                max-width: 100%;
+                gap: 0.75rem;
+            }
+            .app-link .icon { font-size: 2rem; }
+        }
+
+.epilog-wrapper {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.epilog-link {
+    display: inline-block;
+    font-size: 0.95rem;
+    color: #555;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.epilog-link:hover {
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #222;
+}
+
+.epilog-link:focus {
+    outline: 2px solid #555;
+    outline-offset: 3px;
+}
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container">
+        <h1 class="text-5xl font-extrabold text-center mb-6 mt-8">Palpatius Games</h1>
+        
+<p class="intro-text text-lg text-center leading-relaxed">
+    <strong>Palpatius Games</strong> je archivní herní odnož projektu Palpatius.<br><br>
+    Nacházíte se v archivu her, které vznikly jako vedlejší, hravý proud vývoje.
+    Tyto hry se již dále nevyvíjejí, zůstávají však plně funkční a přístupné
+    jako ukázka tvorby, experimentování a pro čistou radost ze hry.<br><br>
+    Kdo chce, může si zahrát. Kdo chce vědět víc, najde odpověď v epilogu.
+</p>
+
+        <div class="space-y-4">
+            <!-- Každý odkaz má teď svou barevnou třídu a ikona je oddělena pro lepší stylování -->
+            <a href="data/001._nox.html" class="app-link nox" aria-label="Zahrajte si Noxe, a bavte se">
+                <span class="icon">🐾</span> <span class="text">Nox</span>
+            </a>
+            <a href="data/002._blackjack.html" class="app-link blackjack" aria-label="Zkuste štěstí ve hře BlackJack a porazte dealera!">
+                <span class="icon">🃏</span> <span class="text">BlackJack</span>
+            </a>
+            <a href="data/003._zahradka.html" class="app-link garden" aria-label="Odpočiňte si na vaší virtuální zahrádce.">
+                <span class="icon">🌱</span> <span class="text">Virtuální zahrádka</span>
+            </a>
+            <a href="data/004._textbox.html" class="app-link textbox" aria-label="Vytvářejte a hrajte interaktivní textové příběhy v aplikaci TextBox.">
+                <span class="icon">✍️</span> <span class="text">TextBox</span>
+            </a>
+<div class="epilog-wrapper">
+    <a href="epilog.html" class="epilog-link" aria-label="Přečíst epilog projektu Palpatius Games">
+        📜 Palpatius Games – Epilog
+    </a>
+        </div>
+    </div>
+</body>
+</html>
