@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jak používat systém Palpatius</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at top, #1e293b, #020617 55%);
+      min-height: 100vh;
+    }
+
+    .prose-custom p {
+      margin-bottom: 0.9rem;
+    }
+
+    .prose-custom strong {
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body class="font-sans antialiased text-slate-100">
+
+  <!-- Horní navigace -->
+  <header class="w-full border-b border-slate-800/60 bg-slate-950/70 backdrop-blur">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+
+      <!-- Zpět na blog -->
+      <a href="../index.html"
+
+         aria-label="Zpět na seznam článků"
+         class="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg">
+        <span class="text-xl">←</span>
+        <span class="text-sm">Zpět na blog</span>
+      </a>
+
+      <!-- Informace o systému -->
+<a href="../../index.html"
+         aria-label="Zpět na informační stránku Palpatius"
+         class="text-xs text-slate-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full px-3 py-1">
+        Informace o systému
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 pb-16 pt-8">
+
+    <!-- Placeholder -->
+    <div class="mb-6 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-500 via-sky-500 to-cyan-400 h-40
+                flex items-center justify-center text-5xl">
+      📘
+    </div>
+
+    <!-- Meta -->
+    <section class="mb-6">
+      <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">
+        Základní návod
+      </p>
+
+      <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">
+        Jak používat systém Palpatius
+      </h1>
+
+      <p class="text-sm text-slate-300">
+        Publikováno:
+        <time datetime="2025-01-01">1. ledna 2025</time>
+      </p>
+    </section>
+
+    <!-- OBSAH -->
+    <article class="prose-custom text-sm sm:text-base text-slate-100 leading-relaxed">
+
+      <p><strong>Palpatius není klasická aplikace, ale offline nástroj.</strong> Je navržený pro klid, ne stres.</p>
+
+      <p>V tomto článku si ukážeme, jak Palpatius funguje jako celek. Nejedná se o detailní návody k jednotlivým modulům, ale o základní orientaci v systému.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Jak Palpatius funguje</h2>
+      <p>Palpatius je modulární systém. Každý modul představuje jedno odvětví masérské praxe. I když je systém rozdělený do modulů, funguje jako jeden celek.</p>
+
+      <p>Do systému se můžete dostat dvěma způsoby.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Spuštění systému</h2>
+
+      <p><strong>Možnost první – pro netechnické uživatele</strong></p>
+      <p>Navštivte stránku <strong>www.palpatius.cz</strong>, sjeďte níže a klikněte na tlačítko <em>Spustit webovou verzi</em>. Otevře se uvítací stránka, kde stačí kliknout na <em>Vstoupit do systému</em>.</p>
+
+      <p><strong>Možnost druhá – offline verze</strong></p>
+      <p>Na stránce <strong>www.palpatius.cz</strong> klikněte na <em>Stáhnout offline verzi (ZIP)</em>. Po stažení ZIP soubor rozbalte (např. pomocí WinRAR nebo WinZIP), otevřete složku a dvakrát klikněte na soubor <code>index.html</code>.</p>
+
+      <p>Systém se otevře ve vašem webovém prohlížeči a můžete začít pracovat.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Pohyb v systému</h2>
+      <p>V každém modulu se v horní části nachází navigační lišta se seznamem modulů. Stačí jeden klik a okamžitě se přesunete tam, kam potřebujete.</p>
+
+      <p>Jak jednotlivé moduly fungují a k čemu slouží jejich ovládací prvky, se dozvíte v samostatných návodech.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Offline režim</h2>
+      <p>Palpatius funguje zcela offline – dokonce i ve webové verzi. Neexistuje žádná registrace, přihlašování ani uživatelské účty.</p>
+
+      <p>Systém ukládá data přímo do vašeho prohlížeče nebo počítače. Vše zůstává pouze u vás.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Jak v Palpatiu přemýšlet</h2>
+      <p>Palpatius si pamatuje za vás. Vy jen zapisujete. Data jsou vždy vaše a systém vás nijak neposuzuje.</p>
+
+      <p>Je jen na vás, jakým způsobem ho budete používat a přizpůsobíte si ho své praxi.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Co Palpatius není</h2>
+
+      <ul class="list-disc pl-5 mb-4">
+        <li><strong>Není cloud.</strong> Žádná data se neposílají na internet.</li>
+        <li><strong>Není účetní software.</strong> Finanční přehled slouží vám, ne pro daňové přiznání.</li>
+        <li><strong>Není rezervační systém.</strong> Slouží k přehledu, ne k objednávání klientů.</li>
+        <li><strong>Není pro korporace.</strong> Je navržený pro maséry a lidskou praxi.</li>
+      </ul>
+
+      <p>Rezervační systém a Palpatius se skvěle doplňují – každý slouží k něčemu jinému.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Webová vs. offline verze</h2>
+      <p>Představte si Palpatius jako digitální poznámkový blok uložený přímo ve vašem prohlížeči.</p>
+
+      <p>Když systém zavřete a znovu otevřete, data tam zůstanou. Nejsou na internetu, ale lokálně u vás.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Kam dál</h2>
+      <p>Doporučuji pokračovat návody k jednotlivým modulům. Není nutné číst vše najednou.</p>
+
+      <p>Čtěte postupně, zkoušejte v praxi a dejte si čas. Palpatius je přívětivý nástroj, který má pomáhat – ne stresovat.</p>
+
+      <p>Nejdůležitější je si s ním chvíli hrát a zjistit, že vám opravdu sedí.</p>
+
+    </article>
+  </main>
+
+</body>
+</html>

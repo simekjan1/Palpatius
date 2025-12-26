@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Palpatius – Blog</title>
+
+  <!-- Tailwind přes CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --barva-primarni: #2563eb;
+      --barva-pozadi: #0f172a;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1d4ed8, #0f172a 55%, #020617);
+      min-height: 100vh;
+    }
+
+    .card-hover {
+      transition: transform 150ms ease, box-shadow 150ms ease;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 30px rgba(15, 23, 42, 0.65);
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+
+<body class="font-sans antialiased text-slate-100">
+
+  <!-- Horní lišta -->
+  <header class="w-full border-b border-slate-800/60 bg-slate-950/60 backdrop-blur">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+
+      <a href="/"
+         aria-label="Zpět na informační stránku Palpatius"
+         class="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg">
+        <div class="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-xl">👐</div>
+        <div class="flex flex-col leading-tight">
+          <span class="font-semibold text-sm">Palpatius</span>
+          <span class="text-xs text-slate-400 -mt-0.5">Vaše data, vaše kontrola</span>
+        </div>
+      </a>
+
+      <nav class="flex items-center gap-3 text-sm">
+        <a href="/"
+           aria-label="Přejít na informace o systému"
+           class="px-3 py-1.5 rounded-full bg-slate-900/70 border border-slate-700/70 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          Informace o systému
+        </a>
+
+        <!-- Aktivní položka -->
+        <span class="hidden sm:inline-flex px-3 py-1.5 rounded-full bg-blue-600/90 border border-blue-500/80 text-xs font-semibold uppercase tracking-wide">
+          Blog
+        </span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hlavní obsah -->
+  <main class="max-w-6xl mx-auto px-4 pb-16 pt-10">
+
+    <!-- Úvod blogu -->
+    <section class="mb-10 text-center">
+      <p class="badge inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-600/15 border border-blue-500/40 text-blue-200">
+        <span class="text-xs">NOVĚ</span>
+        <span class="hidden xs:inline text-[0.7rem]">Blog autora Palpatia</span>
+      </p>
+
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mt-4 mb-3">
+        Palpatius Blog
+      </h1>
+
+      <p class="max-w-2xl mx-auto text-sm sm:text-base text-slate-300">
+        Příběh, vývoj a zákulisí systému Palpatius očima maséra se zbytky zraku.
+        Žádný marketing – jen upřímná zkušenost, praktické tipy a moje vlastní cesta.
+      </p>
+    </section>
+
+    <!-- Dvě úvodní sekce -->
+    <section class="grid lg:grid-cols-2 gap-8 mb-10">
+      <div class="bg-slate-900/70 border border-slate-800/80 rounded-2xl p-5">
+        <h2 class="text-lg font-semibold mb-2">Příběh a pozadí Palpatia</h2>
+        <p class="text-sm text-slate-300">
+          Jak Palpatius vznikl, kdo za ním stojí a co všechno se muselo stát, než vznikl první stabilní systém.
+        </p>
+      </div>
+
+      <div class="bg-slate-900/70 border border-slate-800/80 rounded-2xl p-5">
+        <h2 class="text-lg font-semibold mb-2">Jak Palpatius používat v praxi</h2>
+        <p class="text-sm text-slate-300">
+          Konkrétní návody a doporučení, jak z Palpatia udělat spolehlivého pomocníka pro každodenní praxi.
+        </p>
+      </div>
+    </section>
+
+    <!-- GRID SEZNAMU ČLÁNKŮ -->
+    <section aria-label="Seznam článků blogu">
+      <div class="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+
+        <!-- Všech 12 článků – nezměněny, jen srovnány odkazy a struktura -->
+
+        <!-- 1 -->
+        <a href="articles/001._o_autorovi.html"
+           class="card-hover bg-slate-900/70 border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div class="h-36 w-full bg-gradient-to-br from-blue-500 via-sky-500 to-cyan-400 flex items-center justify-center text-4xl">👤</div>
+          <div class="p-4 flex flex-col flex-1">
+            <p class="text-[0.7rem] uppercase tracking-wide text-slate-400 mb-1">Příběh</p>
+            <h3 class="font-semibold text-base mb-1">O autorovi projektu Palpatius</h3>
+            <p class="text-sm text-slate-300 flex-1">Kdo stojí za Palpatiem, jak vypadá moje práce a proč jsem se do toho všeho vůbec pustil.</p>
+          </div>
+        </a>
+
+        <!-- 2 -->
+        <a href="articles/002._offline_system.html"
+           class="card-hover bg-slate-900/70 border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div class="h-36 w-full bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 flex items-center justify-center text-4xl">🧠</div>
+          <div class="p-4 flex flex-col flex-1">
+            <p class="text-[0.7rem] uppercase tracking-wide text-slate-400 mb-1">Cesta</p>
+            <h3 class="font-semibold text-base mb-1">Jak si masér se zbytky zraku vytvořil svůj offline systém</h3>
+            <p class="text-sm text-slate-300 flex-1">Od prvního nápadu až po funkční řešení, které zvládám ovládat i s omezeným zrakem.</p>
+          </div>
+        </a>
+
+        <!-- 3 -->
+        <a href="articles/003._historie_palpatia.html"
+           class="card-hover bg-slate-900/70 border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div class="h-36 w-full bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 flex items-center justify-center text-4xl">📜</div>
+          <div class="p-4 flex flex-col flex-1">
+            <p class="text-[0.7rem] uppercase tracking-wide text-slate-400 mb-1">Vývoj</p>
+            <h3 class="font-semibold text-base mb-1">Historie systému Palpatius</h3>
+            <p class="text-sm text-slate-300 flex-1">Jak se Palpatius měnil, co všechno jsem musel předělat a proč některé věci nikdy neuvidíte.</p>
+          </div>
+        </a>
+
+        <!-- 4 -->
+        <a href="articles/004._max_ai_partak.html"
+           class="card-hover bg-slate-900/70 border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div class="h-36 w-full bg-gradient-to-br from-orange-500 via-amber-400 to-yellow-400 flex items-center justify-center text-4xl">🤖</div>
+          <div class="p-4 flex flex-col flex-1">
+            <p class="text-[0.7rem] uppercase tracking-wide text-slate-400 mb-1">Zákulisí</p>
+            <h3 class="font-semibold text-base mb-1">Jak vznikl Max, můj AI super parťák</h3>
+            <p class="text-sm text-slate-300 flex-1">Proč jsem si vytvořil vlastního AI pomocníka a jak mi pomáhá udržet Palpatius v kondici.</p>
+          </div>
+        </a>
+
+        <!-- 5 -->
+        <a href="articles/005._nazev_palpatius.html"
+           class="card-hover bg-slate-900/70 border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div class="h-36 w-full bg-gradient-to-br from-rose-500 via-red-500 to-orange-500 flex items-center justify-center text-4xl">🔤</div>
+          <div class="p-4 flex flex-col flex-1">
+            <p class="text-[0.7rem] uppercase tracking-wide text-slate-400 mb-1">Zajímavost</p>
+            <h3 class="font-semibold text-base mb-1">Jak vznikl název Palpatius</h3>
+            <p class="text-sm text-slate-300 flex-1">Pár písmen, které mají svůj význam a odkazují k tomu, co vlastně systém dělá.</p>
+          </div>
+        </a>
+
+        <!-- 6 -->
+        <a href="articles/006._palpatius_aktualne.html"
+           class="card-hover bg-slate-900/70 border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div class="h-36 w-full bg-gradient-to-br from-sky-500 via-blue-500 to-indigo-500 flex items-center justify-center text-4xl">📌</div>
+          <div class="p-4 flex flex-col flex-1">
+            <p class="text-[0.7rem] uppercase tracking-wide text-slate-400 mb-1">Stav projektu</p>
+            <h3 class="font-semibold text-base mb-1">Palpatius aktuálně</h3>
+            <p class="text-sm text-slate-300 flex-1">V jaké fázi je Palpatius dnes, co funguje stabilně a kam bych ho rád posouval dál.</p>
+          </div>
+        </a>
+
+        <!-- 7 -->
+        <a href="articles/007._jak_pouzivat_palpatius.html"
+           class="card-hover bg-slate-900/70 border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div class="h-36 w-full bg-gradient-to-br from-teal-500 via-emerald-500 to-green-500 flex items-center justify-center text-4xl">🧩</div>
+          <div class="p-4 flex flex-col flex-1">
+            <p class="text-[0.7rem] uppercase tracking-wide text-slate-400 mb-1">Návod</p>
+            <h3 class="font-semibold text-base mb-1">Jak používat systém Palpatius</h3>
+            <p class="text-sm text-slate-300 flex-1">Základní principy práce se systémem, aby vám nepřekážel, ale skutečně pomáhal.</p>
+          </div>
+        </a>
+
+        <!-- 8 -->
+        <a href="articles/008._zalohovani.html"
+           class="card-hover bg-slate-900/70 border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div class="h-36 w-full bg-gradient-to-br from-red-500 via-rose-500 to-pink-500 flex items-center justify-center text-4xl">💾</div>
+          <div class="p-4 flex flex-col flex-1">
+            <p class="text-[0.7rem] uppercase tracking-wide text-slate-400 mb-1">Bezpečnost</p>
+            <h3 class="font-semibold text-base mb-1">Zálohovat, zálohovat, zálohovat</h3>
+            <p class="text-sm text-slate-300 flex-1">Proč je zálohování to nejdůležitější pravidlo při používání Palpatia – a jak na něj nezapomínat.</p>
+          </div>
+        </a>
+
+<!-- 9 -->
+<a href="articles/009._jak_palpatius_pouzivam_ja.html"
+   class="card-hover bg-slate-900/70 border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col focus:outline-none focus:ring-2 focus:ring-blue-500">
+  <div class="h-36 w-full bg-gradient-to-br from-teal-500 via-emerald-500 to-green-500 flex items-center justify-center text-4xl">🧩</div>
+  <div class="p-4 flex flex-col flex-1">
+    <p class="text-[0.7rem] uppercase tracking-wide text-slate-400 mb-1">Osobní praxe</p>
+    <h3 class="font-semibold text-base mb-1">Jak Palpatius používám já</h3>
+    <p class="text-sm text-slate-300 flex-1">
+      Jak Palpatius používám v každodenní praxi, jak ho vnímám a co pro mě znamená.
+    </p>
+  </div>
+</a>
+
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>

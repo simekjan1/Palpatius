@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zálohovat, zálohovat, zálohovat – proč je to v Palpatiu tak důležité</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at top, #1e293b, #020617 55%);
+      min-height: 100vh;
+    }
+
+    .prose-custom p {
+      margin-bottom: 0.9rem;
+    }
+
+    .prose-custom p:last-child {
+      margin-bottom: 0;
+    }
+
+    .prose-custom strong {
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body class="font-sans antialiased text-slate-100">
+
+  <!-- Horní navigace -->
+  <header class="w-full border-b border-slate-800/60 bg-slate-950/70 backdrop-blur">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+
+      <!-- Zpět na blog -->
+      <a href="../index.html"
+
+         aria-label="Zpět na seznam článků"
+         class="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg">
+        <span class="text-xl">←</span>
+        <span class="text-sm">Zpět na blog</span>
+      </a>
+
+      <!-- Informace o systému -->
+<a href="../../index.html"
+         aria-label="Zpět na informační stránku Palpatius"
+         class="text-xs text-slate-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full px-3 py-1">
+        Informace o systému
+      </a>
+    </div>
+  </header>
+
+  <!-- Obsah stránky -->
+  <main class="max-w-4xl mx-auto px-4 pb-16 pt-8">
+
+    <!-- Placeholder -->
+    <div class="mb-6 rounded-2xl overflow-hidden bg-gradient-to-br from-red-500 via-rose-500 to-pink-500 h-40
+                flex items-center justify-center text-5xl">
+      💾
+    </div>
+
+    <!-- Meta informace + nadpis -->
+    <section class="mb-6">
+      <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Bezpečnost dat</p>
+
+      <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">
+        Zálohovat, zálohovat, zálohovat
+      </h1>
+
+      <p class="text-sm text-slate-300">
+        Publikováno:
+        <time datetime="2025-01-01">1. ledna 2025</time>
+      </p>
+    </section>
+
+    <!-- HLAVNÍ OBSAH -->
+    <article class="prose-custom text-sm sm:text-base text-slate-100 leading-relaxed">
+
+      <p><strong>Proč je to v systému Palpatius tak moc důležité?</strong></p>
+
+      <p>Zálohování je důležitá věc, kterou bychom měli všichni dělat. Jenže ji často odkládáme nebo odsouváme na druhou kolej. „Až bude čas“, „zítra si k tomu sednu“ – a další podobné výmluvy.</p>
+
+      <p>Není to proto, že by to bylo složité. Je to proto, že se zdá, že se přece nemůže nic stát.</p>
+
+      <p>I já jsem zálohování nebral moc na zřetel. „Jo, to bude v pohodě, vždyť to počká.“ Člověk si to říká neustále… až do chvíle, kdy se něco opravdu stane.</p>
+
+      <p>Tento článek nepíšu proto, abych vás strašil. Píšu ho proto, že o data už přišlo vážně hodně lidí. Palpatius je totiž čistě offline systém. A právě proto je zálohování tak důležité.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Co se stane, když se nezálohuje?</h2>
+      <p>Když se nezálohuje, všechno funguje. Funguje to ale do chvíle, kdy to přestane fungovat.</p>
+
+      <p>Stačí porucha počítače, výměna disku nebo přeinstalace systému. V tu chvíli už není co zachraňovat. Data jsou nenávratně pryč.</p>
+
+      <p>Dobrá zpráva je, že se tomu dá velmi jednoduše předejít.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Jak exportovat a zálohovat data z Palpatia?</h2>
+      <p>V Palpatiu existují tři způsoby, jak to celé funguje:</p>
+
+      <ul class="list-disc pl-5 mb-4">
+        <li><strong>Data v profilu prohlížeče:</strong> Palpatius ukládá data do profilu vašeho prohlížeče – pro znalé do databáze <strong>IndexedDB</strong>.</li>
+        <li><strong>Tlačítko Exportovat vše (JSON):</strong> V každém modulu najdete tlačítko <strong>„Exportovat vše (JSON)”</strong>. Tím si stáhnete všechna data daného modulu do JSON souboru.</li>
+        <li><strong>Backup manager:</strong> V každém modulu je vpravo dole malé okénko – panel automatických záloh Palpatius. Ten se stará o pravidelné zálohy a vytváří datované JSON exporty. V panelu si navíc můžete zvolit složku, do které se má zálohovat.</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Proč nespoléhat jen na data v profilu prohlížeče?</h2>
+      <p>Protože si můžete omylem vymazat cache. A tím se vám smažou i lokálně uložená data.</p>
+
+      <p>Uvedu příklad z praxe. Jednou jsem pracoval na webu své masérny. Udělal jsem úpravy a chtěl jsem je vidět naživo. Otevřel jsem prohlížeč, ale změny se ještě neukázaly. Tak jsem dal <kbd>F5</kbd> a potom <kbd>Ctrl</kbd> + <kbd>F5</kbd>.</p>
+
+      <p>A to bylo zásadní. Tato klávesová zkratka vám vymaže i cache prohlížeče. O den později jsem chtěl pracovat v modulu Masérna. Otevřu ho… a nic. Klienti fuč, masáže fuč, poznámky fuč – prostě všechno.</p>
+
+      <p>Naštěstí jsem měl připravený JSON export. V modulu jsem klikl na <strong>Importovat vše (JSON)</strong>, nahrál soubor a bylo to. Vše bylo zase při starém.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Co export skutečně obsahuje</h2>
+      <p>Každý modul má svůj vlastní export. Neexistuje jeden společný export pro celý systém.</p>
+
+      <p>Export je celá vaše práce – vaše praxe, a nadneseně i váš život. V exportních souborech jsou veškerá data, která jste si do modulů uložili.</p>
+
+      <ul class="list-disc pl-5 mb-4">
+        <li><strong>Masérna:</strong> klienti, masáže, poukazy, poznámky, ceník.</li>
+        <li><strong>Finanční správce:</strong> transakce, měsíční a roční přehledy, skladové položky.</li>
+        <li><strong>Záznamník:</strong> poznámky, úkoly, to-do listy, události, nápady.</li>
+        <li><strong>Knihovna:</strong> texty, články, dokumenty, poznámky a další materiály.</li>
+        <li><strong>Finanční správce Extra:</strong> transakce, platební kanály, přehledy.</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Jedno pravidlo, které vás zachrání</h2>
+      <p>Nespoléhejte se jen na data v profilu vašeho prohlížeče. Nespoléhejte se výhradně na panel automatických záloh Palpatius.</p>
+
+      <p><strong>Spoléhejte se hlavně na sebe</strong> – a na jedno zásadní tlačítko, které je ve všech modulech:</p>
+
+      <p class="mt-3 mb-3 font-semibold">
+        ✅ EXPORTOVAT VŠE (JSON)
+      </p>
+
+      <p>Profil prohlížeče i panel záloh jsou sice užitečné a většinou spolehlivé, ale i tak platí: když chcete mít klid, udělejte si vlastní export.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Závěr</h2>
+      <p>Tento článek nepíšu proto, abych vás strašil, děsil nebo poučoval. Píšu ho pouze z vlastních zkušeností.</p>
+
+      <p>Je jen na vás, jak to pojmete. Je jen na vás, jak často budete zálohovat – denně, týdně, jednou za měsíc nebo když na to přijde nálada.</p>
+
+      <p>Pamatujte si ale, že zálohování je nedílnou součástí Palpatia. A za ten klid to stojí.</p>
+
+    </article>
+  </main>
+
+</body>
+</html>
