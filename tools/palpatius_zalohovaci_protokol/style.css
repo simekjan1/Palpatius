@@ -1,0 +1,229 @@
+:root {
+  --bg: #0f1115;
+  --panel: #151924;
+  --text: #e9ecf1;
+  --muted: #b6bdc9;
+  --border: #2a3142;
+  --focus: #9ad5ff;
+  --btn: #22283a;
+  --btnHover: #2a3250;
+  --btnPrimary: #2d6cdf;
+  --btnPrimaryHover: #2a61c6;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  line-height: 1.6;
+}
+
+a { color: inherit; }
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  padding: 10px 12px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.skip-link:focus { left: 12px; top: 12px; outline: 2px solid var(--focus); }
+
+.app-header {
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+}
+.app-header__inner {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 18px 16px;
+}
+.app-subtitle { margin: 6px 0 0; color: var(--muted); }
+
+.app-main {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 14px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn {
+  border: 1px solid var(--border);
+  background: var(--btn);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+.btn:hover { background: var(--btnHover); }
+.btn:focus { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.btn-primary {
+  background: var(--btnPrimary);
+  border-color: transparent;
+}
+.btn-primary:hover { background: var(--btnPrimaryHover); }
+
+.hint {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; font-weight: 600; }
+
+.empty {
+  padding: 10px 12px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  color: var(--muted);
+}
+
+.devices { display: grid; gap: 10px; }
+
+.device {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 10px;
+  background: rgba(255,255,255,0.02);
+}
+
+.device summary {
+  cursor: pointer;
+  list-style: none;
+  font-weight: 700;
+}
+.device summary::-webkit-details-marker { display: none; }
+
+.device-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  align-items: baseline;
+}
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-weight: 600;
+}
+.badge-muted { color: var(--muted); }
+
+.device-body { margin-top: 10px; display: grid; gap: 10px; }
+
+hr.sep {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 8px 0;
+}
+
+.form {
+  width: min(720px, 92vw);
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.form-row { margin: 10px 0; display: grid; gap: 6px; }
+label { font-weight: 650; }
+input, select, textarea {
+  border: 1px solid var(--border);
+  background: #0f1320;
+  color: var(--text);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+dialog::backdrop { background: rgba(0,0,0,0.55); }
+
+.live-region {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.02);
+}
+
+.history {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px;
+  background: rgba(255,255,255,0.02);
+}
+
+.history summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.history-body { margin-top: 10px; }
+
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.history-item {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  background: rgba(0,0,0,0.15);
+}
+
+.history-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.history-kv {
+  margin: 4px 0;
+}
+
+.muted { color: var(--muted); }
+}

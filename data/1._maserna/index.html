@@ -14,13 +14,15 @@
 </head>
 <body>
 <nav class="module-nav" aria-label="Hlavní navigace">
-    <ul>
-        <li><a href="../../data/1._maserna/index.html" data-module="maserna">Masérna</a></li>
-        <li><a href="../../data/2._financni_spravce/index.html" data-module="finance">Finance</a></li>
-        <li><a href="../../data/3._zaznamnik/index.html" data-module="zaznamnik">Záznamník</a></li>
-        <li><a href="../../data/4._knihovna/index.html" data-module="knihovna">Knihovna</a></li>
-        <li><a href="../../data/5._financni_spravce_extra/index.html" data-module="finanční správce Extra">Finanční správce Extra</a></li>
-    </ul>
+    <div class="container">
+        <ul>
+            <li><a href="../../data/1._maserna/index.html" data-module="maserna">Masérna</a></li>
+            <li><a href="../../data/2._financni_spravce/index.html" data-module="finance">Finance</a></li>
+            <li><a href="../../data/3._zaznamnik/index.html" data-module="zaznamnik">Záznamník</a></li>
+            <li><a href="../../data/4._knihovna/index.html" data-module="knihovna">Knihovna</a></li>
+            <li><a href="../../data/5._financni_spravce_extra/index.html" data-module="finanční správce Extra">Finanční správce Extra</a></li>
+        </ul>
+    </div>
 </nav>
 
     <div class="container">
@@ -244,6 +246,50 @@
         <div class="modal-buttons">
             <button id="modalOkButton" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">OK</button>
             <button id="modalCancelButton" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md ml-2 hidden">Zrušit</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Přidat individuální poukaz -->
+<div id="addIndividualVoucherModal"
+     class="modal hidden"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="addIndividualVoucherModalTitle"
+     tabindex="-1">
+
+    <div class="modal-content">
+        <h3 id="addIndividualVoucherModalTitle">Přidat poukaz</h3>
+
+        <label for="newVoucherType">Typ poukazu:</label>
+        <input type="text"
+               id="newVoucherType"
+               aria-label="Typ poukazu"
+               required />
+
+        <label for="newVoucherIssueDate">Datum vystavení:</label>
+        <input type="date"
+               id="newVoucherIssueDate"
+               aria-label="Datum vystavení poukazu"
+               required />
+
+        <label for="newVoucherValue">Hodnota poukazu (Kč):</label>
+        <input type="number"
+               id="newVoucherValue"
+               min="0"
+               aria-label="Hodnota poukazu"
+               required />
+
+        <div class="modal-buttons">
+            <button id="submitAddIndividualVoucher"
+                    class="btn-primary">
+                Přidat poukaz
+            </button>
+
+            <button class="btn-back"
+                    data-close-modal="addIndividualVoucherModal">
+                Zrušit
+            </button>
         </div>
     </div>
 </div>

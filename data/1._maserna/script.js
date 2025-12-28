@@ -20,7 +20,7 @@ let db;
 const FINANCIAL_DB_NAME = 'palpatiusFinancialDB';
 const FINANCIAL_DB_VERSION = 2;
 
-const ZAZNAMNIK_DB_NAME = 'palpatiusZaznamnikDB';
+const ZAZNAMNIK_DB_NAME = 'PalpatiusZaznamnikDB';
 const ZAZNAMNIK_DB_VERSION = 1;
 
 /**
@@ -67,6 +67,20 @@ async function loadDataFromDB() {
         request.onsuccess = (event) => {
             if (request.result) {
                 masernaData = request.result.data;
+// === NORMALIZACE POLOŽEK CENÍKU (kvůli Záznamníku) ===
+if (!Array.isArray(masernaData.priceListItems)) {
+    masernaData.priceListItems = [];
+}
+
+masernaData.priceListItems.forEach(item => {
+    if (!item.year) item.year = '';
+    if (!item.type) item.type = '';
+    if (!item.length) item.length = '';
+    if (typeof item.price !== 'number') item.price = 0;
+    if (typeof item.count !== 'number') item.count = 0;
+    if (typeof item.total !== 'number') item.total = 0;
+});
+
                 // *** NOVÉ: Zajistíme, že všichni klienti mají data pro věrnostní program ***
                 masernaData.clients.forEach(client => {
                     if (typeof client.points === 'undefined') client.points = 0;
@@ -220,42 +234,50 @@ function sendFinancialTransaction(date, amount, description) {
  * @returns {Promise<Array>} Promise s polem záznamů.
  */
 function loadZaznamnikRecordsForClient(clientId) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const zaznamnikRequest = indexedDB.open(ZAZNAMNIK_DB_NAME, ZAZNAMNIK_DB_VERSION);
-        
+
         zaznamnikRequest.onsuccess = (event) => {
             const zaznamnikDb = event.target.result;
+
+            // Bezpečnost: když store neexistuje, nerozbijeme Masérnu
+            if (!zaznamnikDb.objectStoreNames.contains('zaznamnikData')) {
+                resolve([]);
+                return;
+            }
+
             const transaction = zaznamnikDb.transaction(['zaznamnikData'], 'readonly');
             const store = transaction.objectStore('zaznamnikData');
             const getRequest = store.get('currentData');
-            
+
             getRequest.onsuccess = () => {
-                const zaznamnikData = getRequest.result ? getRequest.result.data : { notes: [], todos: [], events: [], ideas: [] };
-                let allRecords = [];
-                
-                allRecords.push(...zaznamnikData.notes);
-                allRecords.push(...zaznamnikData.events);
-                allRecords.push(...zaznamnikData.ideas);
-                zaznamnikData.todos.forEach(todoList => {
-                    allRecords.push(...todoList.tasks);
+                const zaznamnikData = getRequest.result
+                    ? getRequest.result.data
+                    : { notes: [], todos: [], events: [], ideas: [] };
+
+                const allRecords = [];
+
+                // Poznámky / události / nápady
+                allRecords.push(...(zaznamnikData.notes || []));
+                allRecords.push(...(zaznamnikData.events || []));
+                allRecords.push(...(zaznamnikData.ideas || []));
+
+                // Úkoly v todo seznamech
+                (zaznamnikData.todos || []).forEach(todoList => {
+                    allRecords.push(...(todoList.tasks || []));
                 });
-                
-                const clientRecords = allRecords.filter(record => record.clientId === clientId);
+
+                const clientRecords = allRecords.filter(r => r && r.clientId === clientId);
                 resolve(clientRecords);
             };
-            
-            getRequest.onerror = (event) => {
-                console.error('Chyba při čtení dat ze záznamníkové databáze:', event.target.error);
-                resolve([]);
-            };
+
+            getRequest.onerror = () => resolve([]);
         };
-        
-        zaznamnikRequest.onerror = (event) => {
-            console.error("Chyba při otevírání záznamníkové databáze:", event.target.error);
-            resolve([]);
-        };
+
+        zaznamnikRequest.onerror = () => resolve([]);
     });
 }
+
 // --- Konec kódu pro práci s IndexDB ---
 
 /**
@@ -1407,14 +1429,22 @@ function toggleClientSubTable(clientId, subTableType) {
 
 function getVouchersForClient(clientName) {
     const clientVouchers = [];
+
     masernaData.voucherPurchases.forEach(purchase => {
-        if (purchase.purchasingClientName.toLowerCase() === clientName.toLowerCase()) {
-            clientVouchers.push(...purchase.individualVouchers.map(v => ({...v, purchaseId: purchase.purchaseId})));
+        if (purchase.purchasingClientName &&
+            purchase.purchasingClientName.toLowerCase() === clientName.toLowerCase()) {
+
+            const vouchers = (purchase.individualVouchers || []).map(v => ({
+                ...v,
+                purchaseId: purchase.purchaseId
+            }));
+
+            clientVouchers.push(...vouchers);
         }
     });
+
     return clientVouchers;
 }
-
 
 function displayPriceList() {
     const tbody = document.querySelector('#priceListTable tbody');
@@ -1886,7 +1916,11 @@ function initEventListeners() {
 
     // --- Tlačítka pro přepínání viditelnosti tabulek ---
     document.getElementById('toggleClientsBtn').addEventListener('click', () => toggleTableSection('clientTableContainer', 'toggleClientsBtn'));
-    document.getElementById('togglePricelistBtn').addEventListener('click', () => toggleTableSection('priceListTableContainer', 'togglePricelistBtn'));
+document.getElementById('togglePricelistBtn')
+    .addEventListener('click', () => {
+        toggleTableSection('priceListTableContainer', 'togglePricelistBtn');
+        displayPriceList();
+    });
     document.getElementById('toggleGlobalMassageHistoryBtn').addEventListener('click', () => toggleTableSection('globalMassageHistoryTableContainer', 'toggleGlobalMassageHistoryBtn'));
     document.getElementById('toggleVouchersBtn').addEventListener('click', () => toggleTableSection('voucherTableContainer', 'toggleVouchersBtn'));
 

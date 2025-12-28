@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palpatius - Importní Nástroj (v3 - Finální)</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        main {
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 24px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #d79921; /* Palpatius Zlatá */
+            text-align: center;
+            margin-top: 0;
+        }
+        p, label {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .file-input {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            background-color: #333;
+            border: 1px solid #555;
+            border-radius: 4px;
+            color: #d4d4d4;
+            box-sizing: border-box;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e1e1e;
+            background-color: #d79921;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #b57c14;
+        }
+        button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            color: #888;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            display: none; /* Skryté, dokud není zpráva */
+        }
+        .status-success {
+            background-color: #2a402a;
+            border: 1px solid #4a704a;
+            color: #a3d9a5;
+        }
+        .status-error {
+            background-color: #4a2a2a;
+            border: 1px solid #704a4a;
+            color: #d9a3a3;
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <h1>Importní Nástroj</h1>
+        <p>Tento nástroj převede tvé CSV soubory na finální <code>maserna_data.json</code> pro import do Palpatia. <strong>Vše běží 100% offline jen v tvém prohlížeči.</strong></p>
+
+        <div class="file-input">
+            <label for="clients-csv">1. Nahraj <code>klienti.csv</code></label>
+            <input type="file" id="clients-csv" accept=".csv">
+        </div>
+
+        <div class="file-input">
+            <label for="massages-csv">2. Nahraj <code>masaze.csv</code></label>
+            <input type="file" id="massages-csv" accept=".csv">
+        </div>
+
+        <button id="import-button">Spustit import</button>
+
+        <div id="status"></div>
+    </main>
+
+    <script>
+        // Ahoj Jene, tady Max. Tady se děje ta magie.
+        
+        const clientInput = document.getElementById('clients-csv');
+        const massageInput = document.getElementById('massages-csv');
+        const importButton = document.getElementById('import-button');
+        const statusEl = document.getElementById('status');
+
+        // Ponecháme Ceník a Vouchery z tvých původních dat, aby se neztratily
+        const priceListItems = [
+            { "id": "1760293018190", "year": "2025", "type": "K1", "name": "Klasická Masáž", "length": "30 minut", "price": 300, "count": 100, "total": 30000 },
+            { "id": "1760293058514", "year": "2025", "type": "K2", "name": "Klasická Masáž", "length": "60 minut", "price": 600, "count": 200, "total": 120000 },
+            { "id": "1760295111821", "year": "2025", "type": "K1", "name": "Klasická masáž", "length": "30 minut", "price": 300, "count": 0, "total": 0 }
+        ];
+        const voucherPurchases = []; // Tvé původní byly prázdné
+
+        importButton.addEventListener('click', handleImport);
+
+        async function handleImport() {
+            if (!clientInput.files[0] || !massageInput.files[0]) {
+                showStatus("Chybí jeden nebo oba soubory!", "error");
+                return;
+            }
+
+            importButton.disabled = true;
+            importButton.textContent = "Zpracovávám...";
+            showStatus("Načítám soubory...", "success");
+
+            try {
+                // 1. Načteme oba soubory
+                const [clientCSV, massageCSV] = await Promise.all([
+                    readAsText(clientInput.files[0]),
+                    readAsText(massageInput.files[0])
+                ]);
+
+                showStatus("Parruji CSV data...", "success");
+
+                // 2. Převedeme CSV text na pole objektů
+                const clients = parseCSV(detectAndCleanCSV(clientCSV));
+                const massages = parseCSV(detectAndCleanCSV(massageCSV));
+                
+                showStatus(`Nalezeno ${clients.length} klientů a ${massages.length} masáží.`, "success");
+
+                // 3. Zpracujeme data
+                const finalJSON = processData(clients, massages);
+
+                // 4. Nabídneme k soubor ke stažení
+                downloadJSON(finalJSON, 'maserna_data.json');
+                
+                showStatus(`Hotovo! Soubor 'maserna_data.json' se stahuje.\nNalezeno ${clients.length} klientů a ${massages.length} masáží.\nCelkem ${finalJSON.globalMassageHistory.length} masáží v globální historii.\n\nMůžeš zavřít toto okno a naimportovat soubor do Palpatia.`, "success");
+                importButton.textContent = "Import úspěšný";
+
+            } catch (error) {
+                console.error("Došlo k chybě:", error);
+                showStatus(`Došlo k vážné chybě: ${error.message}\n\nZkontroluj konzoli (F12) pro detaily.`, "error");
+                importButton.disabled = false;
+                importButton.textContent = "Spustit import";
+            }
+        }
+
+        /**
+         * Přečte soubor jako text
+         */
+        function readAsText(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(reader.error);
+                reader.readAsText(file, 'Windows-1250'); 
+            });
+        }
+        
+        /**
+         * Detekuje a čistí BOM a různé konce řádků.
+         */
+        function detectAndCleanCSV(csvText) {
+            if (csvText.charCodeAt(0) === 0xFEFF) {
+                csvText = csvText.substring(1);
+            }
+            return csvText.replace(/\r\n/g, '\n');
+        }
+
+        /**
+         * Jednoduchý CSV parser
+         */
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            if (lines.length < 2) throw new Error("CSV soubor je prázdný nebo má jen hlavičku.");
+            
+            const headers = lines[0].split('|').map(h => h.trim());
+            const data = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i]) continue; 
+                
+                const values = lines[i].split('|');
+                const obj = {};
+                
+                for (let j = 0; j < headers.length; j++) {
+                    obj[headers[j]] = values[j] ? values[j].trim() : "";
+                }
+                data.push(obj);
+            }
+            return data;
+        }
+
+        /**
+         * Hlavní logika - transformace dat na Palpatius JSON strukturu
+         */
+        function processData(clients, massages) {
+            const output = {
+                clients: [],
+                priceListItems: priceListItems, 
+                globalMassageHistory: [],
+                voucherPurchases: voucherPurchases
+            };
+
+            const clientMap = new Map(); 
+
+            // Krok 1: Zpracujeme klienty
+            clients.forEach((clientRow, index) => {
+                const palpatiusID = `Palpatius${Date.now()}${index}`;
+                
+                const newClient = {
+                    id: palpatiusID,
+                    // ZDE JE TA NOVÁ ÚPRAVA (ID + Jméno)
+                    name: `${clientRow.Tvoje_ID} - ${clientRow.Jmeno}`,
+                    phone: clientRow.Telefon,
+                    diag: clientRow.Diagnoza,
+                    massages: [], 
+                    total: 0,     
+                    count: 0,     
+                    methods: [],
+                    clientNotes: [],
+                    expanded: false,
+                    subTables: {
+                        massages: false,
+                        vouchers: false,
+                        notes: false,
+                        zaznamnik: false,
+                        loyalty: false
+                    },
+                    status: "active", 
+                    points: 0,
+                    bonus: 0,
+                    extra: 0,
+                    totalMassages: 0 
+                };
+                
+                output.clients.push(newClient);
+                clientMap.set(clientRow.Tvoje_ID, newClient);
+            });
+
+            // Krok 2: Zpracujeme masáže
+            massages.forEach((massageRow, index) => {
+                const client = clientMap.get(massageRow.Tvoje_ID_klienta);
+
+                if (!client) {
+                    console.warn(`Masáž s ID klienta ${massageRow.Tvoje_ID_klienta} nenalezla odpovídajícího klienta. Přeskakuji.`);
+                    return;
+                }
+
+                const massageID = `m${Date.now()}${index}`;
+                
+                // TADY JE TA OPRAVA SČÍTÁNÍ CEN (z v1 na v2)
+                const cleanPriceString = massageRow.Cena.replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+                const price = parseFloat(cleanPriceString) || 0;
+                
+                // A. Vytvoříme záznam pro globální historii
+                const globalMassage = {
+                    id: massageID,
+                    date: massageRow.Datum,
+                    time: massageRow.Cas,
+                    clientId: client.id, 
+                    clientName: client.name, // Použijeme už to nové složené jméno
+                    method: massageRow.Metoda,
+                    payment: massageRow.Platba,
+                    amount: price
+                };
+                output.globalMassageHistory.push(globalMassage);
+
+                // B. Vytvoříme záznam pro pole masáží u klienta
+                const clientMassage = {
+                    id: massageID,
+                    date: massageRow.Datum,
+                    time: massageRow.Cas,
+                    method: massageRow.Metoda,
+                    payment: massageRow.Platba,
+                    price: price
+                };
+                client.massages.push(clientMassage);
+
+                // C. Aktualizujeme souhrnné statistiky klienta
+                client.total += price;
+                client.count += 1;
+                
+                if (!client.methods.includes(massageRow.Metoda)) {
+                    client.methods.push(massageRow.Metoda);
+                }
+            });
+            
+            return output;
+        }
+
+        /**
+         * Funkce pro stažení vygenerovaného JSONu
+         */
+        function downloadJSON(data, filename) {
+            const jsonString = JSON.stringify(data, null, 2); 
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url); 
+        }
+
+        /**
+         * Zobrazí zprávu ve status boxu
+         */
+        function showStatus(message, type = "success") {
+            statusEl.textContent = message;
+            statusEl.className = type === "error" ? 'status-error' : 'status-success';
+            statusEl.style.display = 'block';
+        }
+
+    </script>
+</body>
+</html>

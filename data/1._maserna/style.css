@@ -3,7 +3,7 @@ body {
     background-color: #000;
     font-family: 'Inter', sans-serif;
     color: #fff;
-    padding: 2rem;
+    padding: 0;
 }
 .container {
     max-width: 1152px; /* Odpovídá Tailwind max-w-6xl */

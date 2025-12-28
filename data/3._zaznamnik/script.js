@@ -1,3 +1,5 @@
+console.log('SCRIPT.JS SE NAČETL');
+
 // Hlavní datová struktura pro všechny typy záznamů
 let data = {
     notes: [],
@@ -978,52 +980,74 @@ function showIdeaActionsModal(idea) {
 
 function sendToMasernaPricelist(idea) {
     const masernaRequest = indexedDB.open(MASERNA_DB_NAME, MASERNA_DB_VERSION);
+
     masernaRequest.onsuccess = (event) => {
         const masernaDB = event.target.result;
+
         if (!masernaDB.objectStoreNames.contains('masernaData')) {
-            console.warn('Object store "masernaData" v Masérně neexistuje.');
+            showCustomModal(
+                'Masérna nemá připravené úložiště pro ceník.',
+                'Chyba propojení'
+            );
             closeModal('ideaActionsModal');
             return;
         }
-        
+
         const transaction = masernaDB.transaction(['masernaData'], 'readwrite');
         const store = transaction.objectStore('masernaData');
         const getRequest = store.get('currentData');
-        
+
         getRequest.onsuccess = () => {
-            const masernaData = getRequest.result ? getRequest.result.data : { clients: [], priceListItems: [], globalMassageHistory: [], voucherPurchases: [] };
-            
-            const newPriceListItem = {
-                id: Date.now().toString(),
-                year: new Date().getFullYear().toString(),
-                type: 'nová položka',
+const masernaData = (getRequest.result && getRequest.result.data)
+    ? getRequest.result.data
+    : {
+        clients: [],
+        priceListItems: [],
+        globalMassageHistory: [],
+        voucherPurchases: []
+    };
+
+            // 🔹 MINIMÁLNÍ POLOŽKA Z NÁPADU
+masernaData.priceListItems.push({
+id: Date.now().toString(),
                 name: idea.title,
-                length: '?? min',
-                price: 0,
+                year: null,
+                type: '',
+                length: '',
+                price: null,
                 count: 0,
                 total: 0
-            };
-            
-            masernaData.priceListItems.push(newPriceListItem);
-            
-            const dataToSave = { id: 'currentData', data: masernaData };
-            const putRequest = store.put(dataToSave);
-            
-            putRequest.onsuccess = () => {
-                showCustomModal('Váš nápad **"' + idea.title + '"** byl úspěšně odeslán do ceníku v Masérně. Nezapomeňte tam doplnit detaily!', 'Odesláno do Masérny');
-            };
-            putRequest.onerror = () => {
-                showCustomModal('Nastala chyba při odesílání nápadu do Masérny.', 'Chyba');
-            };
+            });
+
+            store.put({
+                id: 'currentData',
+                data: masernaData
+            });
+
+            showCustomModal(
+                `Nápad „${idea.title}" byl přidán do ceníku Masérny.`,
+                'Hotovo'
+            );
+        };
+
+        getRequest.onerror = () => {
+            showCustomModal(
+                'Nepodařilo se načíst data Masérny.',
+                'Chyba'
+            );
         };
     };
+
     masernaRequest.onerror = () => {
-        showCustomModal('Nelze odeslat nápad. Nepodařilo se připojit k databázi Masérny.', 'Chyba připojení');
+        showCustomModal(
+            'Nepodařilo se otevřít databázi Masérny.',
+            'Chyba'
+        );
     };
-    
+
     closeModal('ideaActionsModal');
 }
-
+        
 function convertIdeaToTodo(idea) {
     if (data.todos.length === 0) {
         showCustomModal('Nelze přidat úkol, protože nemáte žádný To-Do list. Vytvořte prosím nejdříve list.', 'Chyba');
