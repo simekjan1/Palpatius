@@ -1,2 +1,0 @@
-Pro spuštění systému postupujte následovně: 
-Dvoj klikem spusťte soubor index.html. Tím se dostanete do systému Palpatius, a můžete začít pracovat. 

@@ -1,65 +1,61 @@
 # Palpatius
 
-Jednoduchý, spolehlivý a 100% offline systém pro maséry, navržený s důrazem na soukromí, přístupnost a stabilitu. Veškerá data jsou ukládána lokálně v prohlížeči a nikdy neopouští váš počítač.
+**Palpatius** je jednoduchý, spolehlivý a **100% offline systém pro maséry**,
+navržený s důrazem na soukromí, přístupnost a dlouhodobou stabilitu.
 
-Pro osobní příběh o vzniku projektu navštivte soubor [`docs/AUTOR.md`](./docs/AUTOR.md).
+Veškerá data jsou ukládána **lokálně v prohlížeči** a nikdy neopouštějí
+váš počítač.
+
+## Pro koho je Palpatius určen
+
+- pro maséry a terapeuty,
+- kteří chtějí mít svá data plně pod kontrolou,
+- kteří nepotřebují cloud, účty ani internet,
+- kteří ocení jednoduchost a přístupnost.
+
+Palpatius není univerzální platforma ani online služba.  
+Je to **hotový nástroj vytvořený z praxe pro praxi**.
 
 ## Klíčové vlastnosti
 
-* **100% Offline:** Vše funguje bez nutnosti připojení k internetu.
-* **Soukromí na prvním místě:** Všechna data jsou uložena bezpečně jen ve vašem prohlížeči pomocí IndexedDB.
-* **Nulová instalace:** Stačí otevřít soubor `index.html` a systém okamžitě běží.
-* **Modulární architektura:** Přehledná struktura kódu rozdělená do samostatných modulů.
-* **Důraz na přístupnost (A11y):** Plně ovladatelné klávesnicí a optimalizované pro čtečky obrazovky.
-* **Bonusová hra:** Obsahuje plně funkční hru Blackjack jako samostatnou bonusovou sekci.
+- **100 % offline provoz**
+- **Žádná instalace** – stačí otevřít `index.html`
+- **Soukromí na prvním místě** (IndexedDB)
+- **Plná přístupnost (A11y)**
+- **Stabilní modulární architektura**
 
-## Moduly
+## Moduly systému
 
-Systém je rozdělen do několika samostatných, plně funkčních modulů:
-* **Masérna:** Jádro systému pro kompletní správu klientů, jejich návštěv, historie masáží, věrnostního programu a poukazů.
-* **Finanční správce:** Nástroj pro evidenci příjmů, výdajů a správu skladových zásob. Poskytuje měsíční a roční finanční přehledy.
-* **Záznamník:** Univerzální poznámkový blok pro záznam poznámek, úkolů a nápadů, které lze volitelně propojit s klienty.
-* **Blackjack (Bonus):** Samostatná a plně funkční hra Blackjack, integrovaná pro odreagování.
+- **Masérna** – správa klientů, masáží, poukazů a věrnostního programu  
+- **Finanční správce** – příjmy, výdaje, sklad, přehledy  
+- **Záznamník** – poznámky, úkoly, nápady  
+- ** Knihovna** – Správa a evidence všech vašich textů, článků, textových dokumentů. 
+- ** Finanční správce Extra** – Lepší finanční přehled. Hned víte kolik procent si platební terminál nebo jiná služba bere z transakce. . 
 
----
+## Rychlý start
 
-## Technický přehled a pravidla pro údržbu
+1. Stáhněte nebo rozbalte projekt Palpatius  
+2. Otevřete soubor `index.html` v moderním webovém prohlížeči  
+3. Začněte pracovat – bez instalace, bez internetu  
 
-Tato sekce je určena pro vývoj a budoucí údržbu projektu.
+## Dokumentace
 
-### Použité technologie a architektura
+Kompletní dokumentace projektu je dostupná v souboru:
 
-* **Jazyky:** HTML5, CSS3, Vanilla JavaScript (ES6+)
-* **Stylování:** Tailwind CSS (lokálně uložený JIT engine pro zajištění offline funkčnosti)
-* **Ukládání dat:** IndexedDB API
-* **Architektura:** Projekt má modulární strukturu. Každý modul (`data/nazev-modulu/`) je soběstačná jednotka. Sdílené funkce jsou centralizovány ve složce `assets/js/` (`ui.js` pro rozhraní, `utils.js` pro data).
+👉 **`dokumentace.html`**
 
-palpatius/
-├── assets/
-│   └── js/
-│       ├── ui.js
-│       ├── utils.js
-│       └── tailwind.js
-├── data/
-│   └── (složky modulů)
-├── docs/
-│   ├── AUTOR.md
-│   └── NOTICE
-├── index.html
-└── README.md  (TENTO SOUBOR)
+Obsahuje:
+- příběh vzniku projektu,
+- architekturu a filozofii,
+- bezpečnostní model,
+- auditní rozhodnutí,
+- známé nedostatky,
+- a další kontext.
 
-### Zlatá Pravidla Projektu (Nesmí být nikdy porušena)
+## Licence a bezpečnost
 
-* **Pravidlo 0: ZACHOVÁNÍ FUNKCIONALITY.** Opravy nesmí změnit nebo zhoršit stávající uživatelské funkce.
-* **Pravidlo 1: PŘÍSTUPNOST PŘEDEVŠÍM.** Vše musí zůstat plně přístupné pro klávesnici a čtečky.
-* **Pravidlo 2: STABILITA SYSTÉMU.** Zásah do jednoho modulu nesmí rozbít jinou část aplikace.
-* **Pravidlo 3: KVALITA KÓDU.** Kód musí být čistý, přehledný a komentovaný v češtině.
-* **Pravidlo 4: LOKÁLNÍ PROVÁZANOST.** Musí být zachována funkční vazba mezi `index.html`, `script.js` a `style.css` v rámci každého modulu.
+- Projekt je šířen pod licencí **Apache 2.0**  
+- Zásady zabezpečení jsou popsány v souboru `SECURITY.md`
 
-### Audit Kvality (Kontrolní seznam před dokončením úprav)
-
-1.  **Validace Vstupů:** Nechybí ve formulářích validační atributy (`required`, `pattern`)?
-2.  **Ošetření Dat:** Je veškerá práce s IndexedDB a Import/Export v bloku `try...catch`?
-3.  **Přístupnost (A11y):** Funguje správně focus management a jsou ARIA atributy na svém místě?
-4.  **Konzistence Názvů:** Respektují nové proměnné a funkce stávající styl pojmenování?
-5.  **Lokální Provázanost:** Nerozbila změna v `script.js` něco, co je definováno v `index.html` daného modulu?
+**Palpatius**  
+Vytvořen z praxe. Ověřen životem. Sdílen dobrovolně.
