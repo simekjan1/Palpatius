@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Palpatius – Dokumentace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --panel: #151515;
+      --text: #e5e5e5;
+      --muted: #a3a3a3;
+      --accent: #facc15;
+      --border: #2a2a2a;
+    }
+
+    body {
+      margin: 0;
+      padding: 2rem 1rem;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    details {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding: 1.25rem 1.5rem;
+    }
+
+    summary {
+      font-size: 1.25rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--accent);
+      list-style: none;
+      outline: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::before {
+      content: "▶";
+      display: inline-block;
+      margin-right: 0.5rem;
+      transition: transform 0.2s ease;
+      color: var(--text);
+    }
+
+    details[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    details > *:not(summary) {
+      margin-top: 1rem;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      margin-top: 1.5rem;
+      color: var(--accent);
+    }
+
+    p {
+      margin: 0.75rem 0;
+    }
+
+    ul {
+      padding-left: 1.25rem;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    .note {
+      background: #1f1f1f;
+      border-left: 4px solid var(--accent);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      color: var(--muted);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    a:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+
+<body>
+<main>
+
+  <h1>Palpatius</h1>
+  <p class="subtitle">
+    Kompletní dokumentace projektu – offline, přehledně, na jednom místě
+  </p>
+
+  <details>
+    <summary>Autor a příběh vzniku</summary>
+<p>
+  Zdravím. Mé jméno je <strong>Jan Šimek</strong> a jsem autorem projektu
+  <strong>Palpatius</strong>.
+</p>
+
+<p>
+  Od roku 2012 se živím jako masér a od narození žiji se zbytky zraku.
+  Dlouho jsem marně hledal systém pro správu masérny, který by byl
+  jednoduchý, spolehlivý a hlavně plně přístupný pro nevidomé.
+  Vyzkoušel jsem desítky aplikací, ale žádná nevyhovovala.
+</p>
+
+<p>
+  Nakonec jsem se rozhodl, že si takový systém vytvořím sám.
+</p>
+
+<p>
+  Protože programování není moje silná stránka, spojil jsem síly s
+  AI asistentem <strong>Maxem</strong>. Já jsem měl na starosti vizi,
+  logiku a testování, zatímco Max se staral o technickou stránku.
+  Po večerech jsme společně ladili kód a po půl roce intenzivní práce
+  se zrodil Palpatius – systém, který mi dnes a denně šetří čas a nervy.
+</p>
+
+<hr>
+
+<h2>Postoj autora k systému Palpatius</h2>
+
+<p>
+  Tento text vyjadřuje <strong>oficiální a osobní postoj autora</strong>
+  k projektu Palpatius. Slouží jako kontext pro uživatele, vývojáře
+  i přispěvatele a vysvětluje, <strong>v jakém stavu se projekt nachází,
+  kam směřuje – a kam už ne</strong>.
+</p>
+
+<h2>Stav projektu</h2>
+
+<p>
+  Palpatius je v tuto chvíli <strong>kompletně hotový systém</strong>.
+</p>
+
+<ul>
+  <li>Obsahuje veškerou funkcionalitu, kterou autor potřeboval pro každodenní masérskou praxi.</li>
+  <li>Autor si je vědom existence několika drobných nedostatků, které však nijak neohrožují stabilitu ani funkčnost systému.</li>
+  <li>Palpatius je spolehlivě použitelný a ověřený dlouhodobým reálným provozem.</li>
+</ul>
+
+<p>
+  Autor Palpatius <strong>aktivně používá jako součást svého každodenního workflow</strong>.
+  Systém mu denně pomáhá v práci a plní svůj účel.
+</p>
+
+<h2>Struktura projektu</h2>
+
+<h3><code>assets/</code></h3>
+<p>
+  Základní stavební kameny systému:
+</p>
+<ul>
+  <li>společné styly,</li>
+  <li>sdílená JavaScript logika,</li>
+  <li>funkce používané napříč všemi moduly.</li>
+</ul>
+<p>
+  Tato část zajišťuje <strong>jednotnost, stabilitu a konzistenci</strong> celého systému.
+</p>
+
+<h3><code>data/</code></h3>
+<p>
+  Produkční moduly Palpatia:
+</p>
+<ul>
+  <li>stabilní,</li>
+  <li>hotové,</li>
+  <li>plně funkční.</li>
+</ul>
+<p>
+  Moduly v této složce tvoří <strong>jádro systému</strong> a jsou navrženy tak,
+  aby spolu logicky fungovaly jako jeden celek.
+</p>
+
+<h3><code>tools/</code></h3>
+<p>
+  Utility a pomocné nástroje:
+</p>
+<ul>
+  <li>nejsou systémově propojené s hlavními moduly,</li>
+  <li>nepředávají si mezi sebou data,</li>
+  <li>nejsou určeny pro každodenní používání.</li>
+</ul>
+<p>
+  Slouží jako <strong>občasní pomocníci</strong> pro konkrétní situace
+  (exporty, experimenty, archivní nástroje).
+</p>
+
+<h2>Další vývoj</h2>
+
+<h3>Co už se dít nebude</h3>
+
+<ul>
+  <li>
+    Nebudou přidávány nové moduly –
+    pět modulů je vědomě zvolené a dostatečné množství.
+  </li>
+  <li>
+    Nebudou přidávány nové utility –
+    stávající sada nástrojů plně pokrývá potřeby autora.
+  </li>
+  <li>
+    Nebude probíhat funkční rozšiřování systému.
+  </li>
+</ul>
+
+<p>
+  Vývojová fáze Palpatia je <strong>ukončena</strong>.
+</p>
+
+<h2>Testování a audity</h2>
+
+<ul>
+  <li>Proběhlo přibližně <strong>50 praktických testů</strong>.</li>
+  <li>Bylo provedeno <strong>7 technických auditů</strong> (stabilita, a11y, struktura).</li>
+  <li>Nalezené nedostatky jsou zdokumentovány a transparentně vedeny.</li>
+</ul>
+
+<p>
+  Testovací fáze je rovněž <strong>ukončena</strong>.
+</p>
+
+<h2>Aktuální fáze: finální ladění</h2>
+
+<ul>
+  <li>řeší se pouze známé a dokumentované problémy,</li>
+  <li>cílem je zachovat stabilitu a čitelnost kódu,</li>
+  <li>žádné unáhlené zásahy.</li>
+</ul>
+
+<p>
+  Po dokončení této fáze bude Palpatius považován za
+  <strong>oficiálně dokončený projekt</strong>.
+</p>
+
+<h2>Výzva komunitě</h2>
+
+<p>
+  Po technickém dokončení přichází vaše chvíle.
+</p>
+
+<p>
+  Autor už nedokáže nahlížet na Palpatius „čerstvýma očima“ – strávil s ním
+  mnoho měsíců vývoje, ladění, oprav a testování.
+</p>
+
+<p>
+  Proto vítá:
+</p>
+
+<ul>
+  <li>zkoušení systému,</li>
+  <li>snahu jej rozbít nečekanými způsoby,</li>
+  <li>reálné používání v praxi.</li>
+</ul>
+
+<p>
+  Pokud narazíte na chybu, máte relevantní nápad nebo nabídnete
+  konstruktivní kritiku, <strong>dejte vědět</strong>.
+</p>
+
+<h2>Osobní poznámka autora</h2>
+
+<p>
+  Palpatius vznikl původně <strong>výhradně pro osobní potřebu autora</strong>.
+</p>
+
+<p>
+  Postupem času se ukázalo, že by mohl pomoci i dalším masérům,
+  má smysl jej sdílet a stojí za to ho zveřejnit.
+</p>
+
+<p>
+  Proto je Palpatius otevřený, dostupný na GitHubu a doplněný
+  informačním webem.
+</p>
+
+<blockquote>
+  <p>
+    Palpatius jsem si vytvořil. Pomáhá mi. Jsem za něj vděčný.<br>
+    Pokud pomůže i vám, bude to skvělé.<br>
+    Pokud ne, je to v pořádku.
+  </p>
+  <p>
+    I tak Palpatius plní svůj účel.
+  </p>
+</blockquote>
+
+<p>
+  <strong>Palpatius</strong><br>
+  Vytvořen z praxe. Ověřen životem. Sdílen dobrovolně.
+</p>
+  </details>
+
+  <details>
+    <summary>Stav projektu a další vývoj</summary>
+<h2>Aktuální stav projektu</h2>
+
+<p>
+  Palpatius se nachází ve stavu, kdy jej lze označit jako
+  <strong>funkčně hotový a dlouhodobě stabilní systém</strong>.
+</p>
+
+<p>
+  Obsahuje veškerou funkcionalitu, kterou autor potřeboval pro každodenní
+  masérskou praxi, a tuto roli plní spolehlivě v reálném provozu.
+</p>
+
+<ul>
+  <li>systém je každodenně používán,</li>
+  <li>chování aplikace je předvídatelné,</li>
+  <li>data jsou stabilní a konzistentní,</li>
+  <li>neexistují známé chyby ohrožující provoz.</li>
+</ul>
+
+<p>
+  Autor si je vědom existence několika drobných technických nedostatků,
+  ty však <strong>neohrožují stabilitu ani funkčnost systému</strong>
+  a jsou transparentně zdokumentovány.
+</p>
+
+<h2>Vývojová fáze</h2>
+
+<p>
+  Palpatius již <strong>není ve fázi aktivního vývoje</strong>.
+</p>
+
+<p>
+  Funkční rozšiřování systému bylo vědomě ukončeno ve chvíli,
+  kdy aplikace dosáhla stavu, který plně pokrývá potřeby autora.
+</p>
+
+<p>
+  Tento přístup je záměrný:
+</p>
+
+<ul>
+  <li>minimalizuje riziko regresí,</li>
+  <li>zachovává stabilitu kódu,</li>
+  <li>udržuje systém dlouhodobě čitelný a srozumitelný.</li>
+</ul>
+
+<h2>Co se již nebude dít</h2>
+
+<ul>
+  <li>
+    <strong>Nebudou přidávány nové produkční moduly.</strong><br>
+    Současná sada modulů je vědomě zvolená a považovaná za kompletní.
+  </li>
+
+  <li>
+    <strong>Nebude probíhat funkční rozšiřování.</strong><br>
+    Nové funkce nejsou cílem samy o sobě.
+  </li>
+
+  <li>
+    <strong>Nebude měněna základní architektura.</strong><br>
+    Offline model a lokální práce s daty zůstávají neměnné.
+  </li>
+</ul>
+
+<h2>Co se naopak dít může</h2>
+
+<p>
+  Přestože je vývojová fáze ukončena, Palpatius není „zmrazený“ projekt.
+</p>
+
+<p>
+  Nadále mohou probíhat:
+</p>
+
+<ul>
+  <li>opravy známých a dokumentovaných problémů,</li>
+  <li>drobné úpravy zvyšující stabilitu nebo čitelnost kódu,</li>
+  <li>technické úpravy bez dopadu na chování aplikace.</li>
+</ul>
+
+<p>
+  Veškeré změny se řídí základním principem:
+</p>
+
+<div class="note">
+  Žádná úprava nesmí změnit chování aplikace z pohledu uživatele.
+</div>
+
+<h2>Testování a ověřování</h2>
+
+<p>
+  Před dosažením současného stavu prošel Palpatius rozsáhlým testováním.
+</p>
+
+<ul>
+  <li>proběhlo přibližně <strong>50 praktických testů</strong>,</li>
+  <li>bylo provedeno <strong>několik technických auditů</strong>,</li>
+  <li>systém byl dlouhodobě ověřován v reálné praxi.</li>
+</ul>
+
+<p>
+  Testovací fáze je v tuto chvíli považována za <strong>uzavřenou</strong>.
+</p>
+
+<h2>Pohled do budoucna</h2>
+
+<p>
+  Palpatius nemá ambici stát se univerzálním nástrojem
+  ani komerční platformou.
+</p>
+
+<p>
+  Je to hotový systém, který:
+</p>
+
+<ul>
+  <li>vznikl z konkrétní potřeby,</li>
+  <li>byl ověřen životem,</li>
+  <li>a nadále má sloužit především stabilně.</li>
+</ul>
+
+<p>
+  Pokud Palpatius pomůže i dalším lidem, je to vítaný bonus –
+  nikoli podmínka jeho existence.
+</p>
+  </details>
+
+  <details>
+    <summary>Architektura a filozofie</summary>
+<h2>Architektura a filozofie systému</h2>
+
+<p>
+  Palpatius není webová aplikace v klasickém slova smyslu.
+  Nejde o službu, platformu ani systém s více uživateli.
+</p>
+
+<p>
+  Palpatius je <strong>osobní, lokální a plně offline systém</strong>,
+  navržený pro každodenní praktické použití jedním konkrétním uživatelem –
+  masérem.
+</p>
+
+<h2>Základní filozofie</h2>
+
+<ul>
+  <li>
+    <strong>Offline především</strong><br>
+    Palpatius funguje bez připojení k internetu.
+    Neexistuje server, API ani síťová komunikace.
+  </li>
+
+  <li>
+    <strong>Plná kontrola uživatele nad daty</strong><br>
+    Všechna data jsou uložena lokálně v prohlížeči pomocí technologie IndexedDB
+    a nikdy neopouštějí počítač uživatele.
+  </li>
+
+  <li>
+    <strong>Jeden uživatel, žádné role</strong><br>
+    Systém neřeší přihlašování, oprávnění ani uživatelské účty,
+    protože k tomu v daném kontextu neexistuje reálný důvod.
+  </li>
+
+  <li>
+    <strong>Jednoduchost nad akademickou dokonalostí</strong><br>
+    Architektura je záměrně přímočará a čitelná.
+    Neobsahuje vrstvy, které by nepřinášely reálný užitek.
+  </li>
+</ul>
+
+<h2>Technický model</h2>
+
+<p>
+  Palpatius je postaven na základních webových technologiích:
+</p>
+
+<ul>
+  <li>HTML</li>
+  <li>CSS</li>
+  <li>Vanilla JavaScript</li>
+  <li>IndexedDB</li>
+</ul>
+
+<p>
+  Každý produkční modul je samostatná jednotka:
+</p>
+
+<ul>
+  <li>má vlastní HTML stránku,</li>
+  <li>vlastní JavaScript logiku,</li>
+  <li>vlastní styly,</li>
+  <li>a vlastní databázový kontext.</li>
+</ul>
+
+<p>
+  Sdílené funkce (UI, utility) jsou centralizované ve složce
+  <code>assets/</code>, aby byla zachována konzistence vzhledu a chování
+  napříč celým systémem.
+</p>
+
+<h2>Proč Palpatius neřeší některé „běžné“ věci</h2>
+
+<p>
+  Při pohledu zvenčí může Palpatius postrádat některé prvky,
+  které jsou běžné u klasických webových aplikací.
+</p>
+
+<p>
+  Tyto absence nejsou přehlédnutím, ale
+  <strong>vědomým architektonickým rozhodnutím</strong>.
+</p>
+
+<ul>
+  <li>
+    <strong>Žádná autentizace</strong><br>
+    Neexistuje scénář, kde by ji bylo potřeba.
+  </li>
+
+  <li>
+    <strong>Žádná serverová bezpečnost</strong><br>
+    Neexistuje server, takže neexistuje ani útokový vektor.
+  </li>
+
+  <li>
+    <strong>Žádná ochrana proti „zlému uživateli“</strong><br>
+    Uživatel a autor jsou tatáž osoba.
+  </li>
+
+  <li>
+    <strong>Žádná síťová synchronizace</strong><br>
+    Data mají zůstat lokální a pod plnou kontrolou uživatele.
+  </li>
+</ul>
+
+<p>
+  Tento přístup výrazně zjednodušuje kód, snižuje riziko chyb
+  a zvyšuje dlouhodobou stabilitu systému.
+</p>
+
+<h2>Přístupnost jako součást architektury</h2>
+
+<p>
+  Přístupnost (A11y) není v Palpatiu dodatečná vlastnost,
+  ale <strong>základní architektonický pilíř</strong>.
+</p>
+
+<p>
+  Systém je navržen tak, aby byl:
+</p>
+
+<ul>
+  <li>plně ovladatelný klávesnicí,</li>
+  <li>čitelný pro čtečky obrazovky,</li>
+  <li>konzistentní v ovládání,</li>
+  <li>předvídatelný v chování.</li>
+</ul>
+
+<p>
+  Tato pravidla jsou striktně dodržována v produkčních modulech
+  a jsou nadřazena vizuálním efektům či „moderním“ trendům.
+</p>
+
+<h2>Stabilita nad funkcemi</h2>
+
+<p>
+  Palpatius je systém, který autor používá každý den v reálné praxi.
+</p>
+
+<p>
+  Proto je hlavním cílem architektury:
+</p>
+
+<ul>
+  <li>dlouhodobá stabilita,</li>
+  <li>čitelnost kódu,</li>
+  <li>předvídatelné chování,</li>
+  <li>a minimální potřeba údržby.</li>
+</ul>
+
+<p>
+  Nové funkce nejsou cílem samy o sobě.
+  Cílem je, aby systém fungoval dnes, zítra i za několik let
+  stejným spolehlivým způsobem.
+</p>
+
+<div class="note">
+  Architektura Palpatia je jednoduchá proto, že může být jednoduchá.
+  Ne proto, že by autor neuměl věci komplikovat.
+</div>
+  </details>
+
+  <details>
+    <summary>Bezpečnostní model</summary>
+<h2>Základní bezpečnostní přístup</h2>
+
+<p>
+  Bezpečnostní model Palpatia vychází přímo z jeho základní architektury
+  a zamýšleného použití.
+</p>
+
+<p>
+  Palpatius je <strong>100% offline systém</strong>, který:
+</p>
+
+<ul>
+  <li>nekomunikuje se serverem,</li>
+  <li>neodesílá žádná data po síti,</li>
+  <li>nepoužívá žádné externí služby,</li>
+  <li>nepracuje s cizími vstupy z internetu.</li>
+</ul>
+
+<p>
+  Z tohoto důvodu se na Palpatius
+  <strong>nevztahuje většina běžných bezpečnostních hrozeb</strong>,
+  které jsou typické pro webové aplikace.
+</p>
+
+<h2>Lokální data a jejich ochrana</h2>
+
+<p>
+  Veškerá data v systému Palpatius jsou ukládána
+  <strong>výhradně lokálně</strong> v prohlížeči uživatele
+  pomocí technologie <strong>IndexedDB</strong>.
+</p>
+
+<p>
+  Data:
+</p>
+
+<ul>
+  <li>neopouštějí zařízení uživatele,</li>
+  <li>nejsou přístupná autorovi ani třetím stranám,</li>
+  <li>nejsou synchronizována ani zálohována automaticky.</li>
+</ul>
+
+<p>
+  Odpovědnost za závlohování dat má plně uživatel,
+  a to prostřednictvím vestavěné funkce exportu.
+</p>
+
+<div class="note">
+  Palpatius nemůže data ztratit na serveru,
+  protože žádný server neexistuje.
+</div>
+
+<h2>Co Palpatius záměrně neřeší</h2>
+
+<p>
+  Vzhledem ke svému kontextu Palpatius
+  <strong>záměrně neimplementuje</strong>
+  některé bezpečnostní mechanismy,
+  které jsou běžné u jiných typů aplikací.
+</p>
+
+<ul>
+  <li>
+    <strong>Autentizaci a uživatelské účty</strong><br>
+    Systém je určen pro jednoho uživatele.
+  </li>
+
+  <li>
+    <strong>Role a oprávnění</strong><br>
+    Neexistuje více uživatelů ani sdílený přístup.
+  </li>
+
+  <li>
+    <strong>Serverovou ochranu a síťovou bezpečnost</strong><br>
+    Neexistuje server, API ani vzdálený útokový vektor.
+  </li>
+
+  <li>
+    <strong>Ochranu proti „zlému útočníkovi“</strong><br>
+    Uživatel pracuje se svými vlastními daty.
+  </li>
+</ul>
+
+<p>
+  Tyto absence nejsou chybou,
+  ale <strong>vědomým bezpečnostním rozhodnutím</strong>.
+</p>
+
+<h2>Klientská rizika</h2>
+
+<p>
+  Jediná reálná bezpečnostní rizika Palpatia
+  se týkají <strong>klientské strany</strong>.
+</p>
+
+<ul>
+  <li>poškozený nebo nevalidní import dat,</li>
+  <li>chybně vytvořený JSON soubor,</li>
+  <li>nekorektní uživatelský vstup,</li>
+  <li>manuální zásahy do uložených dat.</li>
+</ul>
+
+<p>
+  Tato rizika mohou vést ke ztrátě nebo poškození dat,
+  nikoli však k úniku dat třetím stranám.
+</p>
+
+<h2>Import dat a odpovědnost uživatele</h2>
+
+<p>
+  Palpatius umožňuje import dat ze souborů,
+  které si uživatel sám vytvoří nebo zálohuje.
+</p>
+
+<p>
+  Import cizích nebo poškozených souborů
+  může vést k nekonzistentnímu stavu aplikace.
+</p>
+
+<p>
+  Z tohoto důvodu je doporučeno:
+</p>
+
+<ul>
+  <li>zálohovat data pravidelně,</li>
+  <li>uchovávat více verzí záloh,</li>
+  <li>importovat pouze vlastní nebo důvěryhodné soubory.</li>
+</ul>
+
+<h2>Vztah k bezpečnostním auditům</h2>
+
+<p>
+  Palpatius může při automatických auditech
+  vykazovat nálezy,
+  které by byly relevantní u běžných webových aplikací.
+</p>
+
+<p>
+  V kontextu Palpatia se však často jedná
+  o <strong>formální nebo nerelevantní nálezy</strong>.
+</p>
+
+<p>
+  Důvodem je rozdíl mezi:
+</p>
+
+<ul>
+  <li>veřejnou webovou aplikací,</li>
+  <li>a lokálním offline systémem.</li>
+</ul>
+
+<p>
+  Tyto rozdíly jsou podrobně popsány
+  v sekci věnované auditům a vědomým technickým rozhodnutím.
+</p>
+
+<h2>Shrnutí bezpečnostního modelu</h2>
+
+<ul>
+  <li>Palpatius je bezpečný tím, že je offline.</li>
+  <li>Neexistuje vzdálený útokový vektor.</li>
+  <li>Data zůstávají pod plnou kontrolou uživatele.</li>
+  <li>Bezpečnost vychází z jednoduchosti, nikoli z vrstvení.</li>
+</ul>
+
+<p>
+  Tento přístup je plně v souladu s účelem systému
+  a s reálnými hrozbami,
+  kterým může Palpatius čelit.
+</p>
+  </details>
+
+  <details>
+    <summary>Audity a vědomá technická rozhodnutí</summary>
+<h2>Úvod ke kontrolám a auditům</h2>
+
+<p>
+  Palpatius byl v průběhu vývoje opakovaně podroben
+  různým formám technických kontrol a auditů.
+</p>
+
+<p>
+  Tyto audity se zaměřovaly zejména na:
+</p>
+
+<ul>
+  <li>stabilitu systému,</li>
+  <li>přístupnost (A11y),</li>
+  <li>strukturu kódu,</li>
+  <li>a bezpečnostní aspekty.</li>
+</ul>
+
+<p>
+  Při těchto kontrolách se objevily nálezy,
+  které by byly <strong>relevantní u klasických webových aplikací</strong>,
+  avšak v kontextu Palpatia nemají reálný dopad.
+</p>
+
+<h2>Kontext je klíčový</h2>
+
+<p>
+  Palpatius je:
+</p>
+
+<ul>
+  <li>plně offline systém,</li>
+  <li>určený pro jednoho uživatele,</li>
+  <li>bez serveru a síťové komunikace,</li>
+  <li>bez cizích vstupů z internetu.</li>
+</ul>
+
+<p>
+  Z tohoto důvodu <strong>nelze na Palpatius mechanicky aplikovat
+  běžné auditní checklisty</strong>,
+  které vycházejí z předpokladů veřejné webové aplikace.
+</p>
+
+<p>
+  Některé nálezy jsou tedy:
+</p>
+
+<ul>
+  <li>formálně správné,</li>
+  <li>technicky pravdivé,</li>
+  <li>ale prakticky nerelevantní.</li>
+</ul>
+
+<h2>Příklady vědomých rozhodnutí</h2>
+
+<h3>Použití <code>innerHTML</code></h3>
+
+<p>
+  V některých částech systému je používáno
+  <code>innerHTML</code> bez plošného escapování vstupů.
+</p>
+
+<p>
+  V kontextu Palpatia:
+</p>
+
+<ul>
+  <li>neexistují cizí uživatelské vstupy,</li>
+  <li>neexistuje sdílení dat mezi uživateli,</li>
+  <li>neexistuje server ani session.</li>
+</ul>
+
+<p>
+  Riziko útoku typu XSS zde tedy
+  <strong>nemá praktický význam</strong>.
+</p>
+
+<p>
+  Plošné nahrazení <code>innerHTML</code> by vedlo
+  ke zbytečnému znepřehlednění kódu
+  bez reálného bezpečnostního přínosu.
+</p>
+
+<h3>Pevná vazba HTML a JavaScriptu</h3>
+
+<p>
+  Produkční moduly Palpatia pracují s předpokladem,
+  že HTML a JavaScript jsou verzovány a nasazovány společně.
+</p>
+
+<p>
+  Neexistuje scénář, kdy by JavaScript běžel
+  nad jiným nebo nekompatibilním HTML.
+</p>
+
+<p>
+  Z tohoto důvodu nejsou všude přidávány
+  defensivní kontroly existence DOM prvků.
+</p>
+
+<p>
+  Jedná se o <strong>vědomý kompromis ve prospěch čitelnosti
+  a jednoduchosti kódu</strong>.
+</p>
+
+<h3>Globální proměnné v izolovaných modulech</h3>
+
+<p>
+  Některé moduly používají globální proměnné.
+</p>
+
+<p>
+  V kontextu Palpatia:
+</p>
+
+<ul>
+  <li>každý modul běží na vlastní HTML stránce,</li>
+  <li>neexistuje sdílený runtime mezi moduly,</li>
+  <li>globální stav je izolovaný kontextem stránky.</li>
+</ul>
+
+<p>
+  Riziko kolize je zde prakticky nulové
+  a použití globálního stavu zvyšuje přehlednost.
+</p>
+
+<h2>Archivní a neprodukční části</h2>
+
+<p>
+  Součástí repozitáře jsou i části,
+  které nejsou součástí produkčního systému:
+</p>
+
+<ul>
+  <li>archivní kód,</li>
+  <li>experimentální nástroje,</li>
+  <li>demonstrační nebo herní sekce.</li>
+</ul>
+
+<p>
+  Tyto části mohou:
+</p>
+
+<ul>
+  <li>postrádat některé A11y prvky,</li>
+  <li>obsahovat starší styl zápisu kódu,</li>
+  <li>neodpovídat současným standardům Palpatia.</li>
+</ul>
+
+<p>
+  Tento stav je <strong>vědomý a záměrný</strong>.
+  Archivní kód slouží jako dokumentace vývoje,
+  nikoli jako produkční část systému.
+</p>
+
+<h2>Auditní TODO</h2>
+
+<p>
+  Všechny známé technické nedostatky,
+  které mají reálný význam,
+  jsou transparentně vedeny v samostatném seznamu.
+</p>
+
+<p>
+  Tyto body:
+</p>
+
+<ul>
+  <li>nejsou ignorovány,</li>
+  <li>nejsou bagatelizovány,</li>
+  <li>ale jsou řešeny postupně a s rozmyslem.</li>
+</ul>
+
+<p>
+  Cílem není dosáhnout „dokonalého skóre“ v auditu,
+  ale <strong>zachovat stabilitu funkčního systému</strong>.
+</p>
+
+<div class="note">
+  Ne každý auditní nález je chyba.
+  Některé jsou jen důsledkem jiného kontextu.
+</div>
+
+<h2>Shrnutí</h2>
+
+<ul>
+  <li>Palpatius byl opakovaně auditován.</li>
+  <li>Některé nálezy jsou vědomě neřešeny.</li>
+  <li>Tato rozhodnutí jsou zdokumentována a obhajitelná.</li>
+  <li>Stabilita systému má přednost před akademickou čistotou.</li>
+</ul>
+
+<p>
+  Tento přístup je plně v souladu
+  s architekturou, účelem a reálným použitím Palpatia.
+</p>
+  </details>
+
+  <details>
+    <summary>Známé nedostatky (TODO)</summary>
+<h2>Smysl této sekce</h2>
+
+<p>
+  Tato část dokumentace slouží jako
+  <strong>transparentní přehled známých technických nedostatků</strong>,
+  o kterých autor ví, ale které nejsou v tuto chvíli řešeny.
+</p>
+
+<p>
+  Nejedná se o bugtracker ani seznam kritických chyb.
+</p>
+
+<p>
+  Palpatius je ve své aktuální podobě
+  <strong>stabilní, funkční a bezpečně použitelný systém</strong>.
+</p>
+
+<h2>Proč některé věci zůstávají neopravené</h2>
+
+<p>
+  Důvodem není jejich ignorování, ale vědomé rozhodnutí:
+</p>
+
+<ul>
+  <li>zachovat dlouhodobou stabilitu systému,</li>
+  <li>nezasahovat do funkčního kódu bez jasného přínosu,</li>
+  <li>vyhnout se riziku regresí.</li>
+</ul>
+
+<p>
+  Palpatius je projekt v režimu údržby,
+  nikoli v režimu neustálého rozšiřování.
+</p>
+
+<div class="note">
+  Ne každá technická nepřesnost je důvodem k zásahu.
+</div>
+
+<h2>Povaha známých nedostatků</h2>
+
+<p>
+  Známé nedostatky se týkají především:
+</p>
+
+<ul>
+  <li>robustnosti při nevalidních vstupech,</li>
+  <li>okrajových importních scénářů,</li>
+  <li>drobností v oblasti přístupnosti,</li>
+  <li>interní kvality kódu.</li>
+</ul>
+
+<p>
+  Tyto nedostatky:
+</p>
+
+<ul>
+  <li>neohrožují data uživatele,</li>
+  <li>nevedou k úniku informací,</li>
+  <li>nenarušují běžné používání systému.</li>
+</ul>
+
+<h2>Prioritizace</h2>
+
+<p>
+  Známé body jsou interně rozděleny podle priority:
+</p>
+
+<ul>
+  <li>
+    <strong>Priorita A</strong> – stabilita a integrita dat
+  </li>
+  <li>
+    <strong>Priorita B</strong> – kvalita a přístupnost
+  </li>
+  <li>
+    <strong>Priorita C</strong> – možné budoucí zlepšení
+  </li>
+</ul>
+
+<p>
+  Řešení těchto bodů probíhá pouze v případě,
+  že je možné zásah provést bezpečně,
+  bez změny chování aplikace.
+</p>
+
+<h2>Transparentnost</h2>
+
+<p>
+  Existence této sekce znamená:
+</p>
+
+<ul>
+  <li>autor o těchto bodech ví,</li>
+  <li>má je zmapované,</li>
+  <li>a má k nim jasný postoj.</li>
+</ul>
+
+<p>
+  Známé nedostatky nejsou zametány pod koberec,
+  ale jsou otevřeně přiznány a zdokumentovány.
+</p>
+
+<h2>Vztah k dalším úpravám</h2>
+
+<p>
+  Jakékoliv budoucí zásahy do těchto oblastí:
+</p>
+
+<ul>
+  <li>budou lokální a cílené,</li>
+  <li>nebudou měnit chování systému,</li>
+  <li>budou provedeny pouze tehdy,
+      pokud přinesou jasný přínos.</li>
+</ul>
+
+<p>
+  Cílem není „dokonalý kód“,
+  ale <strong>dlouhodobě spolehlivý nástroj</strong>.
+</p>
+
+<div class="note">
+  Stabilita systému má vždy přednost před kosmetickými úpravami.
+</div>
+
+<h2>Závěrečné shrnutí</h2>
+
+<ul>
+  <li>Palpatius je hotový a stabilní systém.</li>
+  <li>Známé nedostatky jsou evidované a pochopené.</li>
+  <li>Neexistuje žádný kritický technický dluh.</li>
+  <li>Další úpravy jsou řízené, opatrné a vědomé.</li>
+</ul>
+
+<p>
+  Tento přístup je součástí filozofie projektu
+  a odpovídá jeho účelu i reálnému použití.
+</p>
+  </details>
+
+  <details>
+    <summary>Rychlý start</summary>
+<h2>Jak Palpatius spustit</h2>
+
+<p>
+  Palpatius nevyžaduje instalaci, registraci ani připojení k internetu.
+</p>
+
+<p>
+  Pro spuštění systému postupujte následovně:
+</p>
+
+<ol>
+  <li>
+    Stáhněte nebo rozbalte složku s projektem Palpatius.
+  </li>
+  <li>
+    Najděte soubor <code>index.html</code> v kořenovém adresáři projektu.
+  </li>
+  <li>
+    Otevřete tento soubor dvojklikem v libovolném moderním webovém prohlížeči.
+  </li>
+</ol>
+
+<p>
+  Tím se dostanete přímo do systému Palpatius a můžete začít pracovat.
+</p>
+
+<h2>Ukládání dat</h2>
+
+<p>
+  Veškerá data jsou ukládána <strong>lokálně v prohlížeči</strong>
+  pomocí technologie IndexedDB.
+</p>
+
+<p>
+  Data zůstávají zachována:
+</p>
+
+<ul>
+  <li>při zavření prohlížeče,</li>
+  <li>při restartu počítače,</li>
+  <li>i při dlouhodobém nepoužívání systému.</li>
+</ul>
+
+<p>
+  O data můžete přijít pouze v případě,
+  že dojde k vymazání dat prohlížeče nebo k poruše zařízení.
+</p>
+
+<div class="note">
+  Doporučuje se pravidelně používat funkci exportu dat
+  a uchovávat zálohy na bezpečném místě.
+</div>
+
+<h2>Doporučený prohlížeč</h2>
+
+<p>
+  Palpatius funguje ve všech moderních prohlížečích,
+  které podporují IndexedDB.
+</p>
+
+<p>
+  Pro nejlepší stabilitu a přístupnost je doporučeno:
+</p>
+
+<ul>
+  <li>Google Chrome</li>
+  <li>Mozilla Firefox</li>
+  <li>Microsoft Edge</li>
+</ul>
+
+<h2>První kroky po spuštění</h2>
+
+<p>
+  Po otevření systému se doporučuje:
+</p>
+
+<ul>
+  <li>seznámit se s jednotlivými moduly,</li>
+  <li>vyzkoušet základní ovládání,</li>
+  <li>provést první zálohu dat po zadání testovacích záznamů.</li>
+</ul>
+
+<p>
+  Každý produkční modul obsahuje vlastní nápovědu,
+  která je dostupná přímo v uživatelském rozhraní.
+</p>
+
+<h2>Pokud něco nefunguje</h2>
+
+<p>
+  V případě neobvyklého chování systému:
+</p>
+
+<ul>
+  <li>zkontrolujte konzoli prohlížeče (klávesa F12),</li>
+  <li>ujistěte se, že používáte aktuální verzi prohlížeče,</li>
+  <li>zkuste aplikaci spustit v jiném prohlížeči.</li>
+</ul>
+
+<p>
+  Většina problémů souvisí s lokálním prostředím,
+  nikoli se samotným systémem Palpatius.
+</p>
+
+<p>
+Nevíte si rady? Potřebujete pomoct? Tak my můžete napsat. 
+</p>
+
+<p>
+  <strong>E-mail:</strong> ✉️
+  <a href="mailto:palpatius@gmail.com">palpatius@gmail.com</a>
+</p>
+  </details>
+
+  <footer>
+    <p>
+      Palpatius – vytvořen z praxe. Ověřen životem.
+    </p>
+  </footer>
+
+</main>
+</body>
+</html>
