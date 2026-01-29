@@ -28,9 +28,9 @@ Je to **hotový nástroj vytvořený z praxe pro praxi**.
 
 - **Masérna** – správa klientů, masáží, poukazů a věrnostního programu  
 - **Finanční správce** – příjmy, výdaje, sklad, přehledy  
-- **Záznamník** – poznámky, úkoly, nápady  
-- ** Knihovna** – Správa a evidence všech vašich textů, článků, textových dokumentů. 
-- ** Finanční správce Extra** – Lepší finanční přehled. Hned víte kolik procent si platební terminál nebo jiná služba bere z transakce. . 
+- **Záznamník** – poznámky, úkoly a nápady  
+- **Knihovna** – správa a evidence textů, článků a dokumentů  
+- **Finanční správce Extra** – rozšířený finanční přehled a poplatky služeb  
 
 ## Rychlý start
 
@@ -40,17 +40,17 @@ Je to **hotový nástroj vytvořený z praxe pro praxi**.
 
 ## Dokumentace
 
-Kompletní dokumentace projektu je dostupná v souboru:
+Kompletní dokumentace projektu je dostupná online:
 
-👉 **`dokumentace.html`**
+👉 https://simekjan1.github.io/p.docs/
 
-Obsahuje:
-- příběh vzniku projektu,
+Dokumentace obsahuje:
+- účel a hranice projektu,
 - architekturu a filozofii,
 - bezpečnostní model,
-- auditní rozhodnutí,
+- vědomá technická rozhodnutí,
 - známé nedostatky,
-- a další kontext.
+- a kontext dalšího vývoje.
 
 ## Licence a bezpečnost
 
