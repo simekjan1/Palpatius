@@ -3,42 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Palpatius – Vstup do systému</title>
+    <title>Utility Palpatius</title>
+
     <link rel="stylesheet" href="style.css">
-<link rel="icon" href="assets/icons/favicon.ico" type="image/x-icon">
 </head>
 
-<body>
-    <main class="welcome-container">
+<body class="antialiased">
+    <div class="container">
+        <h1>Palpatius nástroje</h1>
 
-        <h1 class="title">PALPATIUS</h1>
-        <p class="subtitle">Jednoduchý systém pro maséry</p>
+        <p class="intro">
+            Tato sekce obsahuje samostatné pomocné nástroje systému Palpatius.
+            Nejedná se o moduly ani systémové části – každý nástroj funguje nezávisle,
+            nesdílí data s ostatními a je určen k řešení konkrétního úkolu.
+        </p>
 
-        <a href="data/1._maserna/index.html" class="enter-button" aria-label="Vstoupit do systému Palpatius">
-            Vstoupit do systému
-        </a>
+        <p class="intro">
+            Nástroje můžete používat jednotlivě, dle potřeby. 
+            Některé slouží k diagnostice, jiné k práci s daty nebo k osobním poznámkám.
+        </p>
 
-        <section class="intro-text">
-            <p>Palpatius je moderní offline nástroj pro maséry, který vám pomáhá spravovat klienty, finance, záznamy i dokumenty. Všechna data zůstávají bezpečně přímo u vás v zařízení.</p>
+        <section id="modules">
+            <h2>Spustit utilitu</h2>
 
-            <p>Systém je navržen tak, aby byl rychlý, spolehlivý a plně dostupný i bez internetu. Stačí otevřít tuto stránku a můžete pracovat.</p>
+                <a href="tools/01._offline_poznamky/index.html" class="app-link">
+                    Offline poznámky
+                </a>
+
+                <a href="tools/02._kalendar/index.html" class="app-link">
+                    Kalendář
+                </a>
+
+                <a href="tools/03._txt_md_helper/index.html" class="app-link">
+                    TXT / MD helper
+                </a>
+
+                <a href="tools/archiv/index.html" class="app-link">
+                    🎮 ARCHIV PALPATIUS GAMES
+                </a>
+
+                <a href="tools/zaloha/index.html" class="app-link">
+                    🗄️ ARCHIV PALPATIUS web business card
+                </a>
+
+            </div>
         </section>
 
-        <p id="current-time" class="time"></p>
-
-<a href="tools/index.html"
-   class="utility-link"
-   aria-label="Otevřít technické nástroje Palpatius">
-    Technické nástroje
-</a>
-
-<a href="tools/tools/archiv/index.html"
-   class="game-link game-link-fixed"
-   aria-label="skrytý obsah">
-</a>
-
-    </main>
-
-    <script src="script.js"></script>
+    </div>
 </body>
 </html>

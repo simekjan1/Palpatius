@@ -1,177 +1,183 @@
-/* ================================
-   Palpatius – Uvítací stránka
-   Minimalistický tmavý design
-   ================================ */
+/* =========================================
+   Základ
+   ========================================= */
 
 body {
+    background-color: #000;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #fff;
+    padding: 1rem;
     margin: 0;
-    padding: 0;
-    background-color: #0d0d0d;
-    color: #ffffff;
-    font-family: 'Inter', sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #111;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* =========================================
+   Nadpisy
+   ========================================= */
+
+h1 {
+    color: #facc15;
+    font-size: 3.5rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
+}
+
+h2 {
+    color: #facc15;
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #555;
+    padding-bottom: 0.5rem;
+}
+
+/* =========================================
+   Grid nástrojů
+   ========================================= */
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-top: 2rem;
+}
+
+/* =========================================
+   Karty nástrojů
+   ========================================= */
+
+.app-link {
     display: flex;
-    justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    justify-content: center;
+    padding: 1.5rem;
+    background-color: #fff;
+    color: #111;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-align: center;
+    min-height: 90px;
+    transition: background-color 0.2s ease,
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.app-link:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+.app-link:focus {
+    outline: 3px solid #facc15;
+    outline-offset: 3px;
+}
+
+/* =========================================
+   Zvýraznění vybraných položek
+   ========================================= */
+
+.app-link.important {
+    border: 3px solid #facc15;
+}
+
+.app-link.info {
+    background-color: #facc15;
+    color: #000;
+}
+
+.app-link.info:hover {
+    background-color: #fde047;
+}
+
+/* =========================================
+   Responzivita
+   ========================================= */
+
+@media (max-width: 1024px) {
+    .tools-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    .tools-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .app-link {
+        font-size: 1.25rem;
+        padding: 1.25rem;
+    }
+}
+.intro {
+    max-width: 800px;
+    margin: 0 auto 1.5rem auto;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #d1d5db;
+    text-align: center;
+}
+.app-link.placeholder {
+    background-color: #1f2933;
+    color: #9ca3af;
+    box-shadow: none;
+    cursor: default;
+}
+
+.app-link.placeholder:hover {
+    transform: none;
+}
+.archive-entry {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed rgba(0, 0, 0, 0.25);
     text-align: center;
 }
 
-/* Hlavní kontejner */
-.welcome-container {
-    max-width: 700px;
-    padding: 2rem;
-    margin: 1rem;
-}
-
-/* Hlavní název */
-.title {
-    font-size: 4rem;
-    font-weight: 900;
-    color: #facc15;
-    margin-bottom: 0.5rem;
-    text-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
-}
-
-/* Podtitul */
-.subtitle {
-    font-size: 1.5rem;
-    color: #e5e5e5;
-    margin-bottom: 2.5rem;
-}
-
-/* Tlačítko */
-.enter-button {
+.archive-link {
     display: inline-block;
-    background-color: #3b82f6; /* modrá */
-    color: #ffffff;
-    padding: 1rem 2rem;
-    font-size: 1.5rem;
-    font-weight: 700;
-    border-radius: 0.5rem;
-    text-decoration: none;
-    transition: 0.2s ease-in-out;
-    margin-bottom: 2.5rem;
-}
-
-.enter-button:hover {
-    background-color: #2563eb;
-    transform: translateY(-2px);
-}
-
-.enter-button:focus {
-    outline: 3px solid #facc15;
-    outline-offset: 4px;
-}
-
-/* Úvodní text */
-.intro-text p {
-    font-size: 1.125rem;
-    color: #cccccc;
-    line-height: 1.6;
-    margin-bottom: 1.2rem;
-}
-
-/* Čas dole */
-.time {
-    margin-top: 2rem;
-    font-size: 1.125rem;
-    color: #eaeaea;
-    opacity: 0.9;
-}
-
-/* Responsivní úpravy */
-@media (max-width: 640px) {
-    .title {
-        font-size: 3rem;
-    }
-    .subtitle {
-        font-size: 1.25rem;
-    }
-    .enter-button {
-        font-size: 1.25rem;
-        padding: 0.8rem 1.5rem;
-    }
-    .intro-text p {
-        font-size: 1rem;
-    }
-}
-/* ================================
-   Odkaz na utility (pokročilé)
-   ================================ */
-
-.utility-link {
-    display: inline-block;
-    margin-top: 2.5rem;
     font-size: 0.95rem;
-    color: #a3a3a3;
+    color: #555;
     text-decoration: none;
-    opacity: 0.85;
+    padding: 0.4rem 0.9rem;
+    border-radius: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.04);
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.utility-link:hover {
-    text-decoration: underline;
-    opacity: 1;
+.archive-link:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+    color: #222;
 }
 
-.utility-link:focus {
-    outline: 2px solid #facc15;
-    outline-offset: 4px;
-    border-radius: 0.25rem;
-}
-/* Easter egg – viditelný detail v rohu */
-.game-link-fixed {
-    position: fixed;
-    bottom: 14px;
-    right: 14px;
-
-    width: 26px;
-    height: 26px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background-color: rgba(255, 255, 255, 0.12);
-    border-radius: 6px;
-
-    font-size: 15px;
-    text-decoration: none;
-
-    opacity: 0.85;
-    transition: opacity 0.25s ease, transform 0.2s ease, background-color 0.25s ease;
-}
-
-/* Ikona – záměrně jednoduchá */
-.game-link-fixed::before {
-    content: "🥚";
-}
-
-/* Hover = potvrzení interaktivity */
-.game-link-fixed:hover {
-    opacity: 1;
-    background-color: rgba(255, 255, 255, 0.17);
-    transform: scale(1.1);
-    cursor: pointer;
-}
-
-/* Klávesnice */
-.game-link-fixed:focus {
-    outline: 1px dotted rgba(255, 255, 255, 0.6);
+.archive-link:focus {
+    outline: 2px solid #555;
     outline-offset: 3px;
 }
-@keyframes egg-pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.25);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
 
-/* Třída, kterou přidá JS */
-.game-link-animate {
-    animation: egg-pulse 0.6s ease;
+.archive-note {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: #777;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
 }
