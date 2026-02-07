@@ -90,8 +90,6 @@ masernaData.priceListItems.forEach(item => {
                 });
                 showCustomModal(
 'Data byla úspěšně načtena z lokálního úložiště.', 
-    'V horní části stránky je k dispozici panel automatických záloh Palpatius. ' +
-    'Zavřete toto okno tlačítkem OK nebo klávesou Escape a poté se pomocí tabulátoru můžete přesunout na panel záloh.',
 'Načtení dat');
             }
             resolve();
@@ -1813,7 +1811,7 @@ function exportAllMasernaData() {
         document.body.removeChild(dl);
         URL.revokeObjectURL(dataStr);
         showCustomModal("Všechna data Masérny byla úspěšně exportována jako JSON.");
-        localStorage.setItem(LAST_BACKUP_KEY, new Date().toISOString());
+        
         document.getElementById('backupReminder').classList.add('hidden');
     } catch (error) {
         console.error("Chyba při exportu JSON dat Masérny:", error);
@@ -1833,20 +1831,44 @@ function importAllMasernaData(event) {
                 'priceListItems' in importedData && Array.isArray(importedData.priceListItems) &&
                 'globalMassageHistory' in importedData && Array.isArray(importedData.globalMassageHistory) &&
                 'voucherPurchases' in importedData && Array.isArray(importedData.voucherPurchases)) {
-                
-                importedData.clients.forEach(c => {
-                    c.id = c.id ? String(c.id) : Date.now().toString();
-                    c.massages.forEach(m => m.id = m.id ? String(m.id) : Date.now().toString());
-                    c.clientNotes.forEach(n => n.id = n.id ? String(n.id) : Date.now().toString());
-                    if (typeof c.expanded !== 'boolean') c.expanded = false;
-                    if (typeof c.subTables !== 'object' || c.subTables === null) c.subTables = { massages: false, vouchers: false, notes: false, zaznamnik: false };
-                    if (typeof c.status !== 'string') c.status = 'inactive';
-                    // *** NOVÉ: Zajistíme, že importovaní klienti budou mít data pro věrnostní program ***
-                    if (typeof c.points === 'undefined') c.points = 0;
-                    if (typeof c.bonus === 'undefined') c.bonus = 0;
-                    if (typeof c.extra === 'undefined') c.extra = 0;
-                    if (typeof c.totalMassages === 'undefined') c.totalMassages = c.massages.length;
-                });
+
+importedData.clients.forEach(c => {
+    c.id = c.id ? String(c.id) : Date.now().toString();
+
+    // === ZAJIŠTĚNÍ STRUKTURY POZNÁMEK ===
+    if (!Array.isArray(c.clientNotes)) {
+        c.clientNotes = [];
+    }
+
+    c.clientNotes.forEach(n => {
+        n.id = n.id ? String(n.id) : Date.now().toString();
+    });
+
+    // === MASÁŽE ===
+    if (!Array.isArray(c.massages)) {
+        c.massages = [];
+    }
+
+    c.massages.forEach(m => {
+        m.id = m.id ? String(m.id) : Date.now().toString();
+    });
+
+    // === UI STAVY ===
+    if (typeof c.expanded !== 'boolean') c.expanded = false;
+    if (typeof c.subTables !== 'object' || c.subTables === null) {
+        c.subTables = { massages: false, vouchers: false, notes: false, zaznamnik: false, loyalty: false };
+    }
+
+    // === STAV KLIENTA ===
+    if (typeof c.status !== 'string') c.status = 'inactive';
+
+    // === VĚRNOSTNÍ PROGRAM ===
+    if (typeof c.points === 'undefined') c.points = 0;
+    if (typeof c.bonus === 'undefined') c.bonus = 0;
+    if (typeof c.extra === 'undefined') c.extra = 0;
+    if (typeof c.totalMassages === 'undefined') c.totalMassages = c.massages.length;
+});
+
                 importedData.priceListItems.forEach(item => item.id = item.id ? String(item.id) : Date.now().toString());
                 importedData.globalMassageHistory.forEach(item => item.id = item.id ? String(item.id) : Date.now().toString());
                 importedData.voucherPurchases.forEach(purchase => {

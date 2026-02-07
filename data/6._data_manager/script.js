@@ -134,22 +134,28 @@ function buildReport(module, data) {
   report.push(...header);
 
   switch (module) {
-    case "maserna":
-      assert(data.clients, "Chybí pole clients");
-      addResultRow("Klienti", data.clients.length);
-      addResultRow("Masáže", data.globalMassageHistory?.length || 0);
-      addResultRow("Poukazy", data.voucherPurchases?.length || 0);
-      addResultRow("Poznámky", data.notes?.length || 0);
-      addResultRow("Ceníkové položky", data.priceListItems?.length || 0);
+case "maserna":
+  assert(Array.isArray(data.clients), "Chybí pole clients");
 
-      report.push(
-        `Klienti: ${data.clients.length}`,
-        `Masáže: ${data.globalMassageHistory?.length || 0}`,
-        `Poukazy: ${data.voucherPurchases?.length || 0}`,
-        `Poznámky: ${data.notes?.length || 0}`,
-        `Ceníkové položky: ${data.priceListItems?.length || 0}`
-      );
-      break;
+  const notesCount = data.clients.reduce(
+    (sum, c) => sum + (Array.isArray(c.clientNotes) ? c.clientNotes.length : 0),
+    0
+  );
+
+  addResultRow("Klienti", data.clients.length);
+  addResultRow("Masáže", data.globalMassageHistory?.length || 0);
+  addResultRow("Poukazy", data.voucherPurchases?.length || 0);
+  addResultRow("Poznámky", notesCount);
+  addResultRow("Ceníkové položky", data.priceListItems?.length || 0);
+
+  report.push(
+    `Klienti: ${data.clients.length}`,
+    `Masáže: ${data.globalMassageHistory?.length || 0}`,
+    `Poukazy: ${data.voucherPurchases?.length || 0}`,
+    `Poznámky: ${notesCount}`,
+    `Ceníkové položky: ${data.priceListItems?.length || 0}`
+  );
+  break;
 
     case "finance":
       assert(data.transactions, "Chybí pole transactions");
