@@ -1,6 +1,6 @@
 # Palpatius
 
-**Palpatius** je jednoduchý, spolehlivý a **100% offline systém pro maséry**,
+**Palpatius** je jednoduchý, spolehlivý a **offline-first systém pro maséry**,  
 navržený s důrazem na soukromí, přístupnost a dlouhodobou stabilitu.
 
 Veškerá data jsou ukládána **lokálně v prohlížeči** a nikdy neopouštějí
@@ -37,6 +37,15 @@ Je to **hotový nástroj vytvořený z praxe pro praxi**.
 1. Stáhněte nebo rozbalte projekt Palpatius  
 2. Otevřete soubor `index.html` v moderním webovém prohlížeči  
 3. Začněte pracovat – bez instalace, bez internetu  
+
+Důležité upozornění (offline provoz)
+Při spuštění systému přímo z počítače (file://) může mít modul
+Finanční správce potíže s ukládáním dat.
+Nejedná se o chybu systému, ale o omezení některých webových prohlížečů
+při práci s IndexedDB v tomto režimu.
+Pro plnou funkčnost tohoto modulu doporučujeme použít webovou verzi:
+👉 https://simekjan1.github.io/Palpatius/
+Ostatní moduly fungují plně i v offline režimu.
 
 ## Dokumentace
 
