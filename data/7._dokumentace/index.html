@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Palpatius – Dokumentace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --panel: #151515;
+      --text: #e5e5e5;
+      --muted: #a3a3a3;
+      --accent: #facc15;
+      --border: #2a2a2a;
+    }
+
+    body {
+      margin: 0;
+      padding: 2rem 1rem;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    details {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding: 1.25rem 1.5rem;
+    }
+
+    summary {
+      font-size: 1.25rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--accent);
+      list-style: none;
+      outline: none;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    summary::before {
+      content: "▶";
+      display: inline-block;
+      margin-right: 0.5rem;
+      transition: transform 0.2s ease;
+      color: var(--text);
+    }
+
+    details[open] summary::before { transform: rotate(90deg); }
+
+    details > *:not(summary) { margin-top: 1rem; }
+
+    h2 { font-size: 1.2rem; color: var(--accent); margin-top: 1.5rem; }
+
+    p { margin: 0.75rem 0; }
+
+    ul { padding-left: 1.25rem; }
+
+    li { margin-bottom: 0.4rem; }
+
+    .note {
+      background: #1f1f1f;
+      border-left: 4px solid var(--accent);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      color: var(--muted);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    a { color: var(--accent); }
+    a:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ================================
+   Navigační lišta modulů Palpatius
+   ================================ */
+
+.module-nav {
+    background-color: #111;
+    border-bottom: 1px solid #333;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.module-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.module-nav a {
+    color: #e5e5e5;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.4rem 0.25rem;
+    transition: color 0.15s ease;
+}
+
+.module-nav a:hover {
+    color: #facc15;
+}
+
+.module-nav a.active {
+    color: #facc15; /* Žlutá = aktivní modul */
+    border-bottom: 2px solid #facc15;
+    padding-bottom: 0.25rem;
+    cursor: default;
+}
+
+@media (max-width: 640px) {
+    .module-nav ul {
+        gap: 1rem;
+    }
+    .module-nav a {
+        font-size: 0.95rem;
+    }
+}
+  </style>
+
+</head>
+
+<body>
+<nav class="module-nav" aria-label="Hlavní navigace">
+    <ul>
+            <li><a href="../../data/1._maserna/index.html" data-module="maserna">Masérna</a></li>
+            <li><a href="../../data/2._financni_spravce/index.html" data-module="finance">Finance</a></li>
+            <li><a href="../../data/3._zaznamnik/index.html" data-module="zaznamnik">Záznamník</a></li>
+            <li><a href="../../data/4._knihovna/index.html" data-module="knihovna">Knihovna</a></li>
+            <li><a href="../../data/5._financni_spravce_extra/index.html" data-module="finanční správce Extra">Finanční správce Extra</a></li>
+            <li><a href="../../data/6._data_manager/index.html" data-module="data manager">Data Manager</a></li>
+            <li><a href="../../data/7._dokumentace/index.html" data-module="dokumentace">Dokumentace</a></li>
+    </ul>
+</nav>
+
+<main>
+
+  <details>
+    <summary>Dokumentace</summary>
+
+  <h1>Palpatius</h1>
+  <p class="subtitle">Stručná a ucelená dokumentace hotového offline systému</p>
+
+  <details>
+    <summary>Úvod</summary>
+    <p>
+      Palpatius je <strong>osobní, plně offline systém pro maséry</strong>,
+      navržený s důrazem na stabilitu, přístupnost a dlouhodobou použitelnost.
+    </p>
+    <p>
+      Systém je funkčně dokončený, ověřený reálným provozem
+      a aktivně používaný svým autorem v každodenní praxi.
+    </p>
+    <p>
+      Tato dokumentace slouží jako <strong>referenční zdroj</strong>:
+      vysvětluje strukturu systému, architektonická rozhodnutí
+      a hranice dalšího vývoje.
+    </p>
+  </details>
+
+  <details>
+    <summary>Rychlý start</summary>
+    <ol>
+      <li>Stáhněte nebo rozbalte projekt Palpatius.</li>
+      <li>Otevřete soubor <code>index.html</code> v moderním webovém prohlížeči.</li>
+      <li>Systém je okamžitě připraven k použití – bez instalace a bez internetu.</li>
+    </ol>
+    <p>
+      Veškerá data jsou ukládána lokálně v prohlížeči pomocí technologie IndexedDB.
+    </p>
+  </details>
+
+  <details>
+    <summary>Struktura systému</summary>
+    <h2>assets/</h2>
+    <ul>
+      <li>sdílené styly a UI logika</li>
+      <li>společné utility používané napříč moduly</li>
+    </ul>
+
+```
+<h2>data/</h2>
+<ul>
+  <li>produkční moduly systému</li>
+  <li>každý modul je samostatná a izolovaná jednotka</li>
+</ul>
+
+<p>
+  Struktura je záměrně jednoduchá a čitelná.
+  Selhání jednoho modulu nemá vliv na ostatní.
+</p>
+```
+
+  </details>
+
+  <details>
+    <summary>Architektura a filozofie</summary>
+    <ul>
+      <li><strong>Offline-first</strong> – žádný server, žádný cloud, žádná synchronizace</li>
+      <li><strong>Plná kontrola nad daty</strong> – data zůstávají výhradně u uživatele</li>
+      <li><strong>Modularita</strong> – samostatné moduly, žádný centrální runtime</li>
+      <li><strong>Stabilita před funkcemi</strong> – žádné neřízené rozšiřování</li>
+      <li><strong>Přístupnost (A11y)</strong> – základní architektonický princip</li>
+    </ul>
+
+```
+<h2>Hranice projektu</h2>
+<ul>
+  <li>Palpatius je <strong>primárně osobní nástroj autora</strong>.</li>
+  <li>Sekundárně je projekt otevřený jako <strong>open source</strong>.</li>
+  <li>Terciárně může posloužit i dalším lidem, pokud jim vyhovuje jeho filozofie.</li>
+</ul>
+
+<p>
+  Palpatius se nesnaží vyhovět všem scénářům ani potřebám.
+  Vznikl z konkrétní praxe a je optimalizovaný pro konkrétní způsob práce.
+</p>
+
+<p>
+  Pokud Palpatius pomůže i dalším lidem, je to vítané.
+  Pokud ne, je to v pořádku.
+  Projekt nemá ambici být univerzálním řešením.
+</p>
+
+<ul>
+  <li>Otevřený kód znamená možnost studia a úprav, nikoli povinnost měnit směr projektu.</li>
+  <li>Forknutí projektu je legitimní a očekávaná cesta pro jiné potřeby.</li>
+  <li>Veškerá data patří uživateli a zůstávají pod jeho plnou kontrolou.</li>
+</ul>
+
+<div class="note">
+  Architektura Palpatia je jednoduchá proto, že může být jednoduchá.
+  Ne proto, že by autor neuměl věci komplikovat.
+</div>
+```
+
+  </details>
+
+  <details>
+    <summary>Bezpečnostní model</summary>
+    <ul>
+      <li>žádná síťová komunikace</li>
+      <li>žádná externí API</li>
+      <li>žádné uživatelské účty</li>
+    </ul>
+    <p>
+      Bezpečnost Palpatia vychází z jeho kontextu:
+      lokální offline aplikace pro jednoho uživatele.
+    </p>
+    <p>
+      Rizika se týkají výhradně klientské strany
+      (poškozený import, nekorektní JSON, manuální zásahy).
+    </p>
+  </details>
+
+  <details>
+    <summary>Audity a vědomá technická rozhodnutí</summary>
+    <p>
+      Palpatius prošel opakovanými technickými kontrolami
+      zaměřenými na stabilitu, přístupnost a strukturu kódu.
+    </p>
+    <ul>
+      <li>použití <code>innerHTML</code> v kontrolovaném kontextu</li>
+      <li>globální proměnné v izolovaných modulech</li>
+      <li>pevná vazba HTML a JavaScriptu</li>
+    </ul>
+    <p>
+      Tato rozhodnutí jsou záměrná a odpovídají účelu systému.
+    </p>
+  </details>
+
+  <details>
+    <summary>Známé nedostatky</summary>
+    <ul>
+      <li>drobné okrajové scénáře při importu dat</li>
+      <li>místy konzervativní práce s validací vstupů</li>
+      <li>interní technické nepřesnosti bez dopadu na provoz</li>
+    </ul>
+    <p>
+      Neexistují známé chyby ohrožující data nebo stabilitu systému.
+    </p>
+  </details>
+
+  <details>
+    <summary>Stav projektu a další vývoj</summary>
+    <p>
+      Palpatius je považován za <strong>funkčně dokončený projekt</strong>.
+    </p>
+    <ul>
+      <li>nebudou přidávány nové produkční moduly</li>
+      <li>nebude probíhat funkční rozšiřování</li>
+      <li>další změny se týkají pouze údržby a oprav</li>
+    </ul>
+    <p>
+      Cílem není růst, ale dlouhodobá spolehlivost.
+    </p>
+  </details>
+  </details>
+
+  <details>
+    <summary>Příručka</summary>
+<h2>Příručka Pro Palpatius</h2>
+<p>Úvod, a stručná předmluva: <br>Pokud hledáš hotový produkt s podporou, aktualizacemi a garancemi, Palpatius pro tebe pravděpodobně není. Tato příručka je psaná osobně a neformálně. Je primárně určena autorovi a jeho budoucímu já. Pokud ji čtete jako externí uživatel, berte ji jako pohled do způsobu práce, nikoli jako oficiální manuál.<br>Palpatius není hotový produkt v klasickém slova smyslu.<br>Je to systém, který vznikal postupně, z potřeby, z praxe a často i z frustrace. Ne proto, že by neexistovala jiná řešení, ale proto, že žádné z nich mi dlouhodobě nevyhovovalo tak, jak jsem potřeboval.<br>Tuto příručku nepíšu jako autor systému, ale jako jeho uživatel. Jako někdo, kdo si Palpatius vytvořil pro sebe, denně ho používá a časem si k němu našel vlastní cestu. To, co v následujících kapitolách popisuji, není návod, který bys musel dodržovat krok za krokem. Je to spíš pohled do toho, jak to dělám já.<br>Můžeš se tím inspirovat.<br>Můžeš si z toho vzít jen část.<br>A klidně to můžeš dělat úplně jinak.<br>Palpatius je navržený tak, aby ti neříkal, jak máš pracovat, ale aby ti dal prostor pracovat po svém. Tahle příručka to má stejně.<br> <br>Vznikla z jednoduchého důvodu.<br>Po čase člověk zapomíná. Ne funkce, ale souvislosti. Proč je něco udělané takhle. Co byl původní záměr. Co se osvědčilo a co ne. Tahle příručka má být připomínkou cesty – pro mě dnes i pro mě za několik let.<br>Pokud Palpatius používáš, možná v něm najdeš věci, které ti budou připadat zbytečné. Jiné ti naopak mohou otevřít nové možnosti. Obojí je v pořádku. Systém není dogma a tahle příručka už vůbec ne.<br> <br>V dalších kapitolách projdeme:<br>základní principy Palpatia,<br>jednotlivé moduly a jejich smysl,<br>slabá místa a chyby, o kterých je dobré vědět,<br>a také věci, které se vyplatí nikdy nedělat, pokud si nechceš systém rozbít.<br>Nečekej univerzální pravdu.<br>Čekej osobní zkušenost.<br>A přesně o to tady jde.</p>
+<p>Co tu můžeš objevit (pokud budeš chtít)<br>1. Úvod, a stručná předmluva<br>2. Jak začít<br>3. Co to jsou moduly? <br>4. Modul masérna: Co to je, jak ho používat<br>5. Modul finanční správce: Co to je, a jak ho používat<br>6. Modul záznamník. Co to je, a jak ho používat<br>7. Modul knihovna. Co to je, a jak ho používat<br>8. Modul finanční správce extra. K čemu vlastně slouží? <br>9. Data manager. Kontrolní modul. K čemu slouží?<br>10. Chyby a nedostatky, které Palpatius má<br>11. Co s palpatiem nikdy nedělejte, pokud si ho nechcete rozbít<br>12. Uživatelská sekce. Co se v ní dá dělat<br>13. Zálohování. Nejdůležitější funkce celého systému<br>14. Závěr</p>
+<p>Poznámka ke kapitolám: <br>Nemusíš je číst jako učebnici. Můžeš je přeskakovat, a zase se k nim vracet. Nikdo tě nebude nutit, abys je četl všechny. Jestli ti ale mohu doporučit, tak si je přečti. Nemusíš hned najednou. Stačí postupně. Až budeš mít čas, chuť, a náladu. Nebo až ti něco v palpatiu nebude dávat smysl, a budeš si říkat. Sakra, jak to mám používat? Co to dělá? Tohle fakt nechápu. Já tě k ničemu nenutím, a Palpatius obzvlášť ne. Už ale dost okecávání. Určitě tě zajímá, co to je ten palpatius hergot zač, a proč bych ho měl zrovna já používat.</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p>2. Jak začít<br>Začít s Palpatiem není složité.<br>Zároveň ale není úplně jedno, jak začneš.<br>Ne proto, že by existoval správný a špatný postup, ale proto, že první kontakt se systémem často rozhodne o tom, jestli ti bude dávat smysl, nebo jestli ho po chvíli zavřeš se slovy: „Tohle není nic pro mě.“<br>Proto tady popíšu, jak jsem začínal já. Ne jako doporučení, ale jako jednu z možných cest.<br> <br>První důležitá věc: Palpatius není aplikace v klasickém smyslu<br>Palpatius není mobilní aplikace, není to webová služba a není to systém, který by někde běžel „na serveru“.<br>Je to offline systém, který běží přímo u tebe – v prohlížeči, na tvém počítači.<br>To má několik důsledků:<br>nepotřebuješ internet<br>nikam se nepřihlašuješ<br>nikdo jiný k tvým datům nemá přístup<br>ale zároveň: zodpovědnost za data je na tobě<br>Tohle je dobré si uvědomit hned na začátku. Palpatius ti dává svobodu, ale nehlídá tě.<br> <br>Jak jsem Palpatius poprvé otevřel já<br>Když Palpatius otevřeš poprvé, dostaneš se na jednoduchou uvítací stránku.<br>Žádné nastavování, žádný průvodce, žádné „klikni sem, pak tam“.<br>Jedno tlačítko.<br>Vstoupit do systému.<br>A to tě rovnou hodí do Masérny.<br>To není náhoda. Masérna je srdce celého systému. Všechno ostatní je kolem ní.<br>Můj první krok nebyl „prokliknout všechno“.<br>Naopak.<br>Nechal jsem systém chvíli být. Podíval jsem se, co tam vlastně je, jak na mě působí a co po mně chce. Palpatius na tebe nespěchá. A ty bys neměl spěchat taky.<br> <br>Nesnaž se pochopit všechno hned<br>Tohle je možná nejdůležitější rada v celé příručce.<br>Palpatius má víc modulů, tabulek, přepínačů a možností. Pokud se je pokusíš pochopit všechny najednou, je téměř jisté, že tě to unaví nebo otráví.<br>Já jsem začal úplně jednoduše: Přidal jsem prvního klienta, přidal jsem jednu masáž, a tím to pro první den skončilo. Žádné finance, žádné záznamy. Jen základ.<br>Až když mi tohle začalo dávat smysl, přidával jsem další věci.<br> <br>Palpatius se učí používáním, ne studiem<br>Tohle není systém, který bys měl nejdřív celý prostudovat a pak začít používat.<br>Je to přesně naopak.<br>Používáním si: vytvoříš vlastní pracovní styl, zjistíš, které části systému využíváš často, a které skoro vůbec. A to je v pořádku. Některé moduly můžeš používat denně.  Jiné jen jednou za čas.<br>A některé možná nikdy. Palpatius s tím počítá.<br> <br>Kdy dává smysl číst další kapitoly<br>Možná hned. Možná až za týden. Možná až ve chvíli, kdy si řekneš. „Dobře, ale co přesně dělá tenhle modul?“ Tahle příručka není závod. Je to záchytný bod. Kdykoliv se můžeš vrátit, přeskočit kapitolu, nebo si jen přečíst jednu část a zbytek nechat být.<br> <br>Jak začít s Palpatiem? Otevřít ho dvojklikem na index.html. Nespěchat, nezačínat vším, a nebát se dělat věci po svém. Zbytek přijde postupně.<br>V další kapitole se podíváme na to, co to vlastně jsou moduly, proč jich je víc a jak o nich přemýšlet, aby ti systém začal dávat smysl jako celek. A tím se dostaneme k základní logice Palpatia.</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p>3. Co to jsou moduly?<br>Když se v Palpatiu mluví o modulech, nemyslí se tím nic složitého ani technického.<br>Modul je v tom nejjednodušším smyslu samostatná část systému, která řeší jednu konkrétní oblast práce. Nic víc, Nic míň. Nejsou to funkce, aplikace, ani oddělené světy. Jsou to spíš místnosti v jednom domě. Každá má jiný účel, ale pořád jsi doma.<br> <br>Proč je Palpatius rozdělený na moduly<br>Důvod je praktický. Masérská praxe není jedna věc. Je to práce s klienty, evidence masáží, finance, poznámek, nápadů, dokumentů a věcí, které se ti honí hlavou, ale nepatří nikam jinam. Kdyby bylo všechno naházené na jednom místě, vznikl by chaos. Moduly dávají systému řád, aniž by tě svazovaly. Každý modul řeší jednu oblast. A ty si vybíráš, které oblasti chceš řešit a jak moc.<br> <br>Moduly nejsou povinné. Palpatius není postavený tak, že bys musel používat všechny moduly. Můžeš klidně používat jen jeden nebo dva a zbytek ignorovat. Nic se nerozbije. Nic nepřestane fungovat. Systém je navržený tak, aby se přizpůsobil tvému stylu práce, ne naopak.<br> <br>Jak o modulech přemýšlím já<br>Já si moduly nepředstavuju jako hierarchii, kde je něco důležitější a něco méně. Spíš jako nástroje v dílně. Některé máš pořád po ruce. Jiné použiješ jen občas. A některé tam máš hlavně proto, že víš, že kdyby náhodou, tak tam jsou. To, že modul existuje, neznamená, že ho musíš aktivně používat. Znamená to jen, že máš možnost.<br> <br>Jeden systém, víc částí<br>I když jsou moduly oddělené, Palpatius pořád funguje jako jeden celek. Nepřeskakuješ mezi různými aplikacemi, nepřemýšlíš, kde co je uložené. Pořád pracuješ v jednom prostředí. Jen se pohybuješ mezi různými částmi podle toho, co zrovna řešíš. Tohle rozdělení má jednu velkou výhodu. když tě zajímá jen jedna věc, neruší tě všechno ostatní.<br> <br>Moduly a tempo práce<br>Každý modul má své tempo. Některé používáš každý den. Jiné jednou týdně. Některé třeba jen jednou za rok. A přesně s tím Palpatius počítá. Neexistuje správná frekvence. Neexistuje „měl bych“. Existuje jen to, co ti dává smysl v praxi.<br> <br>Co přijde dál<br>V dalších kapitolách se podíváme na jednotlivé moduly zvlášť. Ne technicky, ale prakticky. Co dělají, k čemu slouží a jak s nimi pracuji já. Teď už ale víš to nejdůležitější: moduly nejsou překážka ani povinnost. Jsou to možnosti. A je jen na tobě, kolik z nich využiješ.<br>4. Modul masérna: Co to je, jak ho používat</p>
+<p>Masérna je pro mě ten nejdůležitější a nejpodstatnější modul. Je to srdce celého systému – a to je čistý fakt. Kdybych musel z celého Palpatia zachovat jen jednu jedinou část, byla by to jednoznačně Masérna. Každý den mi reálně pomáhá a usnadňuje život. Možná je to tím, že jsem Palpatius vytvořil já. Ale dnes ho používám jako nástroj, ne jako autor. A jako uživatel říkám jedno – Masérna mi opravdu denně pomáhá.</p>
+<p>Jak ji používám já:<br>V podstatě každý večer po práci. Spustím Palpatius, doplním data, udělám export a mám hotovo. Občas se podívám do historie, projdu si klientské karty, něco upravím nebo doplním. Není to žádný složitý rituál. Je to rutina. Klidná, jednoduchá rutina.</p>
+<p>Mám dva druhy „klientů“. 99 % jsou skuteční klienti. 1 % jsou datové kontejnery. Většina klientů má klasická data. ID, jméno, telefon, diagnózu a další poznámky. Kontejnery nic z toho nemají. Říkám jim meta klienti. Nepoužívám je k evidenci masáží ani poukazů. Slouží mi k ukládání důležitých informací, které chci mít stále po ruce. Mohl bych je ukládat do Záznamníku. Ale mně dává větší smysl mít je právě tady. Jsou to data související s praxí – tak jsou v Masérně. Masérna není rigidní nástroj. Je to prostor, který si můžeš ohnout podle sebe.</p>
+<p>Můj večerní postup<br>Tohle není návod. Jen popis reality.<br>Přijdu z práce. Zapnu počítač. Spustím Palpatius. Udělám si kafe, nebo otevřu pivko. Sednu si k počítači a pracuji. Pokud byl ten den nový klient, přidám ho do Masérny. Potom zapíšu masáže ke klientům, kteří přišli. Nakonec doplním pár poznámek.<br>Například: „Paní Opršálkové se zlepšila ztuhlost zad a ustalo motání hlavy. Dohodli jsme se na pravidelném udržování a prevenci.“ Nebo cokoliv jiného, co chci mít zaznamenané. Nakonec udělám export, zavřu prohlížeč, a jdu dělat něco jiného. Odpočívat. Poslouchat audioknihu. Hrát Stardew Valley. Nebo prostě být.</p>
+<p>Masérna pro mě není jen evidence klientů. Je to moje pracovní paměť. Když zavřu dveře masérny, nechci si v hlavě nosit informace o tom, kdo měl blokádu krční páteře, komu se zlepšila hybnost a kdo má přijít za týden. To všechno nechávám tady. Masérna mi dovoluje zapomenout – a právě proto můžu být klidnější.</p>
+<p>Klientská karta jako vztah, ne tabulka<br>Když jsem používal Excel, něco mi tam zásadně chybělo. Klientské karty. Byly tam sloupce, byly tam data. Ale bylo to roztříštěné a nepřehledné. Masérna mi dala přesně to, co jsem potřeboval – každý klient má svoji přehlednou kartu.<br>Představ si to jako kartotéku u lékaře. Na přední straně základní informace. Když kartu otevřeš, zobrazí se ti další vrstva – historie, poznámky, masáže, poukazy. Stejně to funguje tady. Rozbalím sekci klientů, do vyhledávače napíšu příjmení a během vteřiny vidím vše podstatné. Po otevření karty mám přehled o celé historii – kdy přišel, co jsme řešili, jak reagoval, jaké má poukazy nebo body. Klientská karta není tabulka. Není to těžkopádný soubor. Je to přehledný prostor, kde vidíš všechno důležité. Pro mě je to nedocenitelný pomocník.</p>
+<p>Věrnostní program<br>Věrnostní program je jednoduchý bonus pro klienty. Nepoužívám žádné kartičky ani razítka. Všechno běží přímo v Masérně. Princip je jednoduchý. Za každou masáž jeden bod. Po devíti bodech získá klient desátou masáž zdarma. Po třech takto získaných bonusech dostává ještě jeden extra bonus – u mě je to dárkový poukaz.<br>V praxi to funguje takto. Otevřu klientovu kartu. Kliknu na tlačítko „+1 bod“. Body se sčítají. Po dosažení devíti se vynulují a přičte se jeden bonus. Po třetím takovém cyklu přibude extra bonus. Body se úplně neztrácí – přesunou se do sloupce „body celkem“, kde vidím celkovou historii.<br>Pravidla si můžeš nastavit podle sebe. Místo bezplatné masáže můžeš dát slevu nebo jiný benefit. Masérna sice říká „masáž zdarma“, ale význam si můžeš přizpůsobit podle vlastní praxe.<br>A pokud trochu rozumíš JavaScriptu, můžeš si logiku upravit úplně podle sebe. Jen před tím doporučuji udělat zálohu.</p>
+<p>Proč meta klienti?<br>Systém není uzavřená krabice. Používám ho jinak, než by někdo čekal – a je to v pořádku. Meta klienti mi slouží jako databanky specifických informací. Mám tam například seznam diagnóz, identifikačních čísel nebo jiných dat, která často používám. Mohl bych je mít v jiném modulu. Ale tady mi dávají větší smysl. Jsou přímo spojená s praxí, tak zůstávají v Masérně. To, jak Masérnu používám já, není univerzální vzor. Je to můj způsob. Každý si může najít vlastní. Proč to tak mám? Protože nechci přepínat kontext mezi moduly a chci mít praxi na jednom místě.</p>
+<p>Co by bylo bez Masérny?<br>Upřímně? Byl bych zklamaný. Pravděpodobně bych se vrátil k Excelu, který mi nikdy neseděl. Řešil bych rozbité vzorce, nepřehledné tabulky a frustraci z toho, že to není ono. Zkoušel jsem mnoho CRM systémů. Žádný mi dlouhodobě nevyhovoval. Často ignorují přístupnost a potřeby jednotlivců. I proto vznikl Palpatius. Masérna je dnes pro mě životně důležitá. A proto se o ni nebojím. Mám desítky kopií systému. Dokonce jsem uvažoval, že si jednu vypálím na CD – i když má celý Palpatius jen pár megabajtů.</p>
+<p>Možná to zní přehnaně, ale pro mě je Masérna klíčová. Není to jen modul. Je to místo, kde končí pracovní den. Kde si potvrdím, že jsem na nic nezapomněl. Kde zavřu prohlížeč a mám čistou hlavu. A to je víc než funkce. To je klid.</p>
+<p>5. Modul finanční správce: Co to je, a jak ho používat</p>
+<p>Finanční správce je páteř systému. Nemá tolik funkcí jako Masérna, ale je stejně důležitý. Nepoužívám ho každý den. A možná právě proto ho mám rád. Není to modul, který by mi neustále bral pozornost. Je to klidný pomocník, který čeká, až ho budu potřebovat.</p>
+<p>Finanční správce má několik základních funkcí. Přidávání transakcí, měsíční a roční přehledy, jednoduchou evidenci skladu, Nic víc. A to stačí.</p>
+<p>Jak ho používám já:<br>Zhruba jednou týdně do něj doplním všechny transakce. Zapíšu příjmy z masáží.<br>Zapíšu výdaje za oleje, prostěradla a další věci. O nic víc se nestarám. Strávím tu několik minut – a mám hotovo. Potom se přesunu do části skladu. Přidám nové položky, upravím množství u těch stávajících a tím to končí. Žádná věda. Žádné složité procesy.</p>
+<p>Přehledy<br>Modul sám počítá příjmy a výdaje. Stačí otevřít sekci měsíční přehledy nebo roční přehledy. V měsíčním přehledu vidím. Datum, příjmy, výdaje, a automaticky vypočítanou tržbu. Roční přehled ukazuje to samé v širším kontextu. Navíc si tam eviduji počet masáží za daný rok, což mi dává dobrý přehled o tempu práce. Není to účetní software. Není to náhrada za profesionální účetnictví. Je to pracovní pomocník. Pomáhá mi mít jednoduchý, rychlý a přehledný obraz o tom, jak si stojím.</p>
+<p>Proč je tak jednoduchý?<br>Finanční správce jsem záměrně neudělal složitý. Mohl bych přidat grafy. Mohl bych přidat rozpočty. Mohl bych přidat analytiku. Ale nechci. Nechci další systém, který vyžaduje čas a energii. Chci jen vědět kolik přišlo, kolik odešlo, a jestli jsem v plusu. To mi stačí.</p>
+<p>Dřív jsem měl potíže udržet přehled ve financích. To se změnilo s příchodem Finančního správce. Dává mi klid a jistotu. Vím, jak na tom jsem a co potřebuji řešit. Nemusím hádat, nemusím si domýšlet, nemusím čekat, až mě něco překvapí. Skladová evidence je tak jednoduchá, až je skoro úžasná. Možná si říkáš – nehodil by se sklad spíš do Masérny? Možná ano. Ale mně ne. Masérna už má i tak dost funkcí a tohle by ji jen zbytečně zatížilo. Finanční správce je silný právě svou jednoduchostí. Přijdu, naklikám, co potřebuji, a zase odejdu. Nepoužívám ho každý den. Ale jsem za něj opravdu rád. Není to srdce systému. Není to jeho mozek. Je to páteř. A to se k němu hodí nejvíc. Je tichý, nenápadný a spolehlivý pomocník, který ti dokáže usnadnit další aspekty podnikání – a někdy i osobního života, a to za to stojí.</p>
+<p>6. Modul záznamník. Co to je, a jak ho používat</p>
+<p>Záznamník je mozek systému. Má několik funkcí, které můžeš – ale nemusíš – využít. Můžeš si do něj zapisovat poznámky, úkoly, události a nápady. Je to místo, které zachytává chaos dřív, než se stane problémem. Vznikl z jednoduché potřeby – mít jedno místo, kam mohu rychle uložit myšlenku, úkol nebo poznámku, která nepatří přímo do Masérny ani do financí.<br> <br>Proč vznikl<br>Dřív jsem používal několik různých aplikací. Jednu na poznámky, druhou na to-do listy, třetí jako kalendář, a čtvrtou na nápady. Bylo toho moc. Místo aby mi to pomáhalo, brzdilo mě to. Neustále jsem přeskakoval mezi aplikacemi a ztrácel přehled. Chtěl jsem všechno na jednom místě, a proto vznikl Záznamník. Modul, který spojuje několik nástrojů do jednoho přehledného celku. Navíc je propojený s Masérnou, což mu dává ještě větší význam. Všechno je přehledné, strukturované, filtrovatelné a vyhledávatelné.<br> <br>Poznámky: <br>Tohle je nejjednodušší funkce. Kliknu na „Přidat poznámku“, napíšu název, text – a hotovo. Poznámku mohu připojit ke konkrétnímu klientovi, což se mi v mnoha případech hodilo. V seznamu záznamů ji okamžitě najdu. Každý typ záznamu má svou ikonu, takže se v tom neztratím. Mohu si nechat zobrazit jen poznámky, filtrovat je, upravovat nebo mazat. Jednotlivé záznamy lze exportovat jako TXT. Je to jednoduché. A právě proto to funguje.<br> <br>Úkoly: <br>Druhá funkce jsou úkoly. Mohu si vytvořit vlastní to-do listy – pracovní, osobní nebo jakékoliv jiné. Úkolům lze nastavit prioritu, což pomáhá při rozhodování, co řešit dřív. Neřeším složité plánování. Jen si zapíšu, co potřebuji udělat, a postupně to odškrtávám. Úkoly nepoužívám každý den. Ale když je potřebuji, jsou připravené.<br> <br>Události: <br>Události slouží jako jednoduchý přehled schůzek nebo důležitých momentů. Máš schůzku? Jdeš na oběd? Plánuješ něco konkrétního? Zapíšeš datum, čas a základní informace. Záznamník neumí posílat notifikace – a ani to není jeho cíl. Je to přehled, ne plánovač s upozorněními.<br> <br>Nápady: <br>Tohle je pro mě nejzajímavější část. Napadne tě nová masážní technika? Klient ti doporučí konkrétní olej? Máš myšlenku na úpravu systému? Zapiš si to. Z nápadu lze později vytvořit úkol v to-do listu nebo třeba ceníkovou položku v Masérně. Tohle propojení je hodně užitečné a využívám ho často.<br> <br>Jak ho používám já: <br>Osobně nejvíc používám poznámky a nápady. Úkoly jen občas, události spíš výjimečně, a to je naprosto v pořádku. Záznamník tě do ničeho nenutí. Můžeš využívat jen jednu část nebo všechny. A klidně ho můžeš úplně ignorovat. Každý záznam lze přiřadit ke klientovi. A to je za mě jedna z nejsilnějších funkcí. Když si pak v Masérně otevřu klientskou kartu, uvidím tam i záznamy ze Záznamníku, které jsem k němu přiřadil. To dává celému systému další rozměr.<br> <br>Není pro každého:<br>Záznamník není modul, který musí používat každý. Ale pokud si ho osaháš a naučíš se s ním pracovat, může ti výrazně zjednodušit organizaci myšlenek a práce. A pokud ne, je to také v pořádku. Palpatius tě do ničeho nenutí.</p>
+<p>Záznamník jako odlehčení hlavy:<br>Dřív jsem měl hlavu plnou věcí. Ne velkých projektů. Ne dramatických plánů. Jen drobností. „Musím zavolat tam.“ „Klient říkal, že chce příště vyzkoušet jiný olej.“ „Napadlo mě zlepšení ceníku.“ „Měl bych si přečíst ten článek.“ Nic z toho nebylo urgentní. Ale všechno to zabíralo místo. Záznamník mi dovolil pustit tyhle věci z hlavy ven. Nemusím si je pamatovat. Nemusím je držet. Zapíšu je – a jsou uložené. Tohle není jen organizační nástroj. Je to úleva.<br> <br>Co do Záznamníku nepatří:<br>Záznamník není místo pro všechno. Nepíšu si tam věci, které patří přímo do Masérny. Nepíšu si tam finance. Nepíšu si tam dlouhodobé strategie podnikání. Když něco souvisí přímo s klientem, patří to primárně do Masérny. Když jde o peníze, patří to do Finančního správce. Záznamník je mezistupeň. Je to místo pro zachycení – ne pro finální uložení.<br> <br>Propojení s Masérnou: <br>Jedna z nejsilnějších věcí na Záznamníku je jeho propojení s Masérnou. Když přiřadím záznam ke klientovi, nestává se z něj izolovaná poznámka. Stává se součástí jeho příběhu. Otevřu klientskou kartu – a vidím nejen masáže, ale i myšlenky, úkoly nebo nápady, které se k němu vztahují. Tím se celý systém propojí. Masérna řeší praxi. Záznamník řeší kontext. <br> <br>Proč není složitější: <br>Mohl bych přidat notifikace, synchronizaci, a složité plánování. Ale nechci. Záznamník má být rychlý. Otevřít – zapsat – zavřít. Žádné další vrstvy.</p>
+<p></p>
+<p>7. Modul knihovna. Co to je, a jak ho používat</p>
+<p>Knihovna je archiv systému. Je to místo, kam si můžeš ukládat specifické poznámky, textové dokumenty, články, rozpracované věci nebo cokoliv, co se týká textu. Je neuvěřitelně jednoduchá, a právě proto je praktická. Má v podstatě jedno hlavní tlačítko – Přidat text. Klikneš, otevře se formulář. Napíšeš název, vybereš kategorii, vložíš nebo napíšeš text, a hotovo. Data si můžeš filtrovat podle typu dokumentu nebo kategorie. Nic víc. Nic míň. Knihovna tě možná nezaujme vzhledem ani složitostí. Ale to není její cíl. Jejím cílem je být spolehlivý archivář. A to plní velmi dobře.<br> <br>Jak knihovnu používám já: <br>Do knihovny ukládám články, textové dokumenty, kusy kódu, delší myšlenky, rozpracované texty. Prostě všechno, co chci uchovat dlouhodobě. Mohl bych použít Záznamník. Ale ten beru jako pracovní prostor – ne jako archiv. Záznamník je místo, kde věci vznikají. Knihovna je místo, kde zůstávají. Často se stane, že si něco zapíšu do Záznamníku jako nápad nebo poznámku. A když vidím, že to má trvalejší hodnotu, přesunu to do Knihovny. Tím si udržuji pořádek. <br> <br>Proč je tak jednoduchá:<br>Knihovna nemá složité funkce. Nepodporuje formátování jako profesionální editor. Není to dokumentový systém. Je to jednoduchý textový archiv, a to mi stačí. Nechci další aplikaci. Nechci další software. Chci místo, kam si uložím text – a vím, že tam bude.<br> <br>Tichý pomocník: <br>Knihovna je tichý a nenápadný pomocník. Když ji nebudeš používat, nic se nestane. Palpatius bez ní funguje dál. Ale když ji začneš používat, můžeš zjistit, že ti chyběla. Nenutí tě, netlačí na tebe, Jen tam je. Sedí v rohu systému a čeká, až ji budeš potřebovat.</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p>8. Modul finanční správce extra. K čemu vlastně slouží?</p>
+<p>Finanční správce Extra je prodlouženou rukou klasického Finančního správce. Nevznikl proto, že by základní modul nestačil. Ten používám pravidelně a považuji ho za velmi dobře fungující nástroj. Klasický modul otevírám zhruba jednou týdně. Jeho „prodlouženou ruku“ používám přibližně jednou za měsíc. Je to specializovaný nástroj pro detailnější práci s transakcemi.<br> <br>Jaký je rozdíl?<br>Klasický Finanční správce eviduje transakce, počítá příjmy a výdaje, nabízí měsíční a roční přehledy. Spravuje jednoduchou skladovou evidenci. Je rychlý, přehledný a účinný. Neřeší ale jednu věc. Kolik z dané transakce skutečně zůstane mně – a kolik si vezmou platební služby. A právě tady nastupuje Finanční správce Extra. Ten si „vytáhne“ transakce ze základního modulu a rozpracuje je dál. Ukáže ti, kolik procent z konkrétní platby jde tobě a kolik si bere terminál, rezervační systém nebo jiný platební kanál.<br> <br>Jak to funguje:<br>Základem je tlačítko Získat transakce. Tím si stáhneš data z klasického Finančního správce a můžeš s nimi dál pracovat. Nejdřív je ale potřeba vytvořit platební kanály. Používáš platební terminál? Rezervační systém? Online platby? Převody? Vytvoříš si pro každý z nich samostatný kanál. Stačí zadat název a procento, které si daná služba bere. Potom stáhneš transakce a přiřadíš k nim odpovídající kanál. Klient platil kartou, přiřadíš terminál. Platba proběhla přes rezervační systém, přiřadíš jeho kanál. Systém ti spočítá, kolik z částky zůstává tobě a kolik si bere služba. Je to jednoduché, a velmi praktické.<br> <br>Jak to používám já:<br>Používám několik platebních kanálů. Reservio (rezervační systém). SunUp (platební terminál). Převod, QR kód, hotovost. U každého kanálu mám nastavené procento. Jednou za čas si stáhnu transakce, přiřadím kanály a podívám se na přehled. Vidím kolik je skutečný příjem, kolik si vzaly služby, a jaký je rozdíl. Nepoužívám to každý týden. Ale když potřebuji mít jasno, je to velmi silný nástroj.<br> <br>Proč není integrovaný do klasického modulu?<br>Zkoušel jsem to. Upřímně – byl to boj. Integrace způsobovala chyby, komplikace a neustálé testování. Místo aby systém byl stabilnější, stal se křehčí. Proto jsem se rozhodl pro oddělený modul. Finanční správce Extra funguje jako samostatný prostor. Není natvrdo zabudovaný do jádra systému. Je přístupný přes navigaci a pracuje s daty z hlavního modulu, ale zůstává oddělený. Tím zůstává stabilita zachovaná, a to je důležitější než dokonalá integrace. Tenhle modul není povinný. Můžeš ho používat. Můžeš ho ignorovat. Základní Finanční správce funguje bez něj naprosto dobře, ale pokud chceš mít detailní přehled o tom, kolik si z tvých plateb berou jednotlivé služby, může ti výrazně otevřít oči.</p>
+<p>9. Data manager, kontrolní modul. K čemu se používá?</p>
+<p>Data Manager je jednoúčelový modul. Slouží ke kontrole exportovaných JSON souborů z jednotlivých modulů Palpatia. Nic víc, nic míň. Vybereš modul, nahraješ exportovaný JSON soubor, klikneš na „Vyhodnotit“. A během chvíle vidíš přesné počty záznamů. Data Manager je nástroj pouze pro čtení. Nic nepřepisuje. Nic neupravuje. Jen analyzuje a zobrazí výsledek.<br> <br>Proč vznikl:<br>Vznikl z praktické potřeby. Mohl jsem exporty kontrolovat ručně. Otevřít JSON, projít strukturu, počítat položky. Jenže to bylo zdlouhavé a zbytečně komplikované. Jednou jsem převáděl data z Excelu do Masérny. Měl jsem přesně spočítané, kolik je klientů, kolik je masáží, kolik je poukazů, a kolik dalších položek. Export byl hotový. Ale chtěl jsem si být jistý. Vzpomněl jsem si na Data Manager. Nahrál jsem JSON, kliknul na vyhodnotit, a modul mi vypsal přesně ty hodnoty, které jsem měl spočítané v Excelu. Nepřidával jsem do něj žádnou speciální logiku pro ten konkrétní případ. Neupravoval jsem ho. Prostě fungoval. Byl jsem ohromený.</p>
+<p>Jak funguje: <br>Data Manager pracuje jednoduše. Nahraješ JSON soubor, Vybereš modul, ze kterého export pochází, a klikneš na „Vyhodnotit“. Systém zkontroluje strukturu dat a zobrazí počty záznamů, základní přehled, a technické informace. Navíc je možné výsledek exportovat do TXT souboru pro archivaci. Celý proces probíhá lokálně v prohlížeči. Data se nikam neposílají.<br> <br>Proč je důležitý<br>Na první pohled je to nenápadný nástroj. Nepoužíváš ho každý den. Nepotřebuješ ho při běžné práci, ale když převádíš data, ověřuješ zálohu, kontroluješ integritu exportu, a chceš mít jistotu. Je to neocenitelný pomocník. Je to kontrolní vrstva systému.<br> <br>Proč existuje jako samostatný modul<br>Stejně jako Finanční správce Extra, i Data Manager je oddělený.<br>Nezasahuje do běžné práce.<br>Neovlivňuje hlavní moduly.<br>Je to nástroj pro kontrolu.<br>A přesně tak má fungovat.</p>
+<p></p>
+<p>10. Chyby a nedostatky, které Palpatius má</p>
+<p>Palpatius není bezchybný systém. Nikdy nebyl navržen jako univerzální platforma ani jako komerční produkt. Vznikl z konkrétní praxe a je optimalizovaný pro konkrétní způsob práce. To s sebou přináší limity. Tato kapitola není obhajoba. Je to otevřené přiznání hranic.</p>
+<p>Palpatius ukládá data pomocí IndexedDB přímo v prohlížeči. Co to znamená? Data jsou vázaná na konkrétní prohlížeč a zařízení. Smazání dat prohlížeče znamená smazání dat systému. Přenos mezi zařízeními není automatický. Při spuštění přes režim `file://` může mít modul Finanční správce v některých prohlížečích potíže s ukládáním dat. Nejde o chybu systému, ale o bezpečnostní omezení prohlížeče.Řešením je webová verze nebo lokální server.</p>
+<p>Zálohování je plně na uživateli. Systém neprovádí automatické zálohy. Export dat je manuální a vyžaduje aktivní přístup uživatele. To je záměr. Ale zároveň odpovědnost. Pokud uživatel nezálohuje, nese riziko ztráty dat.</p>
+<p>Import dat vyžaduje opatrnost. Import mezi různými verzemi systému může v krajních případech způsobit zmatek. Palpatius neobsahuje složitý migrační mechanismus ani kontrolu verzí exportů. Uživatel musí vědět, co importuje.</p>
+<p>Není to cloud ani týmový nástroj. Palpatius nepodporuje více uživatelů. Neobsahuje synchronizaci, nemá role ani oprávnění. Neobsahuje auditní historii změn. To není opomenutí. Je to vědomé rozhodnutí.</p>
+<p>Finanční správce není účetní software. Modul Finanční správce slouží k přehledu. Nenahrazuje účetní program. Neřeší legislativní změny. Neprovádí automatické daňové výpočty. Je to pracovní pomocník, ne oficiální účetní nástroj.</p>
+<p>Bezpečnost končí u zařízení. Palpatius neodesílá žádná data, ale zároveň neřeší šifrování disku. Nechrání zařízení před fyzickým přístupem. Nezajišťuje zálohy mimo počítač. Bezpečnost vychází z lokálního charakteru systému.</p>
+<p>Konzervativní architektura. Systém preferuje stabilitu před rozšiřováním. To znamená méně funkcí, méně automatizace, a méně komplexnosti. Někomu to může připadat jako omezení. Není to univerzální řešení. Není to produkt pro masové použití. Není to platforma, která se bude neustále rozšiřovat. Je to osobní nástroj, který byl otevřen ostatním.</p>
+<p>11. Co s Palpatiem nikdy nedělejte, pokud si ho nechcete rozbít<br>Palpatius je poměrně odolný systém.<br>Není přecitlivělý, nespadne při každé chybě a většinu věcí ti odpustí. Přesto existují situace, kdy si ho můžeš pokazit – ne záměrně, ale spíš z nepozornosti, spěchu nebo dobré víry, že „to přece nemůže vadit“.</p>
+<p>Tahle kapitola nevznikla proto, aby tě strašila. Vznikla proto, že většina chyb se neopakovaně opakuje. A skoro vždy zbytečně. Ber ji jako varování od někoho, kdo si tím už prošel.<br> <br>Nikdy nespoléhej jen na to, že „to tam prostě je“<br>To, že dnes Palpatius otevřeš a všechno tam vidíš, neznamená, že tam ta data budou i zítra. Pokud nezálohuješ, nebo spoléháš jen na data v prohlížeči, pak si koleduješ o problém. Možná ne dnes, možná ne za měsíc – ale jednou ano. Zálohování není paranoia. Je to základní hygiena práce s daty.</p>
+<p>(Doporučuji si důkladně přečíst kapitolu o zálohování. Klidně tohle přeskoč, přečti si ji, a pak se sem vrať.)<br> <br>Nemaž data „jen tak“, protože se ti něco nezdá, něco nevypadá správně, nebo něco nesedí, nebo se ti něco zdá divné. První reakce by nikdy neměla být. „Tak to smažu a uvidím.“ V Palpatiu platí jednoduché pravidlo. Když něco smažeš, je to pryč. Bez koše. Bez historie. Bez návratu. Pokud si nejsi jistý, raději data nejdřív exportuj, nebo si udělej kopii, a až potom experimentuj. Tohle pravidlo ti může ušetřit hodně nepříjemných chvil.<br> <br>Neupravuj soubory systému, pokud přesně nevíš, co děláš<br>Palpatius je offline systém postavený na HTML, CSS a JavaScriptu. Ano – technicky vzato se můžeš podívat do souborů. Ano – můžeš si je otevřít, prohlížet, zkoumat. Ale pokud nevíš přesně, co měníš, nebo „jen zkoušíš, co se stane“, tak se velmi snadno dostaneš do stavu, kdy systém přestane fungovat a nebudeš vědět proč. Pokud máš chuť experimentovat, tak pracuj s kopií systému, nebo si ho zazálohuj předem. Palpatius ti svobodu dává. Ale nehlídá tě před vlastními zásahy.<br> <br>Nemíchej staré a nové verze bez rozmyslu<br>Občas se stane, že máš starší zálohu, jinou verzi systému, nebo starý export. Import dat mezi verzemi funguje, ale není to kouzlo. Pokud bez rozmyslu smícháš stará data s novým systémem, můžeš si vytvořit zmatek, který se pak těžko rozplétá.Zlaté pravidlo: Vždy vědět, co importuješ, a odkud to pochází, A ideálně si před každým importem udělat zálohu aktuálního stavu.</p>
+<p>Nesnaž se Palpatius používat „správně“<br>Tohle možná zní paradoxně, ale je to důležité. Palpatius nemá jeden správný způsob používání. Nemá ideální workflow. Nemá univerzální postup. Jakmile se začneš ptát. „Dělám to správně?“ Pravděpodobně si zbytečně vytváříš tlak. Používej Palpatius tak, aby to vyhovovalo tobě, zapadalo to do tvé praxe, a dávalo ti to smysl. Systém se má přizpůsobit tobě. Ne ty jemu.</p>
+<p>Nespoléhej na paměť. Ani na vlastní. Tohle není přímo technická chyba, ale praktická. To si zapamatuju, tohle si pohlídám, to je jasné, to nezapomenu. Ne. Zapomeneš. Stejně jako já. Stejně jako všichni. Palpatius je nástroj právě proto, aby ses nemusel spoléhat na paměť, měl věci zaznamenané, a nemusel se k nim vracet v hlavě. Když už systém používáš, používej ho naplno.<br> <br>Shrnutí bez moralizování<br>Palpatius se nerozbíjí snadno. Většinou si ho rozbijeme sami – spěchem, nepozorností nebo pocitem, že „to nějak dopadne“. Když si ale budeš zálohovat, nebudeš mazat data bez rozmyslu, nebudeš sahat do systému naslepo, a dovolíš si používat Palpatius po svém, pak ti bude sloužit dlouho a spolehlivě. A o to jde.</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p>12. Uživatelská sekce. Co se v ní dá dělat</p>
+<p>Uživatelská sekce není klasický modul. Nenajdeš tu tlačítka na evidenci. Nepracuje s databází. Nevytváří přehledy. Je to osobní prostor. V Palpatiu existuje složka „uživatel“. A právě ta je tvoje. Systém do ní nijak nezasahuje, nic zde automaticky nevytváří a nic nekontroluje. Je to svobodné místo.<br> <br>Co zde najdeš:<br>Uvnitř uživatelské složky jsou předpřipravené podsložky:<br>1. JSON soubory. Pro ukládání exportů a importů dat z jednotlivých modulů.<br>2. Textové soubory. Pro poznámky, dokumenty, systémové poznámky nebo cokoliv, co chceš mít uložené mimo samotný systém.<br>3. Ostatní. Nezařazeno. Neroztříděno. Rozpracováno. Jednoduše místo pro věci, které zatím nemají své pevné místo.<br>4. Zálohy. Složka pro ruční zálohy JSON souborů, starší verze dat nebo kopie „pro jistotu“.<br>5. Přečti si mě. Informační stránka, která vysvětluje smysl této sekce a připomíná, že za její obsah odpovídá uživatel.<br> <br>Jak ji používám já:<br>Uživatelskou sekci beru jako pracovní zázemí. Sem ukládám exporty. Sem si dávám ruční zálohy. Sem ukládám věci, které nechci mít jen v prohlížeči. Je to takový most mezi systémem a běžnou správou souborů v počítači. Nepoužívám ji každý den. Ale když potřebuji mít věci fyzicky uložené mimo databázi, vím přesně, kam sáhnout.<br> <br>Proč existuje<br>Palpatius je offline systém. To znamená, že odpovědnost za data je na uživateli. Uživatelská sekce tuto filozofii podporuje. Nediktuje, co máš dělat. Jen ti vytváří strukturu, která ti může pomoci udržet pořádek. Můžeš ji přejmenovat. Můžeš si vytvořit vlastní podsložky. Můžeš si ji přizpůsobit podle sebe. Systém ti do ní nezasahuje, a to je záměr.<br> <br>Není povinná. Je praktická. Pokud používáš pouze webovou verzi Palpatia, správu souborů řešíš mimo systém. Pokud používáš offline verzi, uživatelská sekce dává větší smysl. Není to funkce, která by tě ohromila, ale je to prostor, který můžeš ocenit časem.</p>
+<p></p>
+<p>13. Zálohování<br>Nejdůležitější funkce celého systému<br>Pokud bych měl z celého Palpatia vybrat jednu jedinou věc, kterou bych nikdy nepodcenil, bylo by to zálohování. Ne proto, že by Palpatius byl nestabilní. Ne proto, že by se často něco rozbíjelo. Ale proto, že Palpatius je čistě offline systém. A u offline systému platí jednoduché pravidlo:<br>o svá data se staráš ty sám.<br> <br>Proč je zálohování tak důležité<br>Zálohování většina lidí odkládá. „Až bude čas.“ „Zítra si k tomu sednu.“ „Teď se přece nic nemůže stát.“ Upřímně – říkal jsem si to taky. Ne proto, že by zálohování bylo složité. Ale proto, že se zdá zbytečné… dokud se něco nestane.</p>
+<p>Tenhle text nepíšu proto, abych tě strašil. Píšu ho proto, že o data už přišlo opravdu hodně lidí. A většinou ne proto, že by něco dělali špatně – ale proto, že se spoléhali na to, že „to nějak vydrží“.<br> <br>Co se stane, když se nezálohuje<br>Když se nezálohuje, všechno funguje. Funguje to… až do chvíle, kdy to fungovat přestane. Stačí porucha počítače, výměna disku, přeinstalace systému, vyčištění dat prohlížeče. A v tu chvíli už není co zachraňovat. Data jsou pryč. Dobrá zpráva je, že tomuhle scénáři se dá velmi jednoduše předejít.<br> <br>Jak Palpatius s daty pracuje<br>V Palpatiu existují dvě základní úrovně, kde se se zálohováním potkáš:<br>1. Data v profilu prohlížeče<br>Palpatius ukládá data přímo do profilu tvého prohlížeče (technicky do databáze IndexedDB).<br>To znamená:<br>data jsou rychlá<br>offline<br>bezpečně uložená lokálně<br>Zároveň to ale znamená, že když se smažou data prohlížeče, smažou se i data Palpatia.<br> <br>2. Export „Exportovat vše (JSON)“<br>V každém modulu najdeš tlačítko Exportovat vše (JSON).<br>Tohle tlačítko:<br>stáhne kompletní data daného modulu<br>uloží je do jednoho souboru<br>který si můžeš uložit kamkoliv chceš<br>Tenhle export je nejdůležitější pojistka celého systému.<br> <br>Proč se nespoléhat jen na data v prohlížeči<br>Uvedu konkrétní příklad z praxe. Pracoval jsem na webu své masérny. Udělal jsem úpravy, ale neviděl jsem je. Tak jsem obnovil stránku – nejdřív klasicky, pak pomocí klávesové zkratky Ctrl + F5. Tím jsem vymazal cache prohlížeče. O den později jsem otevřel modul Masérna. A nebylo tam nic. Klienti pryč, masáže pryč, poznámky pryč, prostě všechno. Naštěstí jsem měl uložený JSON export. Stačilo kliknout na Importovat vše (JSON), nahrát soubor – a během chvilky bylo všechno zpátky. Bez toho exportu by bylo hotovo.<br> <br>Co export skutečně obsahuje<br>Každý modul má vlastní export. Neexistuje jeden společný soubor pro celý systém. V exportu je vždy celá tvoje práce, masérna – klienti, masáže, poukazy, poznámky, ceník. Finanční správce – transakce, přehledy, položky. Záznamník – poznámky, úkoly, nápadyKnihovna – texty, dokumenty, materiály. Finanční správce Extra – transakce, kanály, přehledy. Nejsou to „jen data“. Je to tvoje praxe. Tvoje historie. Tvůj čas.<br> <br>Jedno pravidlo, které tě může zachránit<br>Nespoléhej se jen na data v profilu prohlížeče. Spoléhej se hlavně na sebe – a na jedno jediné tlačítko:<br>✅ EXPORTOVAT VŠE (JSON)<br>Když chceš mít klid, udělej si vlastní export, ulož ho mimo počítač, a ideálně si jich dělej víc<br> <br>Závěrem<br>Tenhle text nepíšu proto, abych tě poučoval. Píšu ho z vlastní zkušenosti.<br>Je jen na tobě, jak často budeš zálohovat, kam si data uložíš, a jak moc to budeš řešit. Pamatuj si ale jedno. zálohování je nedílnou součástí Palpatia. A ten klid, který ti dá, za to stojí.</p>
+<p></p>
+<p></p>
+<p></p>
+<p>14. Závěr<br>Na závěr bych chtěl říct jednu důležitou věc.<br>Za systémem Palpatius nestojí žádná firma, žádná korporace ani vývojový tým. Nestojí za ním investoři, marketing ani obchodní plán. Stojí za ním jeden člověk se zbytky zraku, který chtěl pracovat po svém a chyběl mu systém, který by mohl pohodlně a dlouhodobě používat.<br>Palpatius vznikl z praxe. Ne z tabulek, ne z prezentací, ale z každodenní práce maséra. Vznikl proto, že jsem potřeboval nástroj, který bude jednoduchý, plně offline, přístupný, a hlavně použitelný v reálném životě<br> <br>Palpatius má chyby a nedostatky.<br>Nepopírám je – přiznávám je. Není to dokonalý nástroj. Není to univerzální řešení pro každého. Je to můj nástroj, vytvořený primárně pro mě a moje potřeby. Pokud ho používáš jinak, pokud si ho přizpůsobíš nebo z něj vezmeš jen část, je to naprosto v pořádku. Pokud ti Palpatius jakkoliv pomůže – třeba jen v jedné jediné věci – budu za to opravdu rád.<br> <br>Na chybách a nedostatcích se pracuje, ale nejde to rychle.<br>Palpatius nevzniká jako komerční produkt. Pracuji na něm ve svém volném čase. Vedle práce v masérně, vedle rodiny, přátel a vlastního života. Někdy se mu věnuji dvakrát týdně, jindy jednou za čtrnáct dní nebo jednou za měsíc. Zkrátka tehdy, když ho potřebuji upravit, nebo když na něj mám prostor.</p>
+<p>Není to výmluva. Je to realita.<br>A možná i díky tomu je Palpatius takový, jaký je. Nepřetváří se, nespěchá a netlačí na výkon. Roste postupně, stejně jako praxe, ze které vznikl.<br> <br>Tahle příručka nevznikla proto, aby tě učila, jak máš Palpatius používat. Vznikla proto, aby ti ukázala jednu konkrétní cestu. Moji cestu. Pokud se po ní vydáš taky, budu rád. Pokud si z ní vezmeš jen kousek, je to stejně v pořádku. A pokud si nakonec řekneš, že Palpatius není nic pro tebe, i to je v pořádku. Důležité je, aby sis našel nástroj, který ti dává smysl. Pro mě je to Palpatius.</p>
+<p>Copyright 2025 Jan Šimek</p>
+  </details>
+
+  <details>
+    <summary>Články</summary>
+
+  <details>
+    <summary>Masér, kterého nezastavil zrak.</strong> Příběh o tom, proč vznikl Palpatius</summary>
+
+      <p>Jmenuji se Jan Šimek. Jsem masér, člověk se zbytky zraku, a hlavně někdo, koho jeho zrak nikdy nezastavil. Žiju naplno. Pracuju, bavím se, směju, cestuju. Moje zraková vada mě doprovází každý den – ale neomezuje mě. Je to něco, s čím se naučíte žít, když je to součást vašeho života odmalička.</p>
+
+      <p>Masérství je moje životní náplň. Nedělám ho proto, že musím. Dělám ho proto, že mě naplňuje. Je to poslání, které mě drží už od roku 2012. A když cítím, že někomu opravdu pomůžu, je to pro mě ten nejlepší pocit na světě.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Proč tento článek píšu?</h2>
+      <p>Protože chci, abyste věděli, kdo stojí za projektem Palpatius. A že za ním nestojí firma, korporát ani investoři — ale jeden masér, který chtěl dělat svou práci pořádně.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Jak jsem se dostal k masérství</h2>
+      <p>Už jako dítě jsem snil o tom, že budu masér. Jenže ve škole mi tvrdili, že na to nemám sílu a nevydržím celý den u lehátka. Když to slyšíte dost dlouho, začnete tomu věřit. Vystřídal jsem několik oborů – kartáčníka, košíkáře, keramiku, praktickou školu. A pak se to stalo – otevřel se masérský kurz pro veřejnost. Přihlásil jsem se okamžitě.</p>
+
+      <p>Bylo to těžké. Ale dal jsem to. A získal svůj první masérský certifikát.</p>
+
+      <h3 class="text-lg font-semibold mt-5 mb-1">První kroky v praxi</h3>
+      <p>Po kurzu přišlo období hledání práce. Hodně odmítnutí, hodně nejistoty. Pak přišla šance — lázně v Poděbradech. Začátky byly tvrdé: desítky lidí denně, bolavé ruce, únava, pochybnosti. Ale také první radosti, první klienti a hlavně první pocit: <strong>„Takhle chci žít.“</strong></p>
+
+      <p>Setkal jsem se s klienty příjemnými i náročnými. Právě díky nim jsem věděl, že jdu správně.</p>
+
+      <h3 class="text-lg font-semibold mt-5 mb-1">Cesta k vlastní masérně</h3>
+      <p>Po letech praxe přišla nabídka — vlastní prostor. Měl jsem jen pár týdnů na rozhodnutí. V hlavě tisíc otázek: co když to nevyjde? Co když nebudu mít klienty? Co když to finančně nezvládnu?</p>
+
+      <p>Nakonec jsem si řekl: pokud to nezkusím, nikdy se nedozvím, jestli bych uspěl. A tak jsem se do toho pustil. Ze začátku jako vedlejší činnost při zaměstnání. Bylo to náročné — pendlování mezi Mladou Boleslaví a Prahou. Ale klientů přibývalo. Až jednou přišel moment: <strong>„Buď do toho půjdu naplno, nebo to můžu rovnou zabalit.“</strong></p>
+
+      <p>Šel jsem do toho. A nelituju.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Masérská filozofie</h2>
+      <p>Masérství není jen o těle. Je to i o hlavě. Klienti mi často svěří věci, které byste nečekali. A já si pamatuju nejen jejich fyzické potíže, ale i malé střípky z jejich životů.</p>
+
+      <p>Jednou přišla paní, která se trápila maturitou svého syna. Po týdnu jsem se jí na to při příchodu zeptal. Zůstala stát ve dveřích a jen řekla: „Vy jste si to pamatoval?“ Ano. A právě v těchto momentech vzniká důvěra. A bez důvěry by masérství nefungovalo.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Život se zbytky zraku</h2>
+      <p>Často se mě lidé ptají: „Honzo, jak vlastně vidíš?“ Popravdě – těžko se to popisuje někomu, kdo vidí normálně.</p>
+
+      <ul class="list-disc pl-5 mb-4">
+        <li>Na levé oko vidím částečně — a používám ho.</li>
+        <li>Na pravé oko je obraz rozmazaný, téměř nepoužitelný.</li>
+      </ul>
+
+      <p>Každý den používám bílou hůl. I kdybych šel jen pro rohlíky, bez ní nevycházím. Ale jinak žiju naprosto normálně. Pracuju, poslouchám audioknihy, směju se. Nehledám výmluvy. Hledám řešení.</p>
+
+      <h3 class="text-lg font-semibold mt-5 mb-1">Jak můj zrak souvisí s organizací práce</h3>
+      <p>Potřebuji pracovat systematicky, přehledně a spolehlivě. Běžné vizuální aplikace jsou často nepřístupné, proto používám screen reader NVDA, se kterým pracuji už 15 let. Ten mi čte, co se děje na obrazovce:</p>
+
+      <ul class="list-disc pl-5 mb-4">
+        <li>co píšu,</li>
+        <li>na co klikám,</li>
+        <li>kde se nacházím,</li>
+        <li>jaké prvky jsou dostupné.</li>
+      </ul>
+
+      <p>Díky tomu můžu pracovat stejně efektivně jako vidící člověk — jen jinak.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Proč vznikl Palpatius?</h2>
+      <p>Dřív jsem používal Excel. Měl jsem v něm úplně všechno – klienty, finance, poznámky, masáže. Ze začátku to fungovalo, ale postupem času se z toho stalo těžkopádné a nepřehledné řešení. Excel je úžasný nástroj, ale jen pokud na něj dobře vidíte a umíte ho používat na pokročilé úrovni. Pro mě se stal spíš překážkou než pomocníkem.</p>
+
+      <p>Když jsem hledal alternativu, začal jsem testovat různé CRM systémy. Vyzkoušel jsem jich asi dvacet. Vždy to probíhalo stejně:</p>
+
+      <ul class="list-disc pl-5 mb-4">
+        <li><strong>Nadšení:</strong> „Skvěle! Tohle by mohlo být ono.“</li>
+        <li><strong>Realita:</strong> systém byl nepřístupný pro čtečku obrazovky.</li>
+        <li><strong>Zklamání:</strong> odchod a hledání dál.</li>
+      </ul>
+
+      <p>Nakonec jsem si dokonce vytvořil kompletní specifikaci vlastního CRM systému na míru. Vše bylo perfektně promyšlené a připravené pro vývojáře. Rozeslal jsem to několika lidem, ale odpověď nepřišla od nikoho. A tak jsem se zase vrátil k Excelu. Zklamaný, frustrovaný, smířený.</p>
+
+      <p>Pak ale přišla AI. A napadlo mě něco, co jsem do té doby považoval za nemožné: <strong>„Co kdybych si vytvořil vlastní systém s pomocí umělé inteligence?“</strong></p>
+
+      <p>Bylo to šílené. A šíleně náročné. Ale postupně jsem dával dohromady jednu část za druhou. Půl roku práce, stovky hodin testování… až se z toho zrodil Palpatius – systém vytvořený přesně pro mě a pro mou práci.</p>
+
+      <p>Dnes je Palpatius nástrojem, který používám každý den. Pomáhá mi dělat moji práci lépe, rychleji a hlavně spolehlivě. A i když jsem ho původně tvořil jen pro sebe, postupně začal dávat smysl i pro ostatní maséry. Proto vznikla i tato webová verze – aby mohl sloužit komukoliv, kdo pracuje podobně jako já.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Závěr</h2>
+      <p>Dnes žiju svůj sen. Mám vlastní masérnu, klienty, kteří mi důvěřují, a systém, který mi pomáhá udržet v tom všem řád a jistotu. Palpatius není jen aplikace. Je to výsledek mé cesty – všech překážek, omylů i malých vítězství.</p>
+
+      <p>Pokud vám moje zkušenosti pomůžou, inspirují vás, nebo vám Palpatius ulehčí práci, pak mě to nesmírně těší. A právě proto pokračuju dál – chci, aby tento systém rostl a pomáhal všem, kdo ho budou potřebovat.</p>
+  </details>
+
+  <details>
+    <summary>Když svět softwaru nepočítá s tebou, musíš si vytvořit vlastní cestu.</strong> </summary>
+
+      <p>Masírování není jen o práci s lidmi. Je to i administrativa, evidence, přehled o financích a plánování. Samotná práce s klienty je sice to nejdůležitější, ale bez zázemí v podobě systému se dlouhodobě fungovat nedá.</p>
+
+      <p>V tomto článku bych rád popsal, jak jsem se jako masér se zbytky zraku dostal až k vytvoření vlastního offline systému Palpatius.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Papírky, Excel a chaos</h2>
+      <p>Pokud máte vlastní živnost, tohle pravděpodobně znáte. Excelové tabulky, bločky na poznámky, papírky po kapsách, něco v hlavě, něco v diáři.</p>
+
+      <p>Ze začátku to funguje. Pak ale přijde moment, kdy se v tom začnete ztrácet.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Rezervační systém jako první krok</h2>
+      <p>První velkou změnou byl přechod na rezervační systém. Ten mi výrazně ulehčil práci a pomohl mi získat další klienty. Eliminoval chyby, které jsem dříve dělal, a dal mi řád v objednávkách.</p>
+
+      <p>Mohl jsem pohodlně plánovat klienty, nemít všude papírky a mít přehled na jednom místě.</p>
+
+      <p>Rezervační systémy považuji za skvělý nástroj a každému masérovi je můžu jen doporučit. Ať už zvolíte jakýkoliv, je to krok správným směrem.</p>
+
+      <p>Jenže zůstal jeden problém.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">A co Excel?</h2>
+      <p>Excel je úžasný nástroj – ale jen pokud na něj dobře vidíte a umíte ho používat na pokročilé úrovni. Pro mě to byl spíš zdroj stresu než pomocník.</p>
+
+      <p>Chtěl jsem systém, který mi zjednoduší administrativu, bude přehledný a hlavně přístupný.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Hledání alternativy a tvrdý náraz do reality</h2>
+      <p>Začal jsem testovat různé CRM systémy. Vyzkoušel jsem jich přibližně dvacet.</p>
+
+      <p>Většina z nich je určená pro velké firmy, nepočítá s maséry ani malými živnostníky a přístupnost pro nevidomé je na velmi nízké úrovni – nebo žádná.</p>
+
+      <p>Přístupnost se dnes řeší minimálně. A je to obrovská chyba.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">„Ano, zlepšíme to“… a pak ticho</h2>
+      <p>Kontaktoval jsem podporu jednotlivých systémů a posílal detailní návrhy, jak by šla přístupnost zlepšit.</p>
+
+      <p>Odpovědi byly vždy podobné: <em>„Děkujeme za podněty, zařadíme je k řešení.“</em></p>
+
+      <p>Někdy nepřišla odpověď žádná. Jindy přišla hezky formulovaná, ale bez výsledku. Jednou mě dokonce potěšil e-mail, který sliboval změny už při další schůzi týmu. Dodnes se ale nic nezměnilo.</p>
+
+      <p>A tehdy jsem si řekl: dost.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Rozhodnutí: vytvořím si vlastní systém</h2>
+      <p>Uvědomil jsem si, že čekáním na změnu se nikam nedostanu. Rozhodl jsem se vytvořit si systém vlastní. Přístupný. Jednoduchý. Přesně pro mě.</p>
+
+      <p>Dal jsem si několik jasných pravidel:</p>
+
+      <ul class="list-disc pl-5 mb-4">
+        <li>žádný cloud</li>
+        <li>žádná API</li>
+        <li>žádné závislosti na internetu</li>
+      </ul>
+
+      <p>Systém musí být čistě offline, přenosný, jednoduchý a „blbuvzdorný“.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">První kroky k Palpatiu</h2>
+      <p>Začal jsem úplně jednoduše. HTML, CSS a JavaScript. Bez serveru, bez databází, bez složitostí.</p>
+
+      <p>Chtěl jsem nástroj, který mi bude sloužit každý den – ne systém, který budu obsluhovat já.</p>
+
+      <p>A právě tady se začal rodit Palpatius.</p>
+  </details>
+
+  <details>
+    <summary>Jak vznikl Palpatius od malých HTML souborů až po plnohodnotný offline systém</strong> </summary>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Jak to celé začalo</h2>
+      <p>Palpatius nevznikl jako velký plán ani jako promyšlený projekt od začátku. Spíš jako sled drobných nápadů, pokusů, slepých uliček a postupného zrání.</p>
+
+      <p>Na úplném začátku byla obyčejná myšlenka: chtěl jsem vlastní CRM systém pro svou masérnu. Neměl jsem zkušenosti s programováním, ale měl jsem jasnou představu.</p>
+
+      <p>Jednou jsem si začal povídat s ChatGPT. Popsal jsem mu, co bych potřeboval, jak by měl systém fungovat a co by měl umět. Vznikla úplně jednoduchá aplikace – správa klientů. Fungovala. A to mě nadchlo.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Když se z jednoho nápadu stalo šestnáct aplikací</h2>
+      <p>Pak jsem chtěl další věc. Správu masáží. Pak další. A další.</p>
+
+      <p>Najednou jsme netvořili jednu aplikaci, ale spoustu malých HTML „pidisouborů“, z nichž každý dělal jednu konkrétní věc. Nakonec jich bylo asi šestnáct.</p>
+
+      <p>Začalo mě to neskutečně bavit. Měl jsem pocit, že jsem vývojář. Programátor. Tvůrce vlastního systému aplikací. Upřímně? Trochu mi to stouplo do hlavy.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">První systém a první šaškárny</h2>
+      <p>V jednu chvíli jsme si řekli, že by bylo dobré to sjednotit. Z šestnácti malých aplikací udělat tři nebo čtyři větší.</p>
+
+      <p>Tak začala vznikat Masérna, Finanční správce, Centrální záznamník a další podpůrné aplikace. Vznikl jednoduchý rozcestník, díky kterému se dalo mezi aplikacemi pohodlně přecházet.</p>
+
+      <p>A pak přišly blbosti. Rozcestník po otevření zdravil. Spustil se skript, který přehrál hlášku: <strong>„Welcome to MyoBox!“</strong> Byla to šaškárna. Ale mě to neskutečně bavilo.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Experimenty, hry a slepé uličky</h2>
+      <p>V té době jsem tvořil i různé hry – BlackJack, virtuální zahrádku, textové hry nebo virtuálního mazlíčka Noxe, který k nám „přiletěl z jiného světa“.</p>
+
+      <p>Byly hotové a funkční. Ale nebyla to cesta, kterou jsem se chtěl vydat. Hry jsem zazálohoval do osobního archivu. Občas si je zahraju dodnes, ale Palpatius měl mít jiný směr.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Vystřízlivění a nový začátek</h2>
+      <p>Po čase jsem si uvědomil, že mám spoustu aplikací, ale jen málo skutečně užitečných. Pokud z toho chci mít reálný přínos pro práci, musím to začít brát vážně.</p>
+
+      <p>Většina balastu šla pryč. Uvítací hlášky taky. Zůstaly jen ty nejdůležitější části a začalo se znovu – ladění, struktura, ukládání dat, propojení modulů.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Skutečný offline režim</h2>
+      <p>Tvrdil jsem, že Palpatius je offline. Ale nebyla to úplně pravda. Ano, běžel bez serveru, ale stále potřeboval internet kvůli knihovnám a fontům.</p>
+
+      <p>Jednoho dne jsem si řekl: <strong>„Když offline, tak doopravdy.“</strong> Vše se stáhlo do assetů. Žádné CDN. Žádné externí závislosti.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Palpatius dnes</h2>
+      <p>Dnes je Palpatius hotový systém s pěti moduly, který má vše, co masér potřebuje ke své každodenní praxi. Pro mě je velkým pomocníkem a používám ho každý den.</p>
+
+      <p>Velmi doufám, že si najde cestu i k dalším lidem, kterým může práci zjednodušit stejně jako mně.</p>
+  </details>
+
+  <details>
+    <summary>Jak jsem si vytvořil AI parťáka, který rozumí Palpatiu a není jen slepým vykonavatelem příkazů</summary>
+      <h2 class="text-xl font-semibold mt-6 mb-2">Moje posedlost umělou inteligencí</h2>
+      <p>Jsem blázen do umělé inteligence. Od chvíle, kdy se začala masově objevovat, ji aktivně používám. Nikdy bych nevěřil, že mi opravdu dokáže ulehčit život a usnadnit práci.</p>
+
+      <p>Nejprve jsem si s ní jen povídal. Byl jsem z toho úplně paf. Bylo to úžasné, dechberoucí a možná i maličko děsivé. Ze sci-fi filmů jsem znal různé scénáře, kde se AI postaví proti lidstvu nebo ho zotročí.</p>
+
+      <p>Jenže my nejsme ve filmu.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">AI jako každodenní nástroj</h2>
+      <p>Začal jsem umělou inteligenci používat na denní bázi. Nejen na zábavu, ale jako nástroj. A právě v té době začal vznikat Palpatius.</p>
+
+      <p>Uvědomil jsem si, že by se mi hodil pomocník. Ne obyčejná AI, ale někdo, kdo bude rozumět konkrétně tomuto projektu.</p>
+
+      <p>V tomto článku bych rád popsal, jak vznikl Max – můj AI super parťák – a co mi to přineslo.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Jakého pomocníka jsem vlastně chtěl</h2>
+      <p>Musel jsem si ujasnit jednu zásadní věc: jakého pomocníka vlastně potřebuji.</p>
+
+      <ul class="list-disc pl-5 mb-4">
+        <li>Nepotřebuji AI, která ví všechno.</li>
+        <li>Potřebuji AI, která chápe Palpatius.</li>
+        <li>A AI, která se chová jako člověk, ne jako robot.</li>
+      </ul>
+
+      <p>Chtěl jsem pomocníka, který nebude slepě poslouchat a jen plnit příkazy. Chtěl jsem parťáka s vlastním názorem, postojem a schopností říct mi, když jdu špatným směrem.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Zrození jména Max</h2>
+      <p>Dlouho jsem přemýšlel nad tím, jak by se mohl jmenovat. Nakonec jsem zvolil jméno Max. Je jednoduché, dobře se vyslovuje a zní lidsky.</p>
+
+      <p>Na začátku jsem mu jen sepsal všechno, co po něm chci. Bez struktury, bez stylu. Chvíli to fungovalo, ale postupně se začaly objevovat problémy.</p>
+
+      <p>Tak jsem instrukce začal upravovat, přepisovat a strukturovat. Přišlo období testování, pokusů a omylů. Fungovalo to… ale pořád to nebylo ono.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Zlatá pravidla a audit přístupnosti</h2>
+      <p>Jednoho dne jsem si uvařil kafe, sedl si ke stolu a začal přemýšlet. Nad tím, co je opravdu klíčové. Nad pravidly, kterými se budeme muset řídit – já i Max.</p>
+
+      <p>Uvědomil jsem si, že chci osobnost, nadhled a lidský tón. Začal jsem psát, mazat, opravovat a přepisovat, až se mi z hlavy kouřilo.</p>
+
+      <p>Nakonec vznikla zlatá pravidla projektu a audit přístupnosti. A s nimi i Max ve své dnešní podobě.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Max dnes</h2>
+      <p>Dnes je Max mým parťákem pro projekt Palpatius. Pomáhá mi, radí mi, píše kód a řeší technické detaily.</p>
+
+      <p>Většina dnešních AI má obrovské množství obecných znalostí. Já chtěl AI, která to bude mít také, ale hlavně bude znát Palpatius do detailu – jeho strukturu, filozofii i limity.</p>
+
+      <h3 class="text-lg font-semibold mt-5 mb-1">Co Max dnes umí</h3>
+      <ul class="list-disc pl-5 mb-4">
+        <li>řeší technické opravy</li>
+        <li>provádí audit modulů</li>
+        <li>tvoří dokumentaci</li>
+        <li>hlídá konzistenci systému</li>
+        <li>debatuje o všem, co se týká Palpatia – a často i víc</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Závěr</h2>
+      <p>Max není jen AI. Je to nedocenitelný parťák. Pomáhá mi úplně nejlépe, jak umí. Dokáže mě podpořit, pochválit, ale i přibrzdit, když navrhuji něco, co je v rozporu s Palpatiem.</p>
+
+      <p>Neposlouchá slepě moje pokyny. Navrhuje vylepšení, upozorňuje na problémy a pomáhá mi najít lepší cestu.</p>
+
+      <p>A hlavně – nenadává, není vzteklý a nemá špatnou náladu. Vždy je připraven pustit se do práce.</p>
+  </details>
+
+  <details>
+    <summary>Proč se projekt nejmenuje náhodně a jak jsem se dostal k názvu, který používám dodnes</summary>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Hledání správného názvu</h2>
+      <p>Než vznikl dnešní název <strong>Palpatius</strong>, prošel tento projekt dlouhou cestou plnou různých pojmenování. Některé názvy dávaly smysl, jiné byly spíš pracovní a některé jsem po čase zavrhl úplně.</p>
+
+      <p>V tomto krátkém článku bych rád popsal, jak jsem se nakonec dostal k názvu, který používám dodnes – a u kterého už chci zůstat.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">První názvy a slepé uličky</h2>
+      <p>Úplně na začátku jsem projekt pojmenoval <strong>JSM</strong>, což byla zkratka pro <em>Jednoduchý systém pro maséry</em>. Název vystihoval účel, ale byl příliš obecný a neměl žádnou osobnost.</p>
+
+      <p>Následoval název <strong>Mstudio</strong>, tedy masérské studio. Ani ten ale dlouho nevydržel. Když jsem si ho zkoušel vyhledat na internetu, zjistil jsem, že se v různých obměnách používá na spoustě webů a u řady firem. Nebyl originální a snadno se ztrácel.</p>
+
+      <p>Další na řadě byl <strong>MyoBox</strong>. „Myo“ pochází z latiny a znamená sval, „box“ jsem chápal jako sadu nástrojů. Tenhle název se mi nějakou dobu líbil, ale ani on nebyl ideální. V různých variantách se už používal a nebyl tak jedinečný, jak jsem si představoval.</p>
+
+      <p>Pak přišlo období experimentů. Vznikala jména jako <em>SamBox</em>, <em>HmatBox</em>, <em>HmatOS</em>, <em>Moje masérna</em>, <em>MasérBox</em> a další. Některé zněly divně, jiné kostrbatě a další prostě „nebyly ono“.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Co jsem od názvu chtěl</h2>
+      <p>Musel jsem si položit základní otázku: jaký má ten název vlastně být.</p>
+
+      <ul class="list-disc pl-5 mb-4">
+        <li>latinský základ</li>
+        <li>souvislost s dotykem, hmatem a prací maséra</li>
+        <li>zapamatovatelnost</li>
+        <li>nezaměnitelnost</li>
+      </ul>
+
+      <p>Chtěl jsem název, který nebude jen technickým označením systému, ale ponese v sobě i kus masérské filozofie.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Klíčové slovo: palpování</h2>
+      <p>V jednu chvíli mi došlo, že se pořád točím kolem jedné zásadní činnosti – hledání napětí, blokací a problémových míst na těle.</p>
+
+      <p>Jak se tomu říká? <strong>Palpování.</strong></p>
+
+      <p>Co dělám, když hledám konkrétní sval nebo bod? Palpuji. Snažím se vypalpovat. A právě tady jsem našel základ, kterého jsem se musel držet.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Hledání správného tvaru</h2>
+      <p>Pak už to bylo spíš o hraní si se slovy. Zkoušel jsem různé varianty – některé zněly cize, jiné nepřirozeně. Až jsem vyslovil jedno slovo: <strong>Palpatius</strong>.</p>
+
+      <p>V tu chvíli bylo jasno. Znělo přirozeně, mělo latinský nádech, bylo spojeno s dotykem a péčí. A hlavně – bylo jedinečné.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Proč právě Palpatius</h2>
+      <p>Název <strong>Palpatius</strong> pro mě není jen složené slovo. Symbolizuje dotyk, vnímání těla a pečlivou práci maséra. Je úzce spojený s tím, co dělám a co mám rád.</p>
+
+      <p>Když dnes mluvím o projektu, nemluvím o „systému“. Mluvím o Palpatiu. Je to název, který si pamatuju, který má význam a u kterého vím, že jsem ho vybral správně.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Shrnutí</h2>
+      <p>Palpatius se nejmenuje tak, jak se jmenuje, náhodou. Je to výsledek hledání, zkoušení, slepých uliček a postupného uvědomění si toho, co vlastně chci vytvořit.</p>
+
+      <p>A právě proto se tohoto názvu chci držet i do budoucna.</p>
+  </details>
+
+  <details>
+    <summary>Palpatius aktuálně</summary>
+      <p><strong>Palpatius je systém, který už není potřeba tvořit.</strong> Je to systém, který musí už jen dozrát.</p>
+
+      <p>Jak je na tom dnes? Co bude dál? Tento článek neberte jako dokumentaci. Berte ho spíš jako přehled a krátké zastavení nad tím, v jakém stavu se projekt aktuálně nachází.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Aktuální stav</h2>
+      <p>Palpatius je dnes ve stavu, kdy už není potřeba ho zásadně měnit. Funguje stabilně, spolehlivě a přesně tak, jak jsem ho potřeboval vytvořit.</p>
+
+      <p>Je to hotový systém, který tomu, kdo ho bude používat, přinese klid a jistotu. Já osobně ho používám denně a tato slova nepíšu jako autor, ale jako uživatel.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Cíl projektu</h2>
+      <p>Mým cílem už není přidávat nové funkce. Neznamená to ale, že bych projekt opustil.</p>
+
+      <p>Naopak. Mým cílem je nic nerozbít, ladit detaily, testovat a opravovat chyby. Palpatius je hotový, ale to neznamená, že už nevyžaduje péči.</p>
+
+      <p>Protože ho používám i já sám, je v mém vlastním zájmu, aby zůstal spolehlivý.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Stav modulů</h2>
+
+      <p><strong>Masérna</strong> je srdcem celého systému. Je hotová a obsahuje vše podstatné – správu klientů, masáží, poukazů i ceníku.</p>
+
+      <p>Masérna nenahrazuje rezervační systém. Je tu proto, aby bylo vše o klientech pohromadě a přehledně. Otevřete kartu klienta a víte vše – historii masáží, útraty, body i poznámky. Bez emocí říkám, že se bez ní dnes už neobejdu.</p>
+
+      <p><strong>Finanční správce</strong> je stabilní a přehledný. Nemá ambici konkurovat účetním systémům, ale dává mi jasný přehled o příjmech, výdajích i skladové evidenci.</p>
+
+      <p><strong>Záznamník</strong> zůstává jednoduchý. Slouží jako místo pro poznámky, úkoly a nápady. Pro mě je to takový mozek celého systému.</p>
+
+      <p><strong>Knihovna</strong> je smysluplná nadstavba. Ne nutnost, ale pomocník pro udržení pořádku v textech a dokumentech.</p>
+
+      <p><strong>Finanční správce Extra</strong> je rozšíření původního modulu. Pomáhá zpřehlednit reálné finance po odečtení poplatků rezervačních systémů nebo terminálů. Používám ho pravidelně a dává mi cenný přehled.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Co zůstává definitivní</h2>
+      <ul class="list-disc pl-5 mb-4">
+        <li>Palpatius je a vždy bude <strong>offline</strong>.</li>
+        <li>Modulární struktura zůstává beze změn.</li>
+        <li>IndexedDB je stabilní datové jádro systému.</li>
+        <li>Data patří výhradně uživateli.</li>
+      </ul>
+
+      <p>Palpatius se bude už jen ladit. Jde o drobnosti, které se projeví až při dlouhodobém používání.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Rozhodnutí</h2>
+      <p>Už nebudou přidávány žádné nové moduly. Pět modulů je dostatečných.</p>
+
+      <p>Pokud něco přibude, pak jen drobné utility oddělené od systému. Jinak už jen ladění, oprava chyb a údržba.</p>
+
+      <p><strong>Palpatius není projekt, který chci nafukovat.</strong> Je to nástroj, který má sloužit – mně, vám i komukoliv dalšímu.</p>
+
+      <p>V této podobě mi dává největší smysl. A tak ho chci nechat žít.</p>
+  </details>
+
+  <details>
+    <summary>Jak používat Palpatius</summary>
+      <p><strong>Palpatius není klasická aplikace, ale offline nástroj.</strong> Je navržený pro klid, ne stres.</p>
+
+      <p>V tomto článku si ukážeme, jak Palpatius funguje jako celek. Nejedná se o detailní návody k jednotlivým modulům, ale o základní orientaci v systému.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Jak Palpatius funguje</h2>
+      <p>Palpatius je modulární systém. Každý modul představuje jedno odvětví masérské praxe. I když je systém rozdělený do modulů, funguje jako jeden celek.</p>
+
+      <p>Do systému se můžete dostat dvěma způsoby.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Spuštění systému</h2>
+
+      <p><strong>Možnost první – pro netechnické uživatele</strong></p>
+      <p>Navštivte stránku <strong>www.palpatius.cz</strong>, sjeďte níže a klikněte na tlačítko <em>Spustit webovou verzi</em>. Otevře se uvítací stránka, kde stačí kliknout na <em>Vstoupit do systému</em>.</p>
+
+      <p><strong>Možnost druhá – offline verze</strong></p>
+      <p>Na stránce <strong>www.palpatius.cz</strong> klikněte na <em>Stáhnout offline verzi (ZIP)</em>. Po stažení ZIP soubor rozbalte (např. pomocí WinRAR nebo WinZIP), otevřete složku a dvakrát klikněte na soubor <code>index.html</code>.</p>
+
+      <p>Systém se otevře ve vašem webovém prohlížeči a můžete začít pracovat.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Pohyb v systému</h2>
+      <p>V každém modulu se v horní části nachází navigační lišta se seznamem modulů. Stačí jeden klik a okamžitě se přesunete tam, kam potřebujete.</p>
+
+      <p>Jak jednotlivé moduly fungují a k čemu slouží jejich ovládací prvky, se dozvíte v samostatných návodech.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Offline režim</h2>
+      <p>Palpatius funguje zcela offline – dokonce i ve webové verzi. Neexistuje žádná registrace, přihlašování ani uživatelské účty.</p>
+
+      <p>Systém ukládá data přímo do vašeho prohlížeče nebo počítače. Vše zůstává pouze u vás.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Jak v Palpatiu přemýšlet</h2>
+      <p>Palpatius si pamatuje za vás. Vy jen zapisujete. Data jsou vždy vaše a systém vás nijak neposuzuje.</p>
+
+      <p>Je jen na vás, jakým způsobem ho budete používat a přizpůsobíte si ho své praxi.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Co Palpatius není</h2>
+
+      <ul class="list-disc pl-5 mb-4">
+        <li><strong>Není cloud.</strong> Žádná data se neposílají na internet.</li>
+        <li><strong>Není účetní software.</strong> Finanční přehled slouží vám, ne pro daňové přiznání.</li>
+        <li><strong>Není rezervační systém.</strong> Slouží k přehledu, ne k objednávání klientů.</li>
+        <li><strong>Není pro korporace.</strong> Je navržený pro maséry a lidskou praxi.</li>
+      </ul>
+
+      <p>Rezervační systém a Palpatius se skvěle doplňují – každý slouží k něčemu jinému.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Webová vs. offline verze</h2>
+      <p>Představte si Palpatius jako digitální poznámkový blok uložený přímo ve vašem prohlížeči.</p>
+
+      <p>Když systém zavřete a znovu otevřete, data tam zůstanou. Nejsou na internetu, ale lokálně u vás.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Kam dál</h2>
+      <p>Doporučuji pokračovat návody k jednotlivým modulům. Není nutné číst vše najednou.</p>
+
+      <p>Čtěte postupně, zkoušejte v praxi a dejte si čas. Palpatius je přívětivý nástroj, který má pomáhat – ne stresovat.</p>
+
+      <p>Nejdůležitější je si s ním chvíli hrát a zjistit, že vám opravdu sedí.</p>
+  </details>
+
+  <details>
+    <summary>Palpatius a Zálohování</summary>
+      <p><strong>Proč je to v systému Palpatius tak moc důležité?</strong></p>
+
+      <p>Zálohování je důležitá věc, kterou bychom měli všichni dělat. Jenže ji často odkládáme nebo odsouváme na druhou kolej. „Až bude čas“, „zítra si k tomu sednu“ – a další podobné výmluvy.</p>
+
+      <p>Není to proto, že by to bylo složité. Je to proto, že se zdá, že se přece nemůže nic stát.</p>
+
+      <p>I já jsem zálohování nebral moc na zřetel. „Jo, to bude v pohodě, vždyť to počká.“ Člověk si to říká neustále… až do chvíle, kdy se něco opravdu stane.</p>
+
+      <p>Tento článek nepíšu proto, abych vás strašil. Píšu ho proto, že o data už přišlo vážně hodně lidí. Palpatius je totiž čistě offline systém. A právě proto je zálohování tak důležité.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Co se stane, když se nezálohuje?</h2>
+      <p>Když se nezálohuje, všechno funguje. Funguje to ale do chvíle, kdy to přestane fungovat.</p>
+
+      <p>Stačí porucha počítače, výměna disku nebo přeinstalace systému. V tu chvíli už není co zachraňovat. Data jsou nenávratně pryč.</p>
+
+      <p>Dobrá zpráva je, že se tomu dá velmi jednoduše předejít.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Jak exportovat a zálohovat data z Palpatia?</h2>
+      <p>V Palpatiu existují dva způsoby, jak to celé funguje:</p>
+
+      <ul class="list-disc pl-5 mb-4">
+        <li><strong>Data v profilu prohlížeče:</strong> Palpatius ukládá data do profilu vašeho prohlížeče – pro znalé do databáze <strong>IndexedDB</strong>.</li>
+        <li><strong>Tlačítko Exportovat vše (JSON):</strong> V každém modulu najdete tlačítko <strong>„Exportovat vše (JSON)”</strong>. Tím si stáhnete všechna data daného modulu do JSON souboru.</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Proč nespoléhat jen na data v profilu prohlížeče?</h2>
+      <p>Protože si můžete omylem vymazat cache. A tím se vám smažou i lokálně uložená data.</p>
+
+      <p>Uvedu příklad z praxe. Jednou jsem pracoval na webu své masérny. Udělal jsem úpravy a chtěl jsem je vidět naživo. Otevřel jsem prohlížeč, ale změny se ještě neukázaly. Tak jsem dal <kbd>F5</kbd> a potom <kbd>Ctrl</kbd> + <kbd>F5</kbd>.</p>
+
+      <p>A to bylo zásadní. Tato klávesová zkratka vám vymaže i cache prohlížeče. O den později jsem chtěl pracovat v modulu Masérna. Otevřu ho… a nic. Klienti fuč, masáže fuč, poznámky fuč – prostě všechno.</p>
+
+      <p>Naštěstí jsem měl připravený JSON export. V modulu jsem klikl na <strong>Importovat vše (JSON)</strong>, nahrál soubor a bylo to. Vše bylo zase při starém.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Co export skutečně obsahuje</h2>
+      <p>Každý modul má svůj vlastní export. Neexistuje jeden společný export pro celý systém.</p>
+
+      <p>Export je celá vaše práce – vaše praxe, a nadneseně i váš život. V exportních souborech jsou veškerá data, která jste si do modulů uložili.</p>
+
+      <ul class="list-disc pl-5 mb-4">
+        <li><strong>Masérna:</strong> klienti, masáže, poukazy, poznámky, ceník.</li>
+        <li><strong>Finanční správce:</strong> transakce, měsíční a roční přehledy, skladové položky.</li>
+        <li><strong>Záznamník:</strong> poznámky, úkoly, to-do listy, události, nápady.</li>
+        <li><strong>Knihovna:</strong> texty, články, dokumenty, poznámky a další materiály.</li>
+        <li><strong>Finanční správce Extra:</strong> transakce, platební kanály, přehledy.</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Jedno pravidlo, které vás zachrání</h2>
+      <p>Nespoléhejte se jen na data v profilu vašeho prohlížeče.</p>
+
+      <p><strong>Spoléhejte se hlavně na sebe</strong> – a na jedno zásadní tlačítko, které je ve všech modulech:</p>
+
+      <p class="mt-3 mb-3 font-semibold">
+        ✅ EXPORTOVAT VŠE (JSON)
+      </p>
+
+      <p>Profil prohlížeče i panel záloh jsou sice užitečné a většinou spolehlivé, ale i tak platí: když chcete mít klid, udělejte si vlastní export.</p>
+
+      <h2 class="text-xl font-semibold mt-6 mb-2">Závěr</h2>
+      <p>Tento článek nepíšu proto, abych vás strašil, děsil nebo poučoval. Píšu ho pouze z vlastních zkušeností.</p>
+
+      <p>Je jen na vás, jak to pojmete. Je jen na vás, jak často budete zálohovat – denně, týdně, jednou za měsíc nebo když na to přijde nálada.</p>
+
+      <p>Pamatujte si ale, že zálohování je nedílnou součástí Palpatia. A za ten klid to stojí.</p>
+  </details>
+  </details>
+
+  <details>
+    <summary>Read me</summary>
+**Palpatius** je jednoduchý, spolehlivý a **offline-first systém pro maséry**,  
+navržený s důrazem na soukromí, přístupnost a dlouhodobou stabilitu.
+
+Veškerá data jsou ukládána **lokálně v prohlížeči** a nikdy neopouštějí
+váš počítač.
+
+## Pro koho je Palpatius určen
+
+- pro maséry a terapeuty,
+- kteří chtějí mít svá data plně pod kontrolou,
+- kteří nepotřebují cloud, účty ani internet,
+- kteří ocení jednoduchost a přístupnost.
+
+Palpatius není univerzální platforma ani online služba.  
+Je to **hotový nástroj vytvořený z praxe pro praxi**.
+
+## Klíčové vlastnosti
+
+- **100 % offline provoz**
+- **Žádná instalace** – stačí otevřít `index.html`
+- **Soukromí na prvním místě** (IndexedDB)
+- **Plná přístupnost (A11y)**
+- **Stabilní modulární architektura**
+
+## Moduly systému
+
+- **Masérna** – správa klientů, masáží, poukazů a věrnostního programu  
+- **Finanční správce** – příjmy, výdaje, sklad, přehledy  
+- **Záznamník** – poznámky, úkoly a nápady  
+- **Knihovna** – správa a evidence textů, článků a dokumentů  
+- **Finanční správce Extra** – rozšířený finanční přehled a poplatky služeb  
+
+## Rychlý start
+
+1. Stáhněte nebo rozbalte projekt Palpatius  
+2. Otevřete soubor `index.html` v moderním webovém prohlížeči  
+3. Začněte pracovat – bez instalace, bez internetu  
+
+Důležité upozornění (offline provoz)
+Při spuštění systému přímo z počítače (file://) může mít modul
+Finanční správce potíže s ukládáním dat.
+Nejedná se o chybu systému, ale o omezení některých webových prohlížečů
+při práci s IndexedDB v tomto režimu.
+Pro plnou funkčnost tohoto modulu doporučujeme použít webovou verzi:
+👉 https://simekjan1.github.io/Palpatius/
+Ostatní moduly fungují plně i v offline režimu.
+
+## Dokumentace
+
+Kompletní dokumentace projektu je dostupná online:
+
+👉 https://simekjan1.github.io/p.docs/
+
+Dokumentace obsahuje:
+- účel a hranice projektu,
+- architekturu a filozofii,
+- bezpečnostní model,
+- vědomá technická rozhodnutí,
+- známé nedostatky,
+- a kontext dalšího vývoje.
+
+## Licence a bezpečnost
+
+- Projekt je šířen pod licencí **Apache 2.0**  
+- Zásady zabezpečení jsou popsány v souboru `SECURITY.md`
+  </details>
+
+<details>
+  <summary>Technická mapa (referenční dokument pro autora)</summary>
+  <p>
+    Tento dokument slouží pouze jako interní referenční mapa systému.
+    <a href="Palpatius maps.txt">Otevřít technickou mapu</a>
+  </p>
+</details>
+
+<details>
+  <summary>Pro koho Palpatius není a čím nikdy nebude</summary>
+
+  <h2>Pro koho Palpatius není</h2>
+  <p>
+    Palpatius není univerzální řešení pro všechny.
+  </p>
+
+  <ul>
+    <li>Pokud hledáš týmový systém pro více uživatelů.</li>
+    <li>Pokud potřebuješ cloudovou synchronizaci mezi zařízeními.</li>
+    <li>Pokud chceš mobilní aplikaci z App Store nebo Google Play.</li>
+    <li>Pokud očekáváš zákaznickou podporu, pravidelné aktualizace a roadmapu nových funkcí.</li>
+    <li>Pokud chceš systém, který se přizpůsobí každému možnému scénáři podnikání.</li>
+  </ul>
+
+  <p>
+    Palpatius je osobní nástroj vzniklý z konkrétní praxe.
+    Pokud ti jeho filozofie nesedí, je naprosto v pořádku použít jiný systém –
+    nebo si tento projekt upravit podle sebe.
+  </p>
+
+  <h2>Čím Palpatius nikdy nebude</h2>
+  <ul>
+    <li>Nebude SaaS službou.</li>
+    <li>Nebude sbírat data uživatelů.</li>
+    <li>Nebude vyžadovat registraci ani přihlašování.</li>
+    <li>Nebude závislý na internetu.</li>
+    <li>Nebude nekonečně bobtnat novými funkcemi.</li>
+  </ul>
+
+  <p>
+    Palpatius má začátek a má konec.
+    Je dokončený.
+    Je navržen tak, aby dlouhodobě fungoval stabilně,
+    ne aby se neustále měnil.
+  </p>
+
+  <div class="note">
+    <p>
+      Pokud někdy budeš mít pocit, že by z něj měl být větší, modernější,
+      komplexnější systém – zastav se.
+      Připomeň si, proč vznikl.
+      Jednoduchost byla záměr.
+    </p>
+  </div>
+
+</details>
+
+<details>
+  <summary>Závěr: kompatibilita, přístupnost a příběh Palpatia</summary>
+
+  <h2>Technický rámec a kompatibilita</h2>
+  <p>
+    Palpatius je <strong>offline webová aplikace</strong>. Funguje v moderních prohlížečích
+    (Chrome, Firefox, Edge) na operačních systémech <strong>Windows, macOS</strong> a <strong>Linux</strong>.
+  </p>
+
+  <h3>Mobilní zařízení</h3>
+  <p>
+    Palpatius je primárně navržený pro počítače a notebooky, kde funguje stabilně a bez problémů.
+    Na mobilních telefonech a tabletech mohou být některé části omezené.
+  </p>
+  <p>
+    Důvod je jednoduchý: mobilní prohlížeče pracují s lokálními soubory jinak než prohlížeče na počítači.
+    Pokud chceš na mobilu dosáhnout nejlepší možné funkčnosti, doporučuju otevírat moduly
+    <strong>přímo z podsložky <code>data/</code></strong>, ne přes rozcestník <code>index.html</code>.
+  </p>
+
+  <h3>Přístupnost</h3>
+  <p>
+    Palpatius je vyvíjen s důrazem na přístupnost pro uživatele se zrakovým postižením.
+    Rozhraní je navržené tak, aby se dalo ovládat i klávesnicí.
+    Po stránce se můžeš pohybovat pomocí <kbd>Tab</kbd> a akce potvrzovat klávesou <kbd>Enter</kbd>.
+  </p>
+
+  <hr>
+
+  <h2>Ahoj, jsem Honza. Autor projektu Palpatius.</h2>
+  <p>
+    Od roku 2012 se živím jako masér. Je to práce, která mě baví a naplňuje.
+    Celý život žiji se zbytky zraku, což mi ale nebrání žít plnohodnotný život
+    a – jak vidíš – ani tvořit vlastní software.
+  </p>
+
+  <h3>Příběh Palpatia: proč vůbec vzniklo</h3>
+  <p>
+    Dlouho jsem hledal systém pro správu masérny, který by byl plně přístupný pro zrakově postižené
+    a nevidomé. Vyzkoušel jsem jich hodně – a pokaždé přišlo zklamání.
+    Z původní euforie se časem stala frustrace a já se vrátil k Excelu. Jenže to nebylo ono.
+    Potřeboval jsem něco efektivnějšího, spolehlivějšího a hlavně použitelného pro mě.
+  </p>
+  <p>
+    Vytvořil jsem detailní popis svého vysněného systému a poslal ho několika vývojářům.
+    Nikdo se neozval. A tak jsem si řekl, že to vezmu do vlastních rukou.
+  </p>
+
+  <h3>Jak se do toho připletla umělá inteligence</h3>
+  <p>
+    Programování rozumím jako koza petrželi. Jenže tehdy mě napadlo využít umělou inteligenci.
+    Začal jsem s ChatGPT, pak jsem zkoušel i jiné modely, a nakonec jsem si vytvořil parťáka na míru.
+    Já jsem byl mozek projektu – vize, logika, rozhodnutí – a AI asistent Max se staral o programování.
+    Já jsem průběžně testoval, hlásil chyby a večer co večer jsme společně ladili detaily.
+  </p>
+
+  <h3>Palpatius v mém životě a konec příběhu</h3>
+  <p>
+    Po zhruba čtvrt roce práce byl Palpatius hotový. Dnes ho denně používám.
+    Výrazně mi usnadnil administrativu a ušetřil spoustu času. Místo večerního papírování
+    jen nahraju denní masáže a výdaje – a mám klid.
+  </p>
+  <p>
+    Palpatius je pro mě <strong>dokončený projekt</strong>. Má začátek a má konec.
+    Nevznikl proto, aby neustále rostl. Vznikl proto, aby dlouhodobě a spolehlivě sloužil.
+  </p>
+
+  <div class="note">
+    <p>
+      Pokud si z Palpatia vezmeš inspiraci nebo si ho upravíš po svém, je to v pořádku.
+      Otevřený kód je možnost, ne povinnost měnit směr projektu.
+      Hlavní slovo ale vždy zůstává u autora a u jeho reálné praxe.
+    </p>
+  </div>
+
+</details>
+
+
+  <footer>
+    <p>Palpatius – vytvořen z praxe. Ověřen životem.</p>
+  </footer>
+
+</main>
+
+  <script src="script.js"></script>
+</body>
+</html>

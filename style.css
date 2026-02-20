@@ -118,3 +118,31 @@ body {
     outline-offset: 4px;
     border-radius: 0.25rem;
 }
+/* ==========================
+   Tlačítko – Prezentační stránka
+   ========================== */
+
+.btn-prezentace {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.7rem 1.2rem;
+  background-color: var(--bg-accent);
+  color: var(--text-main);
+  text-decoration: none;
+  border-radius: 6px;
+  border: 1px solid var(--bg-accent);
+  font-weight: 500;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-prezentace:hover {
+  background-color: #333;
+  border-color: #444;
+}
+.btn-prezentace:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.btn-prezentace {
+  font-size: 0.9rem;
+}

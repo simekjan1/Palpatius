@@ -24,4 +24,3 @@ function updateTime() {
 // Aktualizace ihned po načtení + každou sekundu
 updateTime();
 setInterval(updateTime, 1000);
-});

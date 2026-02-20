@@ -1,0 +1,1444 @@
+# 🗺️ Technická mapa systému Palpatius
+Tento dokument je mentální mapa systému určená výhradně autorovi.
+
+## Část 1: Kaskádové styly (assets/css)
+
+Styly jsou do systému načítány v tomto pořadí: `tailwind.css` → `fonts.css` → `core.css` → `main.css` → `[modulový].css`.
+
+### 1. tailwind.css (Základní stavební kámen)
+
+* **Účel:** Externí knihovna (framework), která poskytuje CSS reset (Preflight) a utility třídy pro layout a design.
+* **Důležité:** Tento soubor se **nikdy neupravuje ručně**. Pokud je v designu chyba, opravuje se buď v HTML (změnou třídy), nebo v `core.css`.
+* **Obsah:** Sjednocení chování prohlížečů, definice CSS proměnných a tisíce pomocných tříd (`flex`, `p-4` atd.).
+
+### 2. fonts.css (Fontová infrastruktura)
+
+* **Účel:** Lokální definice písma **Inter**.
+* **Filozofie:** Offline-first (žádné stahování z Google Fonts), ochrana soukromí a vysoký výkon díky dělení na jazykové sady (`unicode-range`).
+* **Funkce:** Zajišťuje, že se písmo zobrazí okamžitě (pomocí `font-display: swap`) a stahují se jen ty znaky, které uživatel potřebuje (např. latinka).
+
+### 3. core.css (Vizuální páteř)
+
+* **Účel:** Definice globálního vzhledu, typografie a přístupnosti (A11y).
+* **Klíčové prvky:**
+* **Tmavý režim:** Černé pozadí, bílý text (Inter) pro snížení únavy očí.
+* **Kontejner:** Sjednocuje šířku aplikace a vytváří vizuální "karty" (`#111`).
+* **Typografie:** Výrazná žlutá barva (`#facc15`) pro nadpisy, jasná hierarchie pro čtečky obrazovky.
+* **Interakce:** Rozbalovací sekce (`details/summary`) a výrazné stavy fokusu u tlačítek.
+* **Stavy:** Standardizované ikony pro úspěch (zelená) a chybu (červená).
+
+### 4. main.css (Sjednocující mezivrstva)
+
+* **Účel:** "Main Connector", který ladí detaily a zajišťuje, aby Tailwind nepřepsal důležitá rozhodnutí Palpatia.
+* **Funkce:** Zapíná vyhlazování písma (font-smoothing), sjednocuje chování odkazů (dědí barvu, podtržení při hoveru) a potvrzuje tmavé pozadí.
+
+## Část 2: JavaScriptové utility (assets/js)
+
+### 1. ui.js (Rozhraní a přístupnost)
+
+* **Účel:** Správa modálních oken, fokusu a klávesové navigace.
+* **Klíčové funkce:**
+* **showCustomModal:** Bezpečné zobrazení dialogu. Ukládá si, kde byl uživatel před otevřením, aby ho tam po zavření vrátil.
+* **manageFocusTrap:** Nepustí fokus z modálního okna pryč (uživatel se "neztratí" tabulátorem v pozadí).
+* **closeCustomModal:** Kompletní úklid – zavře okno, odstraní event listenery (prevence memory leaků) a vrátí fokus.
+
+* **Filozofie:** Žádné globální proměnné, vše je uzavřené a bezpečné.
+
+### 2. utils.js (Datová bezpečnostní síť)
+
+* **Účel:** Čistá datová vrstva pro formátování a validaci.
+* **Zásadní pravidlo:** **Žádné tiché selhání.** Pokud funkce dostane špatná data, vrátí `null` a loguje chybu. Nikdy neposílá dál odhadnuté nesmysly.
+* **Klíčové funkce:**
+* **formatDateForInput / parseDateFromInput:** Bezpečný most pro převod dat mezi uživatelským rozhraním a databází.
+* **getYearMonth / getYear:** Rychlá extrakce času pro filtry a statistiky.
+* **calculateExpiryDate:** Nejsložitější funkce – řeší přestupné roky, neexistující dny a validuje skutečnou existenci data.
+
+## 💡 Rychlá nápověda pro údržbu
+| Pokud je problém v... | ...dívej se do: |
+| **Písmu** (nečitelné, chybí znaky) | `fonts.css` |
+| **Základních barvách** (nadpisy, pozadí) | `core.css` |
+| **Odkazech a hoverech** | `main.css` |
+| **Výpočtech a datech** (chybná expirace) | `utils.js` |
+| **Modálních oknech** (nejdou zavřít, blbne Tab) | `ui.js` |
+| **Layoutu** (odsazení, flexbox) | HTML (Tailwind třídy) |
+
+# Technická mapa modulu: Masérna
+
+## Část 1: index.html (Struktura rozhraní)
+
+### 1.1 Základ dokumentu a hlavička
+* **Účel:** Definice dokumentu, metadat a import stylů.
+* **Začátek:** `<!DOCTYPE html>` (řádek 1)
+* **Konec:** `<link rel="stylesheet" href="style.css">` (řádek 15)
+
+### 1.2 Hlavní navigace modulů
+* **Účel:** Přepínání mezi moduly systému Palpatius.
+* **Začátek:** `<nav class="module-nav" aria-label="Hlavní navigace">` (řádek 17)
+* **Konec:** `</nav>` (řádek 29)
+
+### 1.3 Hlavní kontejner a hlavička modulu
+* **Účel:** Obal obsahu modulu, název a systémové notifikace.
+* **Začátek:** `<div class="container">` (řádek 31)
+* **Konec:** `<div id="backupReminder" class="hidden"></div>` (řádek 35)
+
+### 1.4 Horní akční lišta
+* **Účel:** Export, import dat a vyvolání nápovědy.
+* **Začátek:** `<div class="flex items-center justify-between mb-6">` (řádek 37)
+* **Konec:** `</div>` (řádek 55)
+
+### 1.5 Ovládací prvky formulářů
+* **Účel:** Přepínače pro zobrazení pěti hlavních formulářových sekcí.
+* **Začátek:** `<div class="flex flex-wrap justify-center mb-6">` (řádek 57)
+* **Konec:** `</div>` (řádek 63)
+
+### 1.6 Formulářové sekce (ID a rozsahy)
+1. **Přidat klienta:** `<div id="clientFormSection" ...>` (řádek 65–75)
+2. **Přidat masáž:** `<div id="massageFormSection" ...>` (řádek 77–104)
+3. **Nákup poukazů:** `<div id="voucherPurchaseFormSection" ...>` (řádek 106–123)
+4. **Položka ceníku:** `<div id="priceListFormSection" ...>` (řádek 125–146)
+5. **Poznámka ke klientovi:** `<div id="clientNoteFormSection" ...>` (řádek 148–164)
+
+### 1.7 Datové tabulky a filtrace
+* **Globální filtr:** `<div class="filter-section">` (řádek 166–171)
+* **Správa klientů:** `<section aria-labelledby="clients-heading">` (řádek 173–207)
+* **Ceník masáží:** `<section aria-labelledby="pricelist-heading">` (řádek 209–241)
+* **Historie masáží:** `<section aria-labelledby="massage-history-heading">` (řádek 243–277)
+* **Správa poukazů:** `<section aria-labelledby="vouchers-heading">` (řádek 279–310)
+
+### 1.8 Modální okna a skripty
+* **Modální okna:** `<div id="customMessageModal" ...>` (řádek 312–426)
+* **Import skriptů:** `<script src="../../assets/js/utils.js"></script>` (řádek 428–434)
+
+## Část 2: script.js (Aplikační logika)
+
+### 2.1 Globální stav a databáze
+* **Stav:** Definice `zaznamnikDataForClient` a konstanty `DB_NAME`.
+* **IndexedDB:** Funkce `openDatabase()`, `loadDataFromDB()`, `saveDataToDB()` a `autoSave()`.
+* **Rozsah:** Začíná komentářem v hlavičce, končí "// --- Konec kódu pro práci s IndexDB ---".
+
+### 2.2 Integrace a externí komunikace
+* **Finance:** Funkce `sendFinanceEntry` a `sendFinancialTransaction`.
+* **Záznamník:** Funkce `loadZaznamnikRecordsForClient(clientId)`.
+
+### 2.3 UI Logika a navigace
+* **Nápověda:** Funkce `openHelpModal()` a `closeHelpModal()`.
+* **Formuláře:** Logika `toggleForm` a `activeFormId`.
+* **Tabulky:** Funkce `toggleTableSection` a univerzální třídění `sortStates`.
+* **Autocomplete:** Funkce `setupAutocomplete` a `resetAutocomplete`.
+
+### 2.4 CRUD Operace (Data)
+* **Klienti:** Funkce `addClient()` až `deleteClient(id)`.
+* **Masáže:** Funkce `addMassage()` až `deleteClientMassage()`.
+* **Ceník:** Funkce `addPriceListItem()` až `submitCountToPriceListItem()`.
+* **Poukazy:** Funkce `addVoucherPurchase()` až `submitEditIndividualVoucher()`.
+* **Poznámky:** Funkce `addClientNote()` až `deleteClientNote()`.
+
+### 2.5 Věrnostní program a statusy
+* **Status:** `updateClientStatus()` a `submitEditClientStatus()`.
+* **Loyalty:** `addLoyaltyPoint(clientId)` a `removeLoyaltyPoint(clientId)`.
+
+### 2.6 Renderování a systémové funkce
+
+* **Zobrazení:** Hlavní renderovací funkce `displayClients()` až `toggleVoucherPurchaseDetails()`.
+* **Mazání:** Centrální funkce `confirmAndDeleteItem()`.
+* **Export/Import:** Funkce `exportItemToTxt()` a kompletní `exportAllMasernaData()`.
+
+### 2.7 Inicializace (Bootstrap)
+* **Listenery:** `initEventListeners()`.
+* **Start:** `document.addEventListener('DOMContentLoaded', ...)` (řádek 428–434).
+
+## Část 3: style.css (Vizuální styly)
+
+### 3.1 Základy a typografie
+* **Rozsah:** Začíná u `body`, končí definicí `h3`.
+* **Obsah:** Kontrast, základní barvy a hierarchie nadpisů.
+
+### 3.2 Tlačítka a formuláře
+* **Tlačítka:** Definice `button` a jeho stavů (hover, focus).
+* **Formuláře:** Styly pro `.form-section`, inputy a třídu `.hidden`.
+
+### 3.3 Komponenty UI
+* **Autocomplete:** Kontejnery a položky našeptávače.
+* **Tabulky:** Základní styly `table`, hover efekty a `.table-responsive`.
+* **Statusy:** Barevné odlišení statusů klientů (very_active, inactive).
+
+### 3.4 Specifické sekce modulu
+* **Detail klienta:** `.client-detail-section` a vnořené prvky.
+* **Zálohování:** `.backup-reminder` a tooltipy.
+* **Modály:** Styly pro `.modal` a `.modal-buttons`.
+* **Věrnost:** `.loyalty-section` a zvýraznění bonusů.
+
+### 3.5 Navigace a A11y
+* **Přístupnost:** Třída `.sr-only`.
+* **Modulová navigace:** Definice horní lišty a responzivní chování pro mobilní zařízení.
+
+Technická mapa modulu: Finanční správce
+
+## Část 1: index.html (Struktura rozhraní)
+
+### 1.1 Základ dokumentu a importy
+* **Účel:** Definice dokumentu, metadat a načtení sdílených i modulových stylů.
+* **Začátek:** `<!DOCTYPE html>` (řádek 1)
+* **Konec:** `<link rel="stylesheet" href="style.css">` (řádek cca 15)
+* **Poznámka:** Používá kompletní CSS kaskádu Palpatius (`tailwind → fonts → core → main → modul`).
+
+### 1.2 Hlavní navigace modulů
+* **Účel:** Přepínání mezi moduly systému Palpatius.
+* **Začátek:** `<nav class="module-nav" aria-label="Hlavní navigace">`
+* **Konec:** `</nav>`
+* **Funkce:** Aktivní modul je zvýrazněn pomocí JS (na základě URL).
+
+### 1.3 Hlavní kontejner a název modulu
+* **Účel:** Obal veškerého obsahu modulu a jeho identifikace.
+* **Začátek:** `<div class="container">`
+* **Konec:** před importem skriptů
+* **Nadpis:** `<h1>Finanční správce</h1>`
+
+### 1.4 Globální akční lišta
+* **Účel:** Export/import dat a vyvolání nápovědy.
+* **Začátek:** `<div class="flex items-center justify-between mb-6" id="globalControls">`
+* **Konec:** `</div>`
+* **Prvky:**
+  * Export všech dat (JSON)
+  * Import všech dat (JSON)
+  * Tlačítko nápovědy
+
+### 1.5 Ovládací tlačítka formulářů
+* **Účel:** Přepínání hlavních vstupních formulářů.
+* **Začátek:** `<div class="flex flex-wrap justify-center mb-6" id="addButtonsSection">`
+* **Konec:** `</div>`
+* **Tlačítka:**
+
+  * Přidat transakci
+  * Přidat položku skladu
+
+### 1.6 Formulářové sekce
+1. **Přidat transakci**
+   `<div id="transactionFormSection" class="form-section hidden">`
+2. **Přidat položku skladu**
+   `<div id="stockItemFormSection" class="form-section hidden">`
+
+### 1.7 Globální filtr
+* **Účel:** Filtrování napříč transakcemi a skladem.
+* **Začátek:** `<div class="filter-section">`
+* **Konec:** `</div>`
+* **Prvky:** input + tlačítko „Zrušit filtr“
+
+### 1.8 Datové tabulky a přehledy
+1. **Přehled transakcí**
+   `<section aria-labelledby="transactions-heading">`
+2. **Měsíční přehledy**
+   `<section aria-labelledby="monthly-summary-heading">`
+3. **Roční přehledy**
+   `<section aria-labelledby="annual-summary-heading">`
+4. **Přehled skladu**
+   `<section aria-labelledby="stock-heading">`
+Každá sekce obsahuje:
+* tlačítko Zobrazit / Sbalit
+* `.table-responsive`
+* `<table>` s tříděním pomocí `data-sort`
+
+### 1.9 Modální okna
+* **Systémová zpráva:** `#customMessageModal`
+* **Úprava množství skladu:** `#adjustStockQuantityModal`
+* **Nápověda:** `#helpModal`
+
+### 1.10 Import skriptů
+* `../../assets/js/utils.js`
+* `../../assets/js/ui.js`
+* `script.js` (modulová logika)
+
+## Část 2: script.js (Aplikační logika)
+
+### 2.1 Globální stav
+* **financialData**
+  * `transactions`
+  * `annualMassages`
+  * `stockItems`
+* **sortStates** – univerzální stav třídění tabulek
+
+### 2.2 IndexedDB vrstva
+* **Databáze:** `palpatiusFinancialDB`
+* **Object store:** `financialData`
+* **Funkce:**
+  * `openDatabase()`
+  * `loadDataFromDB()`
+  * `saveDataToDB()`
+  * `autoSave()`
+* **Rozsah:** označen komentáři
+  `// --- Začátek kódu pro práci s IndexDB ---`
+  `// --- Konec kódu pro práci s IndexDB ---`
+
+### 2.3 UI a navigace
+* **Nápověda:** `openHelpModal()`, `closeHelpModal()`
+* **Formuláře:** `toggleForm()`, `activeFormId`
+* **Sekce tabulek:** `toggleTableSection()`
+
+### 2.4 Transakce (účetnictví)
+* **CRUD:**
+
+  * `addTransaction()`
+  * `editTransaction()`
+  * `submitEditTransaction()`
+  * `deleteTransaction()`
+* **Zobrazení:** `displayTransactions()`
+
+### 2.5 Přehledy
+* **Měsíční:** `displayMonthlySummaries()`
+* **Roční:** `displayAnnualSummaries()`
+* **Počet masáží:**
+  * `editAnnualMassages()`
+  * `submitEditAnnualMassages()`
+
+### 2.6 Sklad
+* **CRUD:**
+  * `addItemToStock()`
+  * `editStockItem()`
+  * `submitEditStockItem()`
+  * `deleteStockItem()`
+* **Množství:**
+  * `adjustStockQuantity()`
+  * `submitAdjustQuantity()`
+* **Zobrazení:** `displayStockItems()`
+* **Stav skladu:** zvýraznění `.low-stock`
+
+### 2.7 Společné systémové funkce
+* **Mazání:** `confirmAndDeleteItem()`
+* **Třídění:** `sortTable()`
+* **Aktualizace UI:** `updateTables()`
+* **Filtr:** `clearFilter()`
+
+### 2.8 Export / Import
+* **JSON:**
+  * `exportAllData()`
+  * `importAllData()` (včetně migrace a validace)
+* **TXT export položek:** `exportItemToTxt()`
+
+### 2.9 Inicializace (Bootstrap)
+* **Listenery:** `initEventListeners()`
+* **Start aplikace:** `DOMContentLoaded`
+  * otevření DB
+  * načtení dat
+  * navázání třídění
+  * první render
+
+### 2.10 Aktivní zvýraznění modulu
+* **IIFE blok**
+* Detekce modulu podle URL
+* Nastavení `.active` + `aria-current="page"`
+
+## Část 3: style.css (Vizuální styly)
+
+### 3.1 Základní vzhled
+* `body`, `.container`
+* Tmavý režim, vysoký kontrast
+
+### 3.2 Typografie
+* `h1`, `h2`
+* Nadpisy s akčními tlačítky (Zobrazit / Sbalit)
+
+### 3.3 Tlačítka
+* `.btn-primary`, `.btn-secondary`, `.btn-danger`
+* `.btn-export`, `.btn-import`, `.btn-toggle-form`
+* Fokusové stavy (A11y)
+
+### 3.4 Formuláře
+* `.form-section`
+* inputy, selecty, textarea
+* `.hidden`
+
+### 3.5 Tabulky
+* Základní styl tabulek
+* Řazení (`sorted-asc`, `sorted-desc`)
+* Hover, sudé/liché řádky
+* `.table-responsive`
+
+### 3.6 Modální okna
+* `.modal`, `.modal-content`, `.modal-buttons`
+* Speciální úpravy pro formuláře v modálu
+
+### 3.7 Stav skladu
+* `.low-stock` – vizuální upozornění
+
+### 3.8 Navigace modulů
+* `.module-nav`
+* Aktivní modul (`.active`)
+* Responzivní chování
+
+Technická mapa modulu: Záznamník
+
+## Část 1: index.html (Struktura rozhraní)
+
+### 1.1 Základ dokumentu a importy
+* **Účel:** Definice dokumentu, jazyka, metadat a načtení CSS kaskády Palpatius.
+* **Začátek:** `<!DOCTYPE html>` (řádek 1)
+* **Konec:** `<link rel="stylesheet" href="style.css">`
+* **Pořadí stylů:**
+  `tailwind.css → fonts.css → core.css → main.css → zaznamnik/style.css`
+
+### 1.2 Hlavní kontejner a navigace modulů
+* **Účel:** Obal celého modulu + globální navigace.
+* **Kontejner:** `<div class="container">`
+* **Navigace:**
+  `<nav class="module-nav" aria-label="Hlavní navigace">`
+* **Položky:** Masérna, Finance, Záznamník, Knihovna, Finance Extra
+* **Aktivní modul:** řešen JS (aria-current + `.active`)
+
+### 1.3 Hlavička modulu
+* **Nadpis:** `<h1 id="mainTitle">Centrální záznamník</h1>`
+* **Účel:** Identifikace modulu, orientační bod pro čtečky.
+
+### 1.4 Globální akční lišta
+* **Účel:** Práce s daty a nápověda.
+* **Začátek:** `<div class="flex items-center justify-between mb-6" id="globalControls">`
+* **Obsah:**
+  * Export všech dat (JSON)
+  * Import všech dat (JSON, `<input type="file">`)
+  * Tlačítko nápovědy
+* **Konec:** `</div>`
+
+### 1.5 Přepínače formulářů
+* **Účel:** Přepínání hlavních typů záznamů.
+* **Začátek:** `<div class="flex flex-wrap justify-center mb-6" id="addButtonsSection">`
+* **Tlačítka:**
+  * Přidat poznámku
+  * Přidat To-Do List
+  * Přidat událost
+  * Přidat nápad
+* **Vazba:** `aria-controls`, `aria-expanded`
+* **Konec:** `</div>`
+
+### 1.6 Formulářové sekce
+Každá sekce má třídu `.form-section hidden`.
+1. **Poznámka**
+   `<div id="noteFormSection">`
+2. **To-Do List (vytvoření seznamu)**
+   `<div id="todoListFormSection">`
+3. **To-Do úkol (položka seznamu)**
+   `<div id="todoFormSection">`
+4. **Událost**
+   `<div id="eventFormSection">`
+5. **Nápad**
+   `<div id="ideaFormSection">`
+
+### 1.7 Filtrace a přepínače typu
+* **Textový filtr:**
+  `<div class="filter-section">`
+* **Typové filtry:**
+  Tlačítka `.btn-toggle-filter` (all, note, todo_list, event, idea)
+* **Účel:** Zúžení dat v hlavní tabulce
+
+### 1.8 Hlavní tabulka dat
+* **ID:** `#mainDataTable`
+* **Sloupce:**
+  * Typ
+  * Klient
+  * Název / Popis
+  * Detail / Termín
+  * Kategorie / Priorita
+  * Akce
+* **Řazení:** `th[data-sort]`
+
+### 1.9 Modální okna
+1. **Univerzální systémový modal**
+   * `#customMessageModal`
+   * Potvrzení, chyby, zobrazení detailů
+2. **Akce po přidání nápadu**
+   * `#ideaActionsModal`
+   * Přidání do Masérny / To-Do
+3. **Detail To-Do listu**
+   * `#todoListDetailSection`
+   * Samostatná tabulka úkolů
+4. **Nápověda**
+   * `#helpModal`
+
+### 1.10 Import skriptů
+* `../../assets/js/utils.js`
+* `../../assets/js/ui.js`
+* `script.js` (logika modulu)
+
+## Část 2: script.js (Aplikační logika)
+
+### 2.1 Globální stav
+* **Hlavní datová struktura:**
+  data = { notes, todos, events, ideas }
+* **Externí data:**
+  `masernaClients`
+* **UI stav:**
+  `currentFilter`, `currentView`, `currentTodoListId`, `sortStates`
+
+### 2.2 IndexedDB – Záznamník
+* **DB:** `PalpatiusZaznamnikDB`
+* **Store:** `zaznamnikData`
+* **Funkce:**
+  * `openDatabase()`
+  * `loadDataFromDB()`
+  * `saveDataToDB()`
+  * `autoSave()`
+* **Rozsah:**
+  `// --- Začátek kódu pro práci s IndexDB ---`
+  `// --- Konec kódu pro práci s IndexDB ---`
+
+### 2.3 Integrace s Masérnou
+* **DB:** `palpatiusMasernaDB`
+* **Načtení klientů:** `loadClientsFromMasernaDB()`
+* **Pomocné funkce:**
+  * `populateClientSelects()`
+  * `getClientNameById()`
+  * `getClientOptionsHTML()`
+
+### 2.4 UI a navigace
+* **Formuláře:** `toggleForm()`, `activeFormId`
+* **Nápověda:** `openHelpModal()`, `closeHelpModal()`
+* **Přepínání pohledů:**
+  hlavní tabulka ↔ detail To-Do listu
+
+### 2.5 Poznámky (CRUD)
+* `addNote()`
+* `viewNote()`
+* `editNote()`
+* `submitEditNote()`
+
+### 2.6 To-Do Listy a úkoly
+* **Listy:**
+  * `addTodoList()`
+  * `editTodoListName()`
+  * `submitEditTodoListName()`
+* **Úkoly:**
+  * `addTask()`
+  * `toggleTaskCompletionInList()`
+  * `editTaskInList()`
+  * `submitEditTaskInList()`
+  * `deleteTaskInList()`
+* **Detail listu:**
+  `showTodoListDetails()`, `goBackToMainView()`
+* **Render:** `updateTasksTable()`
+
+### 2.7 Události (CRUD)
+* `addEvent()`
+* `viewEvent()`
+* `editEvent()`
+* `submitEditEvent()`
+
+### 2.8 Nápady (CRUD + akce)
+* `addIdea()`
+* `viewIdea()`
+* `editIdea()`
+* `submitEditIdea()`
+* **Akce:**
+  * `showIdeaActionsModal()`
+  * `sendToMasernaPricelist()`
+  * `convertIdeaToTodo()`
+
+### 2.9 Společné funkce
+* **Mazání:** `confirmAndDeleteItem()`, `doDeleteItem()`
+* **Řazení:** `sortTable()`
+* **Filtrace:** `filterByType()`, `clearFilter()`
+* **Render hlavní tabulky:** `updateTable()`
+* **Export:** `exportItemToTxt()`, `exportAllData()`
+* **Import:** `importAllData()`
+
+### 2.10 Inicializace
+* `DOMContentLoaded`
+  * otevření DB
+  * načtení klientů
+  * načtení dat
+  * navázání řazení
+  * inicializace filtrů
+* **Aktivní modul:** IIFE blok podle URL
+
+## Část 3: style.css (Vizuální styly)
+
+### 3.1 Základní layout
+* `body`, `.container`
+* Tmavý režim, vysoký kontrast
+
+### 3.2 Typografie
+* `h1`, `h2`
+* Barevná hierarchie (žlutá = primární)
+
+### 3.3 Tlačítka
+* `.btn-primary`, `.btn-secondary`, `.btn-danger`
+* `.btn-export`, `.btn-import`, `.btn-toggle-form`
+* Fokusové stavy (A11y)
+
+### 3.4 Formuláře
+* `.form-section`
+* inputy, textarea, selecty
+* `.hidden`
+
+### 3.5 Tabulky
+* `table`, `th`, `td`
+* Řazení (`sorted-asc`, `sorted-desc`)
+* Hover a zebra řádky
+
+### 3.6 Modály
+* `.modal`, `.modal-content`, `.modal-buttons`
+* Překryv, fokus, kontrast
+
+### 3.7 Stavové a typové styly
+* Typy položek (`.item-type-*`)
+* To-Do:
+  * `.todo-completed`
+  * `.todo-priority-*`
+
+### 3.8 Navigace modulů
+* `.module-nav`
+* Aktivní modul (`.active`)
+* Responzivní chování
+
+Technická mapa modulu: **Knihovna**
+
+## ČÁST 1: `index.html` – Struktura rozhraní
+
+### 1.1 Základ dokumentu a CSS kaskáda
+* **Účel:** Inicializace HTML dokumentu + globální vizuální systém Palpatius
+* **Začátek:** `<!DOCTYPE html>`
+* **Konec:** `<link rel="stylesheet" href="style.css">`
+* **Pořadí stylů:**
+  1. `tailwind.css`
+  2. `fonts.css`
+  3. `core.css`
+  4. `main.css`
+  5. `knihovna/style.css`
+
+### 1.2 Hlavní kontejner a navigace modulů
+* **Obal:** `<div class="container">`
+* **Navigace:** `<nav class="module-nav" aria-label="Hlavní navigace">`
+* **Položky modulů:**
+  * Masérna
+  * Finance
+  * Záznamník
+  * **Knihovna**
+  * Finanční správce Extra
+* **Aktivní modul:** řešen JS podle URL (`.active`, `aria-current="page"`)
+
+### 1.3 Hlavička modulu
+* **ID:** `#mainTitle`
+* **Text:** „Knihovna – Správa a evidence dokumentů, článků a textů“
+* **Role:** jednoznačná identifikace modulu + orientační bod
+
+### 1.4 Globální ovládací lišta
+* **ID:** `#globalControls`
+* **Obsah:**
+  * Export všech dat (JSON)
+  * Import všech dat (JSON, `<input type="file">`)
+  * Tlačítko nápovědy
+* **Charakter:** globální operace nad celou knihovnou
+
+### 1.5 Sekce přidání obsahu
+* **ID:** `#addButtonsSection`
+* **Tlačítko:**
+  * „Přidat text“
+* **Napojení:** `onclick="showArticleForm(null)"`
+
+### 1.6 Formulář pro text (add / edit)
+* **ID:** `#articleFormSection`
+* **Třídy:** `.form-section.hidden`
+* **Režimy:**
+  * Přidání nového textu
+  * Editace existujícího textu
+* **Pole:**
+  * `#articleTitle` – název
+  * `#articleCategory` – kategorie (fixní seznam)
+  * `#articleContent` – čistý text
+* **Tlačítka:**
+  * Uložit / Uložit změny
+  * Zrušit (zavření formuláře)
+
+### 1.7 Filtrace
+* **Fulltext filtr:**
+  * `#globalFilterInput`
+* **Tlačítko:**
+  * Zrušit filtr
+* **Kategorie:**
+  * Dynamicky generovaná tlačítka
+  * Kontejner: `#categoryFilterButtons`
+
+### 1.8 Hlavní tabulka knihovny
+* **ID:** `#mainDataTable`
+* **Sloupce:**
+  1. Název (klik → detail)
+  2. Kategorie
+  3. Akce
+* **Řazení:** `th[data-sort]`
+
+### 1.9 Modální okna
+1. **Univerzální systémový modal**
+   * `#customMessageModal`
+   * Potvrzení, chyby, detail textu
+2. **Nápověda**
+   * `#helpModal`
+   * Statický vysvětlující obsah
+
+### 1.10 Import skriptů
+* `../../assets/js/utils.js`
+* `../../assets/js/ui.js`
+* `script.js` (logika knihovny)
+
+## ČÁST 2: `script.js` – Logika aplikace
+
+### 2.1 Globální data a konstanty
+* **Data:**
+  let articles = [];
+* **Fixní kategorie:**
+  const FIXED_CATEGORIES = ['Články', 'Dokumenty', 'Texty', 'Ostatní'];
+* **Stavové proměnné:**
+  * `currentFilterCategory`
+  * `sortStates`
+  * `activeFormId`
+  * `currentEditingId`
+
+### 2.2 IndexedDB – Knihovna
+* **DB:** `PalpatiusKnihovnaDB`
+* **Store:** `knihovnaData`
+* **Klíč:** `id = 'currentData'`
+* **Rozsah kódu:**
+
+  * `// --- Začátek kódu pro práci s IndexDB ---`
+  * `// --- Konec kódu pro práci s IndexDB ---`
+* **Funkce:**
+  * `openDatabase()`
+  * `loadDataFromDB()`
+  * `saveDataToDB()`
+  * `autoSave()`
+
+### 2.3 Přepínání formuláře
+* **Funkce:** `toggleForm(formId)`
+* **Logika:**
+  * zavře ostatní formuláře
+  * přepíná `aria-expanded`
+  * scroll + fokus
+
+### 2.4 Přidání / editace textu
+* **Otevření formuláře:** `showArticleForm(id)`
+* **Odeslání formuláře:** `handleSubmitArticle()`
+* **Chování:**
+  * `id === null` → nový text
+  * `id !== null` → editace
+* **ID generace:** `Date.now()`
+
+### 2.5 Zobrazení obsahu textu
+* **Funkce:** `viewArticle(id)`
+* **Zobrazení:**
+  * `<pre>` uvnitř modálního okna
+  * zachování zalomení řádků
+  * pouze čtení
+
+### 2.6 Mazání položky
+* **Potvrzení:** `confirmAndDeleteItem(id)`
+* **Vlastní smazání:** `doDeleteItem(id)`
+* **Dopad:**
+  * odebrání z pole `articles`
+  * uložení + redraw
+
+### 2.7 Řazení tabulky
+* **Funkce:** `sortTable(tableId, sortKey)`
+* **Stav:** `sortStates`
+* **Směry:** `asc / desc`
+
+### 2.8 Aktualizace tabulky
+* **Funkce:** `updateTable()`
+* **Kroky:**
+  1. Fulltext filtr
+  2. Filtr kategorie
+  3. Řazení
+  4. Render řádků
+  5. Aktualizace tlačítek kategorií
+
+### 2.9 Filtrace kategorií
+* **Tlačítka:** generovaná z `FIXED_CATEGORIES`
+* **Funkce:**
+  * `updateCategoryButtons()`
+  * `filterByCategory(category)`
+  * `clearFilter()`
+
+### 2.10 Export / Import
+* **Export TXT (jedna položka):**
+  * `exportItemToTxt(id)`
+* **Export JSON (vše):**
+  * `exportAllData()`
+* **Import JSON:**
+  * `importAllData(event)`
+  * validace pole
+  * normalizace dat
+
+### 2.11 Nápověda
+* `openHelpModal()`
+* `closeHelpModal()`
+
+### 2.12 Inicializace
+* `DOMContentLoaded`
+  * otevření DB
+  * načtení dat
+  * inicializace řazení
+  * nastavení modálu
+  * první render
+* **Aktivní modul:** IIFE blok podle URL
+
+## ČÁST 3: `style.css` – Vizuální a přístupnostní styly
+
+### 3.1 Základ layoutu
+* `body`, `.container`
+* tmavý režim, vysoký kontrast
+
+### 3.2 Typografie
+* `h1`, `h2`
+* žlutá jako primární zvýraznění
+
+### 3.3 Tlačítka
+* `.btn-primary`, `.btn-secondary`, `.btn-danger`
+* `.btn-export`, `.btn-import`, `.btn-toggle-form`
+* fokusové stavy (A11y)
+
+### 3.4 Formuláře
+* `.form-section`
+* inputy, textarea, select
+* `.hidden`
+
+### 3.5 Tabulka
+* zebra řádky
+* hover
+* třídění (`sorted-asc`, `sorted-desc`)
+
+### 3.6 Modální okna
+* `.modal`, `.modal-content`, `.modal-buttons`
+* překryv + fokus
+
+### 3.7 Filtrační tlačítka kategorií
+* `.btn-toggle-filter`
+* aktivní stav (`bg-blue-600`)
+
+### 3.8 Navigace modulů
+* `.module-nav`
+* aktivní položka `.active`
+* responzivní chování
+
+Technická mapa modulu: **Finanční správce Extra**
+
+## ČÁST 1: `index.html` – Struktura rozhraní
+
+### 1.1 Základ dokumentu
+* **DOCTYPE:** HTML5
+* **Jazyk:** `lang="cs"`
+* **Meta:**
+  * charset UTF-8
+  * viewport responsive
+* **CSS:**
+  * pouze **lokální `style.css`**
+  * žádné globální Palpatius CSS (sandbox režim)
+
+### 1.2 Navigace modulů
+* **Element:** `<nav class="module-nav">`
+* **Obsah:** odkazy na:
+  * Masérna
+  * Finance
+  * Záznamník
+  * Knihovna
+  * **Finanční správce Extra**
+* **Aktivní modul:** zvýraznění přes JS podle URL
+
+### 1.3 Hlavní layout
+* **Wrapper:** `.main-wrapper`
+* **Karta:** `.main-card`
+* **Obsah:** `<main>`
+
+### 1.4 Hlavička modulu
+* `<h1>`: „Finanční správce Extra“
+* **Popis modulu:** `.intro-text`
+  * vysvětlení účelu
+  * práce s kanály a poplatky
+
+### 1.5 Sekce: Export / Import (nekolabovatelná)
+* **Class:** `.section-block`
+* **Tlačítka:**
+  * `#export-json` – export JSON
+  * `#export-db` – export celé DB
+  * `#import-json` – import JSON
+
+### 1.6 Sekce: Platební kanály (collapsible)
+* **Class:** `.section-block.collapsible`
+* **Header:**
+  * název sekce
+  * `.collapse-toggle`
+* **Obsah:**
+  * tlačítko `#add-channel`
+  * tabulka kanálů
+  * formulář `#channel-form` (hidden)
+#### Tabulka kanálů
+* Sloupce:
+  * Název
+  * Procento
+  * Fixní poplatek
+  * Poznámka
+  * Akce
+#### Formulář kanálu
+* Pole:
+  * `#channel-name`
+  * `#channel-percent`
+  * `#channel-fixed`
+  * `#channel-note`
+* Režimy:
+  * přidání
+  * editace (uloženo v `dataset.editing`)
+
+### 1.7 Sekce: Transakce (collapsible)
+* **Ovládání:**
+  * `#load-transactions`
+  * filtr stavu `#filter-status`
+* **Tabulka:**
+  * Datum
+  * Popis
+  * Brutto
+  * Kanál
+  * Čisté
+  * Akce (Přiřadit)
+
+### 1.8 Sekce: Souhrny (collapsible)
+* **Filtry:**
+  * `#summary-from`
+  * `#summary-to`
+  * `#summary-channel`
+* **Výstupy:**
+  * `#sum-brutto`
+  * `#sum-fees`
+  * `#sum-netto`
+* **Detailní tabulka:**
+  * kanál
+  * počet
+  * brutto
+  * poplatky
+  * netto
+
+### 1.9 Modální panel
+* **ID:** `#assign-channel-panel`
+* **Obsah:** `#assign-channel-list`
+* **Účel:** přiřazení platebního kanálu k transakci
+
+### 1.10 Skript
+* **Jediný JS:** `script.js`
+* **Bez externích závislostí**
+
+## ČÁST 2: `script.js` – Logika aplikace
+
+## 2.1 Režim modulu
+* **Komentář:** `SANDBOX VERSION`
+* **Charakteristika:**
+  * žádné globální Palpatius utility
+  * vlastní IndexedDB
+  * přímý přístup k hlavní FS DB
+
+## 2.2 IndexedDB – FS Extra
+* **DB:** `fs_extra`
+* **Version:** `1`
+* **Object Stores:**
+  * `channels`
+    * `id` (autoIncrement)
+    * index: `name`
+  * `transactions`
+    * `id` (autoIncrement)
+    * index: `idFS`
+    * index: `status`
+### Inicializace
+* `initFsExtraDB()`
+
+## 2.3 Platební kanály
+* **Globální pole:** `channels`
+* **Funkce:**
+  * `saveChannelToDB`
+  * `updateChannelInDB`
+  * `loadChannelsFromDB`
+  * `renderChannels`
+  * `openEditChannelForm`
+* **Editace:**
+  * index v poli `channels`
+  * uložen v `dataset.editing`
+
+## 2.4 Transakce – synchronizace
+### Zdroj dat
+* **DB:** `palpatiusFinancialDB`
+* **Store:** `financialData`
+* **Klíč:** `currentData`
+* **Použitá verze:** `2`
+### Importované transakce
+* pouze `type === 'income'`
+* mapování:
+  * `idFS`
+  * `date`
+  * `desc`
+  * `brutto`
+  * `channelId`
+  * `netto`
+  * `status`
+### Funkce:
+* `loadFsTransactions`
+* `syncTransactionsToFsExtra`
+* `loadTransactionsFromDb`
+
+## 2.5 Filtrování transakcí
+* **Filtr:** `#filter-status`
+* **Stavy:**
+  * `pending`
+  * `completed`
+* **Funkce:**
+  * `filterAndRenderTransactions`
+  * `renderTransactions`
+
+## 2.6 Přiřazení kanálu
+* **Spouštěč:** `.assign-channel`
+* **Dialog:**
+  * generovaný dynamicky
+  * seznam kanálů
+* **Výpočet:**
+  netto = brutto - (brutto * percent / 100) - fixed
+* **Uložení:**
+  * `channelId`
+  * `netto`
+  * `status: "completed"`
+### Funkce:
+* `openAssignChannelDialog`
+* `assignChannelToTransaction`
+
+## 2.7 Souhrny
+### Filtrace:
+* datum od / do
+* kanál
+* pouze `completed`
+### Výpočty:
+* celkové:
+  * brutto
+  * poplatky
+  * netto
+* per-kanál:
+  * počet
+  * brutto
+  * fees
+  * netto
+### Funkce:
+* `fillChannelSelect`
+* `calculateSummary`
+
+## 2.8 Export / Import
+### Export:
+* JSON (`exportDatabaseAsJson`)
+* „celá databáze“
+* helper: `getAllFromStore`
+### Import:
+* přepsání celé DB
+* `overwriteDatabase`
+* reload kanálů i transakcí
+
+## 2.9 Collapsible sekce
+* **Třída:** `.collapsible`
+* **Mechanismus:**
+  * `max-height`
+  * `.open`
+  * přepínání textu tlačítka
+
+## 2.10 Aktivní modul v navigaci
+* IIFE
+* porovnání URL s mapou modulů
+* přidání `.active`
+
+## ČÁST 3: `style.css` – Vizuální vrstva
+
+### 3.1 Téma
+* **Dark mode**
+* **Zlatá (`#ffc43d`) jako akcent**
+* **Černé pozadí, karty**
+
+### 3.2 Layout
+* `.main-wrapper`
+* `.main-card`
+
+### 3.3 Typografie
+* `h1`, `h2`
+* `.intro-text`
+
+### 3.4 Ovládací prvky
+* `.btn-primary`
+* `.btn-secondary`
+* `.btn-outline`
+* `.input`, `.small-input`
+
+### 3.5 Tabulky
+* `.table`
+* kontrastní hlavička
+* oddělené buňky
+
+### 3.6 Karty a souhrny
+* `.card`
+* `.summary-box`
+
+### 3.7 Modál
+* `.modal`
+* `.modal-box`
+* `.hidden`
+
+### 3.8 Navigační lišta
+* identická struktura jako ostatní moduly
+* responzivní chování
+
+Technická mapa modulu: **Palpatius Data Manager**
+
+## ČÁST 1: `index.html` – Struktura rozhraní
+
+### 1.1 Základ dokumentu
+* **DOCTYPE:** HTML5 (`<!doctype html>`)
+* **Jazyk:** `lang="cs"`
+* **Meta:**
+  * charset UTF-8
+  * viewport responsive
+  * description (offline nástroj, pouze ke čtení)
+* **Styly:**
+  * jediný lokální soubor `style.css`
+* **Skripty:**
+  * jediný lokální `script.js`
+
+### 1.2 Přístupnost – skip link
+* `<a class="skip-link" href="#main">`
+* Umožňuje přeskočení hlavičky
+* Cíl: `<main id="main" tabindex="-1">`
+
+### 1.3 Hlavička aplikace
+* `<header class="app-header">`
+* **Obsah:**
+  * `<h1 class="app-title">`
+  * `<p class="app-subtitle" id="appHint">`
+* **Účel:**
+  * název nástroje
+  * vysvětlení, že jde o:
+    * offline
+    * pouze ke čtení
+    * bez zásahu do dat
+
+### 1.4 Hlavní obsah (`<main>`)
+* **ID:** `main`
+* **Role:** hlavní aplikační prostor
+* **Sekce:** dvě hlavní karty
+
+## 1.5 Sekce: Načtení souboru
+* `<section class="card" aria-labelledby="uploadTitle">`
+### Formulář `#dmForm`
+* **Atributy:** `novalidate`
+* **Pole:**
+  1. **JSON soubor**
+     * `#jsonFile`
+     * `accept="application/json,.json"`
+     * `required`
+  2. **Výběr modulu**
+     * `#moduleSelect`
+     * možnosti:
+       * Masérna
+       * Finanční správce
+       * Záznamník
+       * Knihovna
+       * Finanční správce Extra
+### Akční tlačítka
+* `#analyzeBtn` – Vyhodnotit
+* `#resetBtn` – Reset
+* `#exportTxtBtn` – Export TXT (disabled default)
+### Stavový řádek
+* `#formStatus`
+* `role="status"`
+* `aria-live="polite"`
+
+## 1.6 Sekce: Výsledek
+* `<section class="card" aria-labelledby="resultTitle">`
+### Výsledkový blok
+* `<dl class="result-list" id="resultList">`
+* **Prázdný stav:**
+  * `#resultEmpty`
+  * zobrazen při nevyhodnocených datech
+
+### 1.7 Technické detaily (rozbalovací)
+* `<details id="rawDetails">`
+* `<summary>`: „Zobrazit technické informace“
+#### Metadata
+* `#metaModule`
+* `#metaFileName`
+* `#metaFileSize`
+* `#metaLoadState`
+#### Raw JSON výstup
+* `<textarea id="rawOutput" readonly>`
+* slouží pouze ke kontrole
+
+### 1.8 Patička
+* `<footer class="app-footer">`
+* text:
+  * offline nástroj
+  * pouze ke čtení
+  * lokální práce se soubory
+
+## ČÁST 2: `script.js` – Aplikační logika
+
+## 2.1 Stav aplikace
+* `loadedJson` – načtený JSON objekt
+* `currentReportText` – textový report pro export
+
+## 2.2 Reference na DOM
+* Všechny důležité prvky načteny **hned na začátku**
+* Žádné dynamické query selektory v logice
+
+## 2.3 Pomocné funkce
+* `setStatus(text, isError)`
+* `clearResults()`
+* `addResultRow(label, value)`
+* `formatDate()`
+
+## 2.4 Načtení souboru
+* Listener na `#jsonFile`
+* Použití `FileReader`
+* **Chování:**
+  * validace JSON
+  * raw výpis do textarea
+  * aktualizace metadat
+  * žádné ukládání, žádné úpravy
+
+## 2.5 Vyhodnocení dat
+* Spouštěč: `#analyzeBtn`
+* Kontroly:
+  * zda je JSON načten
+  * zda je vybrán modul
+* Výstup:
+  * volání `buildReport(module, data)`
+  * naplnění výsledkové sekce
+  * povolení exportu TXT
+
+## 2.6 Modulově specifická logika (`buildReport`)
+* Přepínač `switch(module)`
+### Masérna
+* `clients`
+* `globalMassageHistory`
+* `voucherPurchases`
+* `notes`
+* `priceListItems`
+
+### Finanční správce
+* `transactions`
+* `monthlySummaries`
+* `annualSummaries`
+* `stockItems`
+
+### Záznamník
+* `notes`
+* `todos`
+* vnořené `tasks`
+* `events`
+* `ideas`
+
+### Knihovna
+* očekává **pole**
+* počítá počet záznamů
+
+### Finanční správce Extra
+* `transactions`
+* počet celkem
+* počet s `channelId`
+
+## 2.7 Validace struktury
+* Funkce `assert(condition, message)`
+* Vyhazuje **Error**
+* Zpracováno v `try/catch`
+
+## 2.8 Export do TXT
+* Generování `Blob`
+* Stažení souboru:
+  * `palpatius_data_report.txt`
+* Exportuje **pouze report**, ne raw data
+
+## 2.9 Reset aplikace
+* Vymazání:
+
+  * inputů
+  * metadat
+  * výsledků
+  * raw výpisu
+* Stav: „Resetováno.“
+
+## ČÁST 3: `style.css` – Vizuální a A11y vrstva
+
+### 3.1 Designový charakter
+* Klidný, nástrojový, analytický
+* Bez brandových barev Palpatia
+* Jasné oddělení:
+  * vstup
+  * výstup
+  * technická data
+
+### 3.2 CSS proměnné
+* barvy pozadí
+* texty
+* akcent
+* nebezpečí (`--danger`)
+* border
+
+### 3.3 Typografie
+* System font stack
+* Jasná hierarchie `h1–h3`
+* Důraz na čitelnost
+
+### 3.4 Formuláře a vstupy
+* Konzistentní inputy
+* Zvýrazněný fokus (`:focus-visible`)
+* Readonly textarea pro raw data
+
+### 3.5 Výsledky
+* `.result-list`
+* `.result-row` (grid)
+* prázdný stav `.result-empty`
+
+### 3.6 Přístupnost
+* Skip link
+* `aria-live`
+* `role="status"`
+* `aria-labelledby`
+* `:focus-visible`
+
+### 3.7 Responsivita
+* Breakpoint `600px`
+* Přepnutí layoutu výsledků na 1 sloupec
+* Menší paddingy
+
+Technická mapa: **Hlavní uvítací stránka Palpatius**
+
+## ČÁST 1: `index.html` – Struktura vstupní stránky
+
+### 1.1 Základ dokumentu
+* **DOCTYPE:** HTML5
+* **Jazyk:** `lang="cs"`
+* **Meta:**
+  * UTF-8
+  * viewport (responsive)
+* **Title:** `Palpatius – Vstup do systému`
+* **Favicon:**
+  * `assets/icons/favicon.ico`
+* **Styly:**
+  * jeden lokální soubor `style.css`
+* **Skript:**
+ * jeden lokální soubor `script.js`
+
+### 1.2 Hlavní obsah (`<main>`)
+* **Třída:** `welcome-container`
+* **Role:** jediný aplikační kontejner stránky
+* **Charakter:** statická vstupní obrazovka (landing)
+
+### 1.3 Název systému
+* `<h1 class="title">PALPATIUS</h1>`
+* Slouží jako:
+  * vizuální identita
+  * jasný vstupní bod
+* Bez interakce
+
+### 1.4 Podtitul
+* `<p class="subtitle">Jednoduchý systém pro maséry</p>`
+* Stručné vysvětlení účelu systému
+
+### 1.5 Vstup do aplikace
+* `<a class="enter-button">`
+* **Cíl:**
+  `data/1._maserna/index.html`
+* **ARIA:**
+  * `aria-label="Vstoupit do systému Palpatius"`
+* **Role:**
+  * jediný akční prvek stránky
+  * vstupní bod do celé aplikace Palpatius
+
+### 1.6 Úvodní text
+* `<section class="intro-text">`
+* **Obsah:**
+  * vysvětlení filozofie systému
+  * offline-first přístup
+  * bezpečnost dat (lokální uložení)
+* Pouze informativní, bez interakce
+
+### 1.7 Aktuální čas
+* `<p id="current-time" class="time"></p>`
+* Dynamicky doplňován JavaScriptem
+* Slouží jako:
+  * jemný „živý“ prvek
+  * potvrzení běhu aplikace
+
+## ČÁST 2: `script.js` – Logika zobrazení času
+
+### 2.1 Formátování data
+* Funkce: `formatCzechDateTime(date)`
+* **Používá:**
+  * `toLocaleDateString('cs-CZ')`
+  * `toLocaleTimeString('cs-CZ', { hour12: false })`
+* Výstup:
+  * český slovní formát data
+  * 24hodinový čas
+  * spojeno znakem „–“
+
+### 2.2 Aktualizace času
+* Funkce: `updateTime()`
+* Chování:
+  * vyhledá `#current-time`
+  * pokud neexistuje → bezpečný návrat
+  * jinak aktualizuje text
+
+### 2.3 Spuštění
+* Okamžité zavolání `updateTime()`
+* Periodická aktualizace:
+  * `setInterval(updateTime, 1000)`
+* **Charakter:**
+  * žádné globální závislosti
+  * žádný stav
+  * čistě prezentační logika
+
+## ČÁST 3: `style.css` – Vizuální a A11y vrstva
+
+### 3.1 Celkový styl
+* Minimalistický tmavý design
+* Zaměřeno na:
+  * klid
+  * čitelnost
+  * první dojem
+* Font:
+  * `Inter` (konzistentní s celým Palpatiem)
+
+### 3.2 Rozvržení stránky
+* `body`:
+  * flexbox
+  * centrování horizontálně i vertikálně
+  * `min-height: 100vh`
+* Text zarovnán na střed
+
+### 3.3 Typografie
+* `.title`
+  * velmi výrazný (4rem / 900)
+  * žlutá Palpatius barva `#facc15`
+  * jemný glow efekt
+* `.subtitle`
+  * menší, klidnější
+* `.intro-text p`
+  * čitelný, delší text
+  * vyšší line-height
+
+### 3.4 Hlavní akční tlačítko
+* `.enter-button`
+* Vlastnosti:
+  * velké
+  * kontrastní
+  * jasný hover a focus stav
+* **A11y:**
+  * výrazný focus ring
+  * bez JS závislosti
+
+### 3.5 Zobrazení času
+* `.time`
+* Umístěno dole
+* Nižší vizuální priorita
+* Slouží jako doplněk, ne rušivý prvek
+
+### 3.6 Responsivita
+* Breakpoint: `640px`
+* Zmenšení:
+  * názvu
+  * tlačítka
+  * textů
+* Zachována hierarchie a čitelnost
+
+Celkový souhrn:
+Palpatius je uzavřený, offline pracovní systém navržený pro klidnou a soustředěnou práci. Nestojí na automatizaci, cloudu ani „chytrých“ rozhodnutích, ale na vědomé kontrole, jednoduchosti a dlouhodobé stabilitě. Každý modul je samostatný, čitelný a bezpečný sám o sobě. Data jsou lokální, exporty jsou vědomé a struktura systému je navržena tak, aby se dala pochopit i po letech. Přístupnost není vrstva navíc, ale základní architektonický princip. Palpatius není experiment ani MVP – je to hotový pracovní nástroj, který přesně ví, čím je, a čím nikdy nebude.

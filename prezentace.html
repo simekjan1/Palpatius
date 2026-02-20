@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Palpatius - Vaše data, vaše kontrola</title>
+  <style>
+/* ==========================
+   Palpatius – prezentační stránka
+   Plně offline, bez závislostí
+   ========================== */
+
+:root {
+  --bg-main: #121212;
+  --bg-panel: #1e1e1e;
+  --bg-accent: #2a2a2a;
+  --text-main: #ffffff;
+  --text-muted: #b0b0b0;
+  --focus: #00bcd4;
+  --primary: #2563eb;
+  --success: #16a34a;
+  --danger: #dc2626;
+}
+
+/* Základ */
+body {
+  margin: 0;
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+/* Kontejner */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* Hlavní nadpis */
+.hero {
+  text-align: center;
+  padding: 4rem 1rem 3rem;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+}
+
+/* Sekce */
+.section {
+  margin-top: 3rem;
+}
+
+.section h2 {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  color: var(--primary);
+}
+
+/* Boxy problémy/řešení */
+.info-box {
+  background: var(--bg-panel);
+  border: 1px solid var(--bg-accent);
+  padding: 1.2rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.info-box.problem {
+  border-left: 4px solid var(--danger);
+}
+
+.info-box.solution {
+  border-left: 4px solid var(--success);
+}
+
+/* Tlačítka */
+.button {
+  display: inline-block;
+  background: var(--primary);
+  color: #fff;
+  padding: 0.8rem 1.4rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.button:hover {
+  background: #1d4ed8;
+}
+
+.button.secondary {
+  background: var(--bg-accent);
+}
+
+.button.secondary:hover {
+  background: #333;
+}
+
+/* Grid dvě cesty */
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  margin-top: 4rem;
+  padding: 2rem 0;
+  color: var(--text-muted);
+  border-top: 1px solid var(--bg-accent);
+}
+
+/* Fokus přístupnost */
+a:focus,
+button:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+  </style>
+</head>
+<body class="font-sans antialiased text-gray-800 dark:text-gray-200">
+
+  <section class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-700 text-white text-center px-6">
+    <h1 class="text-5xl md:text-7xl font-extrabold drop-shadow-lg mb-6">
+      Palpatius
+    </h1>
+    <p class="text-xl md:text-2xl max-w-2xl mb-10 opacity-90">
+      Vaše data, vaše kontrola. Bezpečně uloženo vždy jen u vás.
+    </p>
+    
+    <div class="absolute bottom-10">
+        <p class="text-lg opacity-90">Zjistěte, jak vám pomůže</p>
+        <p class="text-3xl opacity-90 animate-bounce mt-2">👇</p>
+    </div>
+  </section>
+
+  <div class="container mx-auto max-w-4xl p-4 md:p-8">
+    <main class="content-box bg-white dark:bg-gray-900 shadow-xl rounded-2xl p-6 md:p-10 leading-relaxed">
+      <div class="prose prose-lg dark:prose-invert max-w-none">
+            
+        <h2 class="text-3xl font-semibold mt-6 mb-3 text-blue-600 dark:text-blue-400">Co je Palpatius?</h2>
+        <p>
+          Palpatius je ideální řešení pro maséry, kteří chtějí mít všechna data v bezpečí, a přitom snadno po ruce.
+        </p>
+
+        <h3 class="text-2xl font-semibold mt-4 mb-2">💾 Vše na jednom místě</h3>
+        <p>
+          Už žádné listování v diáři, hledání poznámek v sešitu a data o klientech v Excelu. Palpatius propojuje všechny informace o klientech, jejich masážích, platbách a vašich nápadech do jednoho systému. Šetříte čas a máte jistotu, že na nic nezapomenete.
+        </p>
+        
+        <h2 class="text-3xl font-semibold mt-8 mb-3 text-blue-600 dark:text-blue-400">Řeším vaše problémy, ne jen funkce</h2>
+        <p>
+          Palpatius není jen soubor nástrojů. Je to řešení pro vaše každodenní starosti. Pojďme se podívat, jak vám Palpatius může pomoci:
+        </p>
+
+        <div class="space-y-6 mt-6">
+          <div class="p-4 bg-red-50 dark:bg-red-900/30 rounded-lg border border-red-200 dark:border-red-800">
+            <p class="font-bold text-lg">❌ Stresujete se před příchodem klienta hledáním jeho poznámek v sešitě nebo různých souborech?</p>
+            <p class="mt-2 text-green-700 dark:text-green-300">
+              <strong>✅ S Palpatiem máte kompletní historii klienta okamžitě před sebou – minulé masáže, poznámky i preference. Získáte tak klid, profesionální jistotu a víc času na to hlavní: věnovat se klientovi naplno.</strong>
+            </p>
+          </div>
+          <div class="p-4 bg-red-50 dark:bg-red-900/30 rounded-lg border border-red-200 dark:border-red-800">
+            <p class="font-bold text-lg">❌ Nejste si jistí, které služby vám nejvíc vydělávají a které jsou jen "žrouti času"?</p>
+            <p class="mt-2 text-green-700 dark:text-green-300">
+              <strong>✅ Odhalte skutečné motory vašeho podnikání. Palpatius vám jasně ukáže, které služby jsou nejžádanější a nejvýnosnější. Díky tomu můžete chytřeji plánovat, efektivněji investovat svůj čas a s jistotou rozvíjet svou praxi.</strong>
+            </p>
+          </div>
+          <div class="p-4 bg-red-50 dark:bg-red-900/30 rounded-lg border border-red-200 dark:border-red-800">
+            <p class="font-bold text-lg">❌ Máte super nápady na vylepšení, ale zapomenete je, než je stihnete zapsat?</p>
+            <p class="mt-2 text-green-700 dark:text-green-300">
+              <strong>✅ Už žádné ztracené příležitosti. Zachyťte inspiraci okamžitě. Palpatius vám pomůže nápady nejen uložit, ale hlavně je proměnit v konkrétní úkoly a posouvat svou praxi neustále vpřed.</strong>
+            </p>
+          </div>
+        </div>
+
+        <h2 id="vyber-cesty" class="text-3xl font-semibold mt-8 mb-4 text-blue-600 dark:text-blue-400">Dvě cesty k Palpatiu</h2>
+        <div class="grid md:grid-cols-2 gap-6 mt-6 not-prose">
+            
+            <div class="p-6 border-2 border-blue-500 dark:border-blue-700 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex flex-col">
+                <h3 class="text-2xl font-semibold mb-3 text-blue-700 dark:text-blue-300">🚀 Chci to hned vyzkoušet</h3>
+                <p class="mb-4 flex-grow">
+                    Spusťte Palpatius rovnou v prohlížeči. Všechna data se ukládají bezpečně <strong>přímo do vašeho počítače</strong>. Nikam na internet se nic neposílá.
+                    <a href="#data-info" class="text-sm underline hover:text-blue-600 dark:hover:text-blue-400 block mt-2">Jak to přesně funguje?</a>
+                </p>
+                <a href="https://simekjan1.github.io/Palpatius/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="btn-palpatius block text-center bg-blue-600 text-white font-bold text-xl px-8 py-4 rounded-xl shadow-lg transition-transform duration-300 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300">
+                   Spustit webovou verzi
+                </a>
+            </div>
+
+            <div class="p-6 border border-gray-300 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-800/30 flex flex-col">
+                <h3 class="text-2xl font-semibold mb-3">💾 Chci maximální kontrolu</h3>
+                <p class="mb-4 flex-grow">
+                    Stáhněte si celý systém jako balíček (ZIP). Rozbalte a spusťte lokálně. Funguje navždy, i bez internetu. Ideální pro ty, kdo chtějí mít soubory fyzicky u sebe.
+                    <a href="#data-info" class="text-sm underline hover:text-blue-600 dark:hover:text-blue-400 block mt-2">Jak je to s daty?</a>
+                </p>
+                <a href="https://github.com/simekjan1/Palpatius/archive/refs/heads/main.zip"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="btn-palpatius-secondary block text-center bg-gray-600 text-white font-bold text-xl px-8 py-4 rounded-xl shadow-lg transition-transform duration-300 hover:bg-gray-700 focus:ring-4 focus:ring-gray-300">
+                   Stáhnout Offline Verzi (.zip)
+                </a>
+            </div>
+        </div>
+
+        <h2 id="data-info" class="text-3xl font-semibold mt-8 mb-3 text-blue-600 dark:text-blue-400">Kam se ukládají vaše data? (Důležité!)</h2>
+        <p>
+          Když vytvoříte klienta, masáž, položku ceníku, nebo cokoliv jiného, tak se to vždy ukládá k vám. Vaše data nejsou nikým ani ničím spravována. Nemusíte se bát, že by k vašim datům měl někdo přístup.
+        </p>
+
+        <h3 class="text-2xl font-semibold mt-4 mb-2">Jak to funguje?</h3>
+        <p>
+          Palpatius ukládá všechna vaše data do profilu prohlížeče. Ve všech modulech je ale jedna pojistka. Je dobré vaše data pravidelně exportovat.
+        </p>
+
+        <h3 class="text-2xl font-semibold mt-4 mb-2">Export dat = Vaše absolutní kontrola</h3>
+        <p>
+          Vaše citlivá data nejsou na žádných cizích serverech. Export jedním kliknutím je <strong>funkce</strong>, která vám dává svobodu si data kdykoli zazálohovat na flashku nebo disk. Je to jednoduchá pojistka pro váš naprostý klid, kdybyste třeba přeinstalovali systém nebo čistili cache prohlížeče.
+          <strong>Pro klid duše doporučujeme udělat si export třeba jednou za měsíc.</strong>
+        </p>
+        
+        <h3 class="text-2xl font-semibold mt-4 mb-2">🔒 Garance transparentnosti (Open Source)</h3>
+        <p>
+            Palpatius je open-source projekt. Jeho kód je veřejně dostupný na <a href="https://github.com/simekjan1/Palpatius" target="_blank" rel="noopener noreferrer" class="underline hover:text-blue-600 dark:hover:text-blue-400">GitHubu</a>. Kdokoli se může podívat, jak systém funguje a jak zachází s vašimi daty. Je to maximální záruka transparentnosti – žádná skrytá zadní vrátka.
+        </p>
+
+        <h2 class="text-3xl font-semibold mt-8 mb-3 text-blue-600 dark:text-blue-400">Jak funguje tato "online" verze?</h2>
+        <p>
+          Budou má data i tak v bezpečí? Opravdu se není čeho bát.
+        </p>
+        <p>
+            Představte si to jako <strong>digitální poznámkový blok</strong>, který je součástí vašeho prohlížeče. Když do něj píšete, vše se ukládá <em>přímo do paměti prohlížeče</em> ve vašem počítači, ne někam na internet. 
+        </p>
+        <p>
+            Když stránku zavřete a znovu otevřete, prohlížeč si pamatuje, co jste napsali, a data vám znovu ukáže. Jsou jen vaše, lokálně u vás.
+        </p>
+
+        <h3 class="text-2xl font-semibold mt-4 mb-2">Kde se dozvím více informací?</h3>
+        <p>
+          Více informací se dozvíte, když kliknete na tlačítko "Spustit webovou verzi" výše. To vás přesměruje do aplikace Palpatius. Pod rozcestníkem je stručná dokumentace. Další informace jsou ve všech modulech, po kliknutí na tlačítko nápověda.
+        </p>
+
+
+        <h2 class="text-3xl font-semibold mt-8 mb-3 text-blue-600 dark:text-blue-400">Jak začít?</h2>
+        <p>
+          Není potřeba žádná instalace ani registrace.
+          Stačí si vybrat jednu ze dvou cest <a href="#vyber-cesty" class="underline hover:text-blue-600 dark:hover:text-blue-400">výše</a>, a můžete začít pracovat.
+        </p>
+
+      </div>
+    </main>
+
+    <footer class="text-center mt-12 mb-8 text-gray-500 dark:text-gray-400">
+      <p class="text-4xl font-bold opacity-80">Palpatius</p>
+      <p class="text-xl opacity-80">Vaše data, vaše kontrola.</p>
+      <p class="mt-4 text-sm">
+        Projekt je open-source. Kód najdete na 
+        <a href="https://github.com/simekjan1/Palpatius" target="_blank" rel="noopener noreferrer" class="underline hover:text-blue-600 dark:hover:text-blue-400">GitHubu</a>.
+      </p>
+    </footer>
+  </div>
+
+</body>
+</html>
