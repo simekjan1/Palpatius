@@ -300,3 +300,7 @@ button.danger:focus-visible {
         font-size: 0.95rem;
     }
 }
+/* Malé oddělení diagnostiky */
+#idbResultList {
+  margin-top: 0.8rem;
+}

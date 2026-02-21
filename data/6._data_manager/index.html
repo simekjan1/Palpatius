@@ -118,6 +118,37 @@
         </div>
       </details>
     </section>
+
+<section class="card" aria-labelledby="idbDiagTitle">
+  <h2 id="idbDiagTitle" class="card-title">
+    Diagnostika IndexedDB
+  </h2>
+
+  <p class="help">
+    Tento nástroj kontroluje základní technický stav databází
+    používaných moduly Palpatius.
+    Neprovádí žádné změny ani opravy.
+  </p>
+
+  <div class="actions" role="group" aria-label="Diagnostika akce">
+    <button type="button" id="runIdbDiagnosticsBtn" class="btn">
+      Spustit kontrolu
+    </button>
+  </div>
+
+  <div class="result" aria-live="polite" aria-atomic="true">
+    <dl class="result-list" id="idbResultList">
+      <div class="result-empty" id="idbResultEmpty">
+        Zatím nebyla provedena žádná kontrola.
+      </div>
+    </dl>
+  </div>
+
+  <details class="details">
+    <summary>Technický report</summary>
+    <textarea id="idbRawOutput" class="raw" rows="8" readonly></textarea>
+  </details>
+</section>
   </main>
 
   <footer class="app-footer">

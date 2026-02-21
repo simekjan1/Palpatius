@@ -280,3 +280,111 @@ resetBtn.addEventListener("click", () => {
         }
     }
 })();
+
+/* =====================================================
+   IndexedDB Diagnostika (read-only)
+   ===================================================== */
+
+const runIdbDiagnosticsBtn = document.getElementById("runIdbDiagnosticsBtn");
+const idbResultList = document.getElementById("idbResultList");
+const idbResultEmpty = document.getElementById("idbResultEmpty");
+const idbRawOutput = document.getElementById("idbRawOutput");
+
+const KNOWN_DATABASES = [
+  {
+    name: "palpatiusMasernaDB",
+    expectedStores: ["clients", "priceListItems", "globalMassageHistory", "voucherPurchases"]
+  },
+  {
+    name: "palpatiusFinancialDB",
+    expectedStores: ["transactions", "monthlySummaries", "annualSummaries", "stockItems"]
+  },
+  {
+    name: "PalpatiusZaznamnikDB",
+    expectedStores: ["notes", "todos", "events", "ideas"]
+  }
+];
+
+function clearIdbResults() {
+  idbResultList.innerHTML = "";
+}
+
+function addIdbRow(label, value) {
+  const row = document.createElement("div");
+  row.className = "result-row";
+
+  const dt = document.createElement("dt");
+  dt.textContent = label;
+
+  const dd = document.createElement("dd");
+  dd.textContent = value;
+
+  row.appendChild(dt);
+  row.appendChild(dd);
+  idbResultList.appendChild(row);
+}
+
+async function runIndexedDBDiagnostics() {
+  clearIdbResults();
+
+  let report = [];
+  report.push("Palpatius – IndexedDB diagnostika");
+  report.push(`Datum: ${new Date().toLocaleString("cs-CZ")}`);
+  report.push("");
+
+  for (const dbConfig of KNOWN_DATABASES) {
+    try {
+      const result = await checkDatabase(dbConfig);
+      addIdbRow(dbConfig.name, result.status);
+      report.push(`${dbConfig.name}: ${result.status}`);
+    } catch (e) {
+      addIdbRow(dbConfig.name, "Chyba při otevření");
+      report.push(`${dbConfig.name}: CHYBA (${e.message})`);
+    }
+  }
+
+  if (navigator.storage?.estimate) {
+    const storage = await navigator.storage.estimate();
+    const usedMB = (storage.usage / 1024 / 1024).toFixed(2);
+    const quotaMB = (storage.quota / 1024 / 1024).toFixed(2);
+
+    addIdbRow("Využité úložiště", `${usedMB} MB`);
+    addIdbRow("Dostupná kvóta", `${quotaMB} MB`);
+
+    report.push("");
+    report.push(`Využité úložiště: ${usedMB} MB`);
+    report.push(`Kvóta: ${quotaMB} MB`);
+  }
+
+  idbRawOutput.value = report.join("\n");
+}
+
+function checkDatabase(config) {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(config.name);
+
+    request.onerror = () => reject(request.error);
+
+    request.onsuccess = () => {
+      const db = request.result;
+      const storeNames = Array.from(db.objectStoreNames);
+
+      const missingStores = config.expectedStores.filter(
+        s => !storeNames.includes(s)
+      );
+
+      let status = "OK";
+
+      if (missingStores.length > 0) {
+        status = `Chybí: ${missingStores.join(", ")}`;
+      }
+
+      db.close();
+      resolve({ status });
+    };
+  });
+}
+
+if (runIdbDiagnosticsBtn) {
+  runIdbDiagnosticsBtn.addEventListener("click", runIndexedDBDiagnostics);
+}
