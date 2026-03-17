@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rychlá poznámka</title>
+    <style>
+        /* CSS STYLY */
+        body {
+            font-family: sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .note-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            border: 2px solid #444;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            margin-top: 0;
+            color: #333;
+        }
+
+        /* Styl pro textové pole */
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* Aby padding nezvětšoval šířku */
+            resize: vertical; /* Uživatel si může pole zvětšit dolů */
+            font-family: inherit;
+        }
+
+        textarea:focus {
+            outline: 3px solid #0056b3;
+            border-color: #0056b3;
+        }
+
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* Tlačítko Reset - červené pro varování */
+        #reset-btn {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #reset-btn:hover, #reset-btn:focus {
+            background-color: #c9302c;
+            outline: 3px solid #000;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="note-container">
+        <h1>Rychlá poznámka</h1>
+        
+        <label for="note-area" style="display: block; margin-bottom: 10px;">Váš text se automaticky ukládá:</label>
+        
+        <textarea 
+            id="note-area" 
+            placeholder="Sem začněte psát..."
+            aria-label="Prostor pro vaši poznámku"
+        ></textarea>
+
+        <div class="controls">
+            <button id="reset-btn" onclick="smazatPoznamku()">Smazat vše (Reset)</button>
+        </div>
+    </main>
+
+    <script>
+        const textarea = document.getElementById('note-area');
+
+        // 1. NAČTENÍ: Při otevření stránky koukneme do paměti
+        window.onload = () => {
+            const ulozenaPoznamka = localStorage.getItem('mojePoznamka');
+            if (ulozenaPoznamka) {
+                textarea.value = ulozenaPoznamka;
+            }
+        };
+
+        // 2. UKLÁDÁNÍ: Při každém stisku klávesy uložíme text
+        textarea.addEventListener('input', () => {
+            localStorage.setItem('mojePoznamka', textarea.value);
+        });
+
+        // 3. RESET: Smaže text i paměť (s potvrzením)
+        function smazatPoznamku() {
+            if (confirm("Opravdu chcete smazat celou poznámku?")) {
+                textarea.value = "";
+                localStorage.removeItem('mojePoznamka');
+                textarea.focus(); // Vrátí kurzor zpět do pole
+            }
+        }
+    </script>
+
+</body>
+</html>

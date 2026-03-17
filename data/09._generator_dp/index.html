@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Palpatius – Generátor poukazů</title>
+  <meta name="description" content="Offline generátor dárkových poukazů a QR kódů pro Palpatius." />
+
+  <link rel="stylesheet" href="style.css" />
+
+<meta name="color-scheme" content="dark light">
+</head>
+
+<body>
+
+<nav class="module-nav" aria-label="Hlavní navigace">
+  <ul>
+    <li><a href="../../data/01._maserna/index.html">Masérna</a></li>
+    <li><a href="../../data/02._financni_spravce/index.html">Finance</a></li>
+    <li><a href="../../data/03._zaznamnik/index.html">Záznamník</a></li>
+    <li><a href="../../data/04._knihovna/index.html">Knihovna</a></li>
+    <li><a href="../../data/05._financni_spravce_extra/index.html">Finanční správce Extra</a></li>
+    <li><a href="../../data/06._data_manager/index.html">Data Manager</a></li>
+            <li><a href="../../data/07._dokumentace/index.html" data-module="dokumentace">Dokumentace</a></li>
+            <li><a href="../../data/08._branchpad/index.html" data-module="branchpad">Branchpad</a></li>
+            <li><a href="../../data/09._generator_dp/index.html" data-module="generator_dp">Generátor dárkových poukazů</a></li>
+            <li><a href="../../data/10._pauza/index.html" data-module="pauza">Pauza</a></li>
+  </ul>
+</nav>
+
+<a class="skip-link" href="#main">Přeskočit na hlavní obsah</a>
+
+<header class="app-header">
+  <div class="header-inner">
+    <h1 class="app-title">Generátor dárkových poukazů</h1>
+    <p class="app-subtitle">
+      Offline produkční nástroj pro vytvoření profesionálního poukazu.
+      Neukládá historii. Nevytváří databázi.
+    </p>
+  </div>
+</header>
+
+<main id="main" class="app-main" tabindex="-1">
+
+  <!-- ========================= -->
+  <!-- 1️⃣ Údaje o poukazu -->
+  <!-- ========================= -->
+  <section class="card" aria-labelledby="editorTitle">
+    <h2 id="editorTitle" class="card-title">Údaje poukazu</h2>
+
+    <form id="voucherForm" class="form" novalidate>
+
+      <div class="field">
+        <label for="studioName">Název masérny</label>
+        <input type="text" id="studioName" name="studioName" required />
+      </div>
+
+      <div class="field">
+        <label for="voucherType">Typ poukazu</label>
+        <input type="text" id="voucherType" name="voucherType" />
+      </div>
+
+      <div class="field">
+        <label for="clientName">Jméno a příjmení klienta</label>
+        <input type="text" id="clientName" name="clientName" />
+      </div>
+
+      <div class="field">
+        <label for="dedication">Věnování</label>
+        <textarea id="dedication" name="dedication" rows="3"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="voucherValue">Hodnota poukazu (Kč)</label>
+<input type="number" id="value" name="value" min="0" />
+      </div>
+
+      <div class="field">
+        <label for="contactInfo">Kontaktní údaje</label>
+        <input type="text" id="contactInfo" name="contactInfo" />
+      </div>
+
+      <div class="field">
+        <label for="address">Adresa provozovny</label>
+        <input type="text" id="address" name="address" />
+      </div>
+<div class="field">
+  <label for="terms">Podmínky poukazu</label>
+  <textarea id="terms" name="terms" rows="4"></textarea>
+</div>
+    </form>
+  </section>
+
+  <!-- ========================= -->
+  <!-- 2️⃣ Nastavení layoutu -->
+  <!-- ========================= -->
+  <section class="card" aria-labelledby="layoutTitle">
+    <h2 id="layoutTitle" class="card-title">Rozvržení a styl</h2>
+
+    <div class="field">
+      <label for="layoutSelect">Layout</label>
+      <select id="layoutSelect">
+        <option value="minimal">Minimal</option>
+        <option value="elegant">Elegant</option>
+        <option value="modern">Modern</option>
+<option value="spa">Spa</option>
+<option value="luxury">Luxury</option>
+      </select>
+    </div>
+
+<div class="field">
+  <label for="logoUpload">Logo (PNG/JPG)</label>
+  <input type="file" id="logoUpload" accept="image/*" />
+</div>
+
+<div class="field">
+  <label for="backgroundUpload">Pozadí (PNG/JPG)</label>
+  <input type="file" id="backgroundUpload" accept="image/*" />
+</div>
+
+    <div class="field">
+      <label for="formatSelect">Typ dokumentu</label>
+      <select id="formatSelect">
+        <option value="voucher_landscape">Poukaz na šířku</option>
+        <option value="a4_portrait">A4 na výšku</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="fontSelect">Font</label>
+      <select id="fontSelect">
+        <option value="inter">Inter</option>
+        <option value="system">System</option>
+        <option value="alt">Alternativní</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="qrText">Text pro QR kód</label>
+<input type="text" id="qrText" name="qrText" />
+    </div>
+
+    <div class="field">
+      <label for="qrSize">Velikost QR (px)</label>
+      <input type="number" id="qrSize" min="64" max="256" value="128" />
+    </div>
+  </section>
+
+<div class="field">
+  <label for="logoUpload">Logo (PNG/JPG)</label>
+  <input type="file" id="logoUpload" accept="image/*" />
+</div>
+
+<div class="field">
+  <label for="backgroundUpload">Pozadí (PNG/JPG)</label>
+  <input type="file" id="backgroundUpload" accept="image/*" />
+</div>
+
+  <!-- ========================= -->
+  <!-- 3️⃣ Náhled -->
+  <!-- ========================= -->
+  <section class="card" aria-labelledby="previewTitle">
+    <h2 id="previewTitle" class="card-title">Náhled poukazu</h2>
+
+    <p class="help">
+      Náhled je pouze vizuální kontrola výsledného dokumentu.
+    </p>
+
+    <div class="preview-container">
+<canvas id="voucherCanvas" width="1000" height="600" role="img" aria-label="Náhled poukazu"></canvas>
+    </div>
+  </section>
+
+  <!-- ========================= -->
+  <!-- 4️⃣ Export -->
+  <!-- ========================= -->
+  <section class="card" aria-labelledby="exportTitle">
+    <h2 id="exportTitle" class="card-title">Export</h2>
+
+    <div class="actions" role="group" aria-label="Exportní akce">
+      <button type="button" id="exportPdfBtn" class="btn">
+        Export PDF
+      </button>
+
+<button type="button" id="exportA4Btn" class="btn">
+  Export A4 (4 poukazy)
+</button>
+
+      <button type="button" id="exportPngBtn" class="btn">
+        Export PNG
+      </button>
+
+      <button type="button" id="exportJsonBtn" class="btn btn-secondary">
+        Uložit návrh (JSON)
+      </button>
+
+      <label class="btn btn-outline">
+        Načíst návrh (JSON)
+        <input type="file" id="importJsonInput" accept="application/json,.json" hidden />
+      </label>
+    </div>
+
+    <p id="exportStatus" class="status" role="status" aria-live="polite">
+      Připraveno.
+    </p>
+
+  </section>
+
+</main>
+
+<footer class="app-footer">
+  <p class="footer-text">
+    Offline produkční nástroj · Bez databáze · Bez historie · Bez propojení s moduly
+  </p>
+</footer>
+
+<script src="../../assets/libs/qrcode.min.js"></script>
+<script src="../../assets/libs/jspdf.umd.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

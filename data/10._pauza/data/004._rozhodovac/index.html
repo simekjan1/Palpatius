@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rozhodovač - Modul Pauza</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .decide-container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            border: 3px solid #0056b3;
+        }
+
+        h1 { color: #0056b3; font-size: 1.6rem; margin-bottom: 20px; }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input:focus { outline: 3px solid #ffcc00; border-color: #0056b3; }
+
+        #result-area {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #d9534f; /* Výrazná barva pro výsledek */
+            border: 2px dashed #0056b3;
+        }
+
+        button {
+            width: 100%;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover, button:focus {
+            background-color: #003d7a;
+            outline: 4px solid #ffcc00;
+        }
+
+        .hint { font-size: 0.9rem; color: #666; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <main class="decide-container">
+        <h1>Rozhodovač</h1>
+
+        <div class="input-group">
+            <label for="opt1">Možnost A (nebo Orel):</label>
+            <input type="text" id="opt1" placeholder="Např. Orel">
+        </div>
+
+        <div class="input-group">
+            <label for="opt2">Možnost B (nebo Panna):</label>
+            <input type="text" id="opt2" placeholder="Např. Panna">
+        </div>
+
+        <div id="result-area" role="status" aria-live="assertive">
+            Zatím nepadlo nic
+        </div>
+
+        <button onclick="rozhodni()">Rozhodnout!</button>
+
+        <p class="hint">Nechte pole prázdná pro klasického Orla nebo Pannu.</p>
+    </main>
+
+    <script>
+        function rozhodni() {
+            const resArea = document.getElementById('result-area');
+            let opt1 = document.getElementById('opt1').value.trim();
+            let opt2 = document.getElementById('opt2').value.trim();
+
+            // Pokud jsou pole prázdná, dosadíme klasiku
+            if (!opt1) opt1 = "Orel";
+            if (!opt2) opt2 = "Panna";
+
+            // Efekt "napětí" pro čtečku
+            resArea.innerText = "Házím...";
+
+            setTimeout(() => {
+                const volba = Math.random() < 0.5 ? opt1 : opt2;
+                resArea.innerText = "Padlo: " + volba;
+            }, 500); // Půlvteřinka pauza pro efekt
+        }
+    </script>
+
+</body>
+</html>

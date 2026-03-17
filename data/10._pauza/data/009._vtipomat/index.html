@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Vtipomat - Modul Pauza</title>
+    <style>
+        body { font-family: sans-serif; background: #fff8e1; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .vtip-container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); max-width: 500px; text-align: center; border: 3px solid #ff9800; }
+        #vtip-display { font-size: 1.3rem; margin: 25px 0; min-height: 80px; font-style: italic; color: #333; }
+        button { background: #ff9800; color: white; border: none; padding: 15px 30px; font-size: 1.2rem; border-radius: 8px; cursor: pointer; }
+        button:focus { outline: 4px solid #d32f2f; }
+    </style>
+</head>
+<body>
+
+    <main class="vtip-container">
+        <h1>Vtipomat</h1>
+        <div id="vtip-display" role="status" aria-live="polite">Připraven k pobavení!</div>
+        <button onclick="generovatVtip()">Řekni mi vtip</button>
+    </main>
+
+    <script>
+        const vtipy = [
+            "Přijde chlápek k masérovi a říká: Potřeboval bych záda jako ze železa. Masér na to: Dobře, ale to bude bolet. Chlápek: V pohodě, hlavně ať to drží!",
+            "Víte, proč maséři nikdy nejsou unavení? Protože si nenechají nic líbit a všechno ze sebe vymačkají.",
+            "Manželka se ptá maséra: Jaké to bylo dneska v práci? Masér: Ale, samé tahání za nitky... tedy vlastně za svaly.",
+            "Proč masér nepoužívá budík? Protože ví, že každý klient ho probudí svým vrzáním v zádech."
+        ];
+
+        function generovatVtip() {
+            const nahodnyIndex = Math.floor(Math.random() * vtipy.length);
+            document.getElementById('vtip-display').innerText = vtipy[nahodnyIndex];
+        }
+    </script>
+</body>
+</html>

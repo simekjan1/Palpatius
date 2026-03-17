@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generátor tipů</title>
+    <style>
+        /* CSS STYLY - Vše na jednom místě */
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+            color: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border: 2px solid #333;
+        }
+
+        h1 {
+            color: #0056b3;
+            font-size: 1.5rem;
+        }
+
+        /* Oblast pro samotný tip */
+        #tip-display {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: #e9ecef;
+            border-left: 5px solid #0056b3;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .tip-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .tip-text {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        /* Tlačítko - dostatečně velké a kontrastní */
+        button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover, button:focus {
+            background-color: #003d7a;
+            outline: 3px solid #ffcc00; /* Výrazný focus pro přístupnost */
+        }
+    </style>
+</head>
+<body>
+
+    <main class="container">
+        <h1>Náhodný tip</h1>
+
+        <div id="tip-display" role="region" aria-live="polite" aria-atomic="true">
+            <span class="tip-title" id="output-title">Klikněte pro tip</span>
+            <span class="tip-text" id="output-text">Zde se zobrazí podrobnosti.</span>
+        </div>
+
+        <button onclick="generovatTip()">Zobrazit další tip</button>
+    </main>
+
+    <script>
+        // --- MÍSTO PRO TVOJE DATA ---
+        // Sem vkládej nové tipy podle vzoru: { n: "Název", t: "Popis" },
+        const databazeTipu = [
+            { n: "Klasická masáž", t: "Pomáhá uvolnit svalové napětí a zlepšuje prokrvení pokožky." },
+            { n: "Pitný režim", t: "Po masáži je důležité pít hodně vody, aby se vyplavily toxiny." },
+            { n: "Přístupnost", t: "Při tvorbě webu vždy používejte sémantické značky jako <main> nebo <button>." },
+            { n: "Odpočinek", t: "Dopřejte svému tělu po masáži alespoň 2 hodiny klidu." },
+            { n: "Minecraft tip", t: "Nikdy nekopej přímo pod sebe, mohl bys skončit v lávě!" }
+        ];
+        // --- KONEC MÍSTA PRO DATA ---
+
+        function generovatTip() {
+            // Výběr náhodného objektu z pole
+            const nahodnyIndex = Math.floor(Math.random() * databazeTipu.length);
+            const tip = databazeTipu[nahodnyIndex];
+
+            // Vložení do HTML
+            document.getElementById('output-title').innerText = tip.n;
+            document.getElementById('output-text').innerText = tip.t;
+        }
+
+        // Spustit jeden tip hned po načtení
+        window.onload = generovatTip;
+    </script>
+
+</body>
+</html>

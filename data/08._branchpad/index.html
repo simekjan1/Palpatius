@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <title>Branchpad</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="icon" href="favicon.ico">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<nav class="module-nav" aria-label="Hlavní navigace">
+    <div class="container">
+        <ul>
+            <li><a href="../../data/01._maserna/index.html" data-module="maserna">Masérna</a></li>
+            <li><a href="../../data/02._financni_spravce/index.html" data-module="finance">Finance</a></li>
+            <li><a href="../../data/03._zaznamnik/index.html" data-module="zaznamnik">Záznamník</a></li>
+            <li><a href="../../data/04._knihovna/index.html" data-module="knihovna">Knihovna</a></li>
+            <li><a href="../../data/05._financni_spravce_extra/index.html" data-module="finanční správce Extra">Finanční správce Extra</a></li>
+            <li><a href="../../data/06._data_manager/index.html" data-module="data manager">Data Manager</a></li>
+            <li><a href="../../data/07._dokumentace/index.html" data-module="dokumentace">Dokumentace</a></li>
+            <li><a href="../../data/08._branchpad/index.html" data-module="branchpad">Branchpad</a></li>
+            <li><a href="../../data/09._generator_dp/index.html" data-module="generator_dp">Generátor dárkových poukazů</a></li>
+            <li><a href="../../data/10._pauza/index.html" data-module="pauza">Pauza</a></li>
+        </ul>
+    </div>
+</nav>
+
+  <div class="app">
+
+    <!-- Levý panel – strom poznámek -->
+    <nav class="sidebar" aria-label="Strom poznámek">
+      <h1 class="app-title">Poznámky</h1>
+<input
+  type="text"
+  id="searchInput"
+  placeholder="Hledat v poznámkách…"
+  aria-label="Vyhledávání v poznámkách"
+/>
+
+      <div
+        id="notesTree"
+        role="tree"
+        tabindex="0"
+        aria-label="Seznam poznámek"
+      >
+        <!-- Později se bude generovat dynamicky -->
+        <div role="treeitem" tabindex="-1" aria-selected="true">
+          Ukázková poznámka
+        </div>
+      </div>
+
+      <div class="sidebar-actions">
+        <button id="addNoteBtn">Nová poznámka</button>
+        <button id="deleteNoteBtn">Smazat</button>
+      </div>
+    </nav>
+
+    <!-- Pravý panel – editor -->
+    <main class="editor">
+      <label for="noteEditor" class="visually-hidden">
+        Text poznámky
+      </label>
+
+      <textarea
+        id="noteEditor"
+        placeholder="Zde piš text poznámky…"
+        aria-live="polite"
+      ></textarea>
+    </main>
+
+  </div>
+
+  <!-- Spodní lišta – export / import -->
+  <footer class="footer">
+    <button id="exportTxtBtn">Export TXT / MD</button>
+    <button id="exportJsonBtn">Export JSON</button>
+    <button id="importJsonBtn">Import JSON</button>
+    <input type="file" id="importFileInput" hidden>
+  </footer>
+
+  <!-- JS -->
+  <script src="script.js"></script>
+</body>
+</html>

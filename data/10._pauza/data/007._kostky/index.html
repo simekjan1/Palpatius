@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Souboj kostek</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #1a1a1a;
+            color: #eeeeee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .game-box {
+            text-align: center;
+            border: 3px solid #444;
+            padding: 30px;
+            border-radius: 15px;
+            background-color: #222;
+            width: 320px;
+        }
+        .score-board {
+            font-size: 1.2rem;
+            margin: 20px 0;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+        }
+        button {
+            font-size: 1.3rem;
+            padding: 15px 25px;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+        }
+        button:hover { background-color: #218838; }
+        #log {
+            margin-top: 20px;
+            font-style: italic;
+            color: #ffc107;
+            min-height: 3em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-box" role="main">
+    <h1>Souboj kostek</h1>
+    
+    <div class="score-board">
+        <p>Ty: <span id="body-hrac">0</span> bodů</p>
+        <p>Počítač: <span id="body-pc">0</span> bodů</p>
+    </div>
+
+    <button id="hazet">Hodit kostkou</button>
+    <button id="restart" style="display:none;">Hrát znovu</button>
+
+    <div id="log" aria-live="assertive">Hra připravena. Kdo první získá 50 bodů, vyhrává!</div>
+</div>
+
+<script>
+    let bodyHrac = 0;
+    let bodyPc = 0;
+    const cil = 50;
+
+    const btnHazet = document.getElementById('hazet');
+    const btnRestart = document.getElementById('restart');
+    const txtHrac = document.getElementById('body-hrac');
+    const txtPc = document.getElementById('body-pc');
+    const log = document.getElementById('log');
+
+    function hraj() {
+        // Hod hráče
+        let hodHrac = Math.floor(Math.random() * 6) + 1;
+        bodyHrac += hodHrac;
+        txtHrac.textContent = bodyHrac;
+
+        // Hod počítače
+        let hodPc = Math.floor(Math.random() * 6) + 1;
+        bodyPc += hodPc;
+        txtPc.textContent = bodyPc;
+
+        // Sestavení zprávy pro čtečku
+        let zprava = "Hodil jsi " + hodHrac + ". Počítač hodil " + hodPc + ".";
+
+        // Kontrola vítěze
+        if (bodyHrac >= cil || bodyPc >= cil) {
+            if (bodyHrac >= cil && bodyPc >= cil && bodyHrac === bodyPc) {
+                zprava = "Remíza! Oba máte " + bodyHrac + " bodů.";
+            } else if (bodyHrac >= cil) {
+                zprava = "Gratuluji! Vyhrál jsi se skóre " + bodyHrac + " ku " + bodyPc + ".";
+            } else {
+                zprava = "Tentokrát vyhrál počítač " + bodyPc + " ku " + bodyHrac + ".";
+            }
+            btnHazet.style.display = 'none';
+            btnRestart.style.display = 'block';
+            btnRestart.focus();
+        }
+
+        log.textContent = zprava;
+    }
+
+    btnHazet.addEventListener('click', hraj);
+
+    btnRestart.addEventListener('click', () => {
+        bodyHrac = 0;
+        bodyPc = 0;
+        txtHrac.textContent = "0";
+        txtPc.textContent = "0";
+        log.textContent = "Nová hra začala. Hoď si!";
+        btnHazet.style.display = 'block';
+        btnRestart.style.display = 'none';
+        btnHazet.focus();
+    });
+</script>
+
+</body>
+</html>

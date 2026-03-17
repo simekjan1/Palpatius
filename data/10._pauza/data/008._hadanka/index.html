@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Číselná hádanka</title>
+    <style>
+        /* Minimalistický design pro zbytek zraku */
+        body {
+            font-family: sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            border: 2px solid #333;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 400px;
+        }
+        input {
+            font-size: 1.2rem;
+            padding: 10px;
+            width: 80px;
+            margin-top: 10px;
+            background: #222;
+            color: white;
+            border: 1px solid #555;
+        }
+        button {
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        #zpetna-vazba {
+            margin-top: 20px;
+            font-weight: bold;
+            min-height: 1.5em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" role="main">
+    <h1>Myslím si číslo</h1>
+    <p>Hádej číslo od 1 do 100.</p>
+    
+    <label for="odhad">Tvůj tip:</label><br>
+    <input type="number" id="odhad" min="1" max="100">
+    <br>
+    <button id="tlacitko-hadat">Zkusit štěstí</button>
+    <button id="tlacitko-restart" style="display:none;">Hrát znovu</button>
+
+    <div id="zpetna-vazba" aria-live="polite"></div>
+</div>
+
+<script>
+    // Inicializace proměnných
+    let tajneCislo = Math.floor(Math.random() * 100) + 1;
+    let pocetPokusu = 0;
+
+    const vstup = document.getElementById('odhad');
+    const tlacitkoHadat = document.getElementById('tlacitko-hadat');
+    const tlacitkoRestart = document.getElementById('tlacitko-restart');
+    const feedback = document.getElementById('zpetna-vazba');
+
+    function zkontrolujTip() {
+        const tip = parseInt(vstup.value);
+        pocetPokusu++;
+
+        if (isNaN(tip) || tip < 1 || tip > 100) {
+            feedback.textContent = "Zadej prosím platné číslo od 1 do 100.";
+            return;
+        }
+
+        if (tip < tajneCislo) {
+            feedback.textContent = "Moc malé! Zkus vyšší číslo. (Pokusů: " + pocetPokusu + ")";
+        } else if (tip > tajneCislo) {
+            feedback.textContent = "Moc velké! Zkus nižší číslo. (Pokusů: " + pocetPokusu + ")";
+        } else {
+            feedback.textContent = "Gratuluji! Uhodl jsi číslo " + tajneCislo + " na " + pocetPokusu + ". pokus.";
+            tlacitkoHadat.style.display = 'none';
+            tlacitkoRestart.style.display = 'inline-block';
+            tlacitkoRestart.focus(); // Čtečka se zaměří na tlačítko pro novou hru
+        }
+        
+        vstup.value = ''; // Vymaže pole pro další pokus
+        vstup.focus();    // Vrátí kurzor do pole
+    }
+
+    // Reakce na kliknutí
+    tlacitkoHadat.addEventListener('click', zkontrolujTip);
+
+    // Reakce na Enter v políčku
+    vstup.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            zkontrolujTip();
+        }
+    });
+
+    // Restart hry
+    tlacitkoRestart.addEventListener('click', function() {
+        tajneCislo = Math.floor(Math.random() * 100) + 1;
+        pocetPokusu = 0;
+        feedback.textContent = "Hra restartována. Hádej znovu.";
+        tlacitkoHadat.style.display = 'inline-block';
+        tlacitkoRestart.style.display = 'none';
+        vstup.focus();
+    });
+</script>
+
+</body>
+</html>

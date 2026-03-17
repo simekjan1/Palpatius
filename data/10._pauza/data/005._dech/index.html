@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dýchání - Modul Pauza</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .breath-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            border: 3px solid #2e7d32; /* Zelená pro uklidnění */
+        }
+
+        h1 { color: #2e7d32; font-size: 1.5rem; margin-bottom: 20px; }
+
+        #display-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin: 30px 0;
+            min-height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover, button:focus {
+            background-color: #1b5e20;
+            outline: 3px solid #ffcc00;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="breath-container">
+        <h1>Dechové cvičení</h1>
+        
+        <div id="display-text" role="status" aria-live="assertive" aria-atomic="true">
+            Připraven
+        </div>
+
+        <button id="start-btn" onclick="startDychani()">Spustit dýchání</button>
+    </main>
+
+    <script>
+        let interval;
+        const display = document.getElementById('display-text');
+        const btn = document.getElementById('start-btn');
+
+        // Fáze dýchání (4-4-4-4)
+        const faze = [
+            { text: "Nádech", time: 4000 },
+            { text: "Držet dech", time: 4000 },
+            { text: "Výdech", time: 4000 },
+            { text: "Pauza", time: 4000 }
+        ];
+
+        let aktualniFaze = 0;
+
+        function startDychani() {
+            if (interval) {
+                // Zastavení
+                clearInterval(interval);
+                interval = null;
+                display.innerText = "Zastaveno";
+                btn.innerText = "Spustit dýchání";
+                return;
+            }
+
+            // Spuštění
+            btn.innerText = "Ukončit";
+            cyklus();
+            interval = setInterval(cyklus, 4000);
+        }
+
+        function cyklus() {
+            const f = faze[aktualniFaze];
+            display.innerText = f.text;
+            aktualniFaze = (aktualniFaze + 1) % faze.length;
+        }
+    </script>
+
+</body>
+</html>
